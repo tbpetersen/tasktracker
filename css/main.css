@@ -1,7 +1,6 @@
 /* ==========================================================================
 Author's custom styles
 ========================================================================== */
-
 #leftCloseButton{
   border: none;
   background-color: transparent;
@@ -24,15 +23,18 @@ Author's custom styles
 }
 
 #leftOpenButton{
+  position: relative;
+  left: 0%;
   width: 2.5%;
   height: 4%;
   padding: 0px;
 }
 
 #leftSidebar{
+  position: fixed;
+  left: 0%;
   margin-top: 0px;
   padding: 0px;
-  width: 10%;
   height: 100%;
 }
 #leftSidebar h3{
