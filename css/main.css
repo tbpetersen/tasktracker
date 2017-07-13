@@ -1,22 +1,41 @@
-
-
 /* ==========================================================================
-   Author's custom styles
-   ========================================================================== */
+Author's custom styles
+========================================================================== */
 
+#leftCloseButton{
+  border: none;
+  background-color: transparent;
+  width: 20%;
+  height: 3%;
+  position: absolute;
+  padding: 0px;
+  text-align: center;
+  margin:0px;
+  right: 0%;
+  top: 0%;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+#leftCloseButton:hover{
+  background-color: #C83C3C;
+}
+#closeIcon{
+  font-size: 70%;
+}
 
+#leftOpenButton{
+  width: 2.5%;
+  height: 4%;
+  padding: 0px;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#leftSidebar{
+  margin-top: 0px;
+  padding: 0px;
+  width: 10%;
+  height: 100%;
+}
+#leftSidebar h3{
+  margin-top: 0px;
+  background-color: #FE5E5E;
+}
