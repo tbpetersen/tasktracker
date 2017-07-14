@@ -1,5 +1,4 @@
 window.onload = function(){
-  openLeft();
 }
 
 /*Refresh the page*/
@@ -22,7 +21,6 @@ function openLeft() {
   setTimeout(function(){
     sideBar.style.display = "block";
     sideBar.style.width = "10%";}, 300);
-
   openButton.style.opacity = 0;
 }
 
