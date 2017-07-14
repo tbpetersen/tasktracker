@@ -11,6 +11,21 @@ function getData(line){
 
 }
 
+/*Sort the data alphabetically*/
+function sortAlphabet(){
+
+}
+
+/*Sort the data by date*/
+function sortDate(){
+
+}
+
+/*Sort the data by status*/
+function sortStatus(){
+
+}
+
 /* Purpose: Open the filter pannel and move the screen with it.
 */
 function openLeft() {
