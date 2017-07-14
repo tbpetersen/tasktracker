@@ -8,7 +8,7 @@ function refresh(){
 }
 
 function getData(){
-  
+
 }
 
 /* Purpose: Open the filter pannel and move the screen with it.
@@ -18,8 +18,10 @@ function openLeft() {
   var sideBar = document.getElementById("leftSidebar");
   var openButton = document.getElementById("leftOpenButton");
   body.style.marginLeft = "10%";
-  sideBar.style.display = "block";
-  sideBar.style.width = "10%";
+  setTimeout(function(){
+    sideBar.style.display = "block";
+    sideBar.style.width = "10%";}, 300);
+
   openButton.style.opacity = 0;
 }
 
