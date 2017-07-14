@@ -7,7 +7,8 @@ function refresh(){
   location.reload();
 }
 
-function getData(){
+/*Return the data from the given line of the table*/
+function getData(line){
 
 }
 
@@ -36,18 +37,3 @@ function closeLeft() {
   body.style.marginLeft = "0%";
   openButton.style.opacity = 1;
 }
-
-/*function closeInfo(){
-  var info = document.getElementById("info");
-  var body = document.getElementById("main");
-  info.style.visibility = "hidden";
-  body.style.paddingRight = "0%";
-}
-
-function openInfo(){
-  console.log("opening info");
-  var info = document.getElementById("info");
-  var body = document.getElementById("main");
-  info.style.visibility = "visible";
-  body.style.paddingRight = "16%";
-}*/
