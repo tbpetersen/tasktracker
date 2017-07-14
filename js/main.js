@@ -10,7 +10,7 @@ function openLeft() {
   var openButton = document.getElementById("leftOpenButton");
   sideBar.style.display = "block";
   sideBar.style.width = "10%";
-  body.style.marginLeft = "11%";
+  body.style.marginLeft = "10%";
   openButton.style.opacity = 0;
 }
 

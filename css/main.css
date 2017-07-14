@@ -1,6 +1,28 @@
 /* ==========================================================================
 Author's custom styles
 ========================================================================== */
+html{
+  overflow: hidden;
+}
+
+body {
+padding-top: 5%;
+padding-bottom: 5%;
+padding-left: 1%;
+}
+
+h1{
+  position: absolute;
+  top: -1.1%;
+  left: 0%;
+  text-align: center;
+  background-color: grey;
+  padding: 0%;
+  height: 5%;
+  width: 100%;
+  padding: 0%;
+}
+
 #leftCloseButton{
   border: none;
   background-color: transparent;
@@ -23,15 +45,21 @@ Author's custom styles
 }
 
 #leftOpenButton{
-  position: relative;
+  position: fixed;
   left: 0%;
+  top: 0%;
   width: 2.5%;
-  height: 4%;
+  height: 5%;
   padding: 0px;
 }
 
+
+#filters{
+  height: 5%;
+}
 #leftSidebar{
   position: fixed;
+  top: 0%;
   left: 0%;
   margin-top: 0px;
   padding: 0px;
@@ -40,4 +68,16 @@ Author's custom styles
 #leftSidebar h3{
   margin-top: 0px;
   background-color: #FE5E5E;
+}
+
+#info{
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  width: 25%;
+  height: 100%;
+  background-color: grey;
+  overflow: auto;
+  border-style: solid;
+  border-width: 5px;
 }

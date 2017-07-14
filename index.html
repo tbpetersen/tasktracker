@@ -12,12 +12,6 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
   <link rel="stylesheet" href="css/bootstrap.min.css">
-  <style>
-  /*body {
-  padding-top: 50px;
-  padding-bottom: 20px;
-  }*/
-  </style>
   <link rel="stylesheet" href="css/bootstrap-theme.min.css">
   <link rel="stylesheet" href="css/main.css">
 
@@ -31,13 +25,17 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script src="js/main.js"></script>
 </head>
+<h1>
+  Zello
+</h1>
+
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 <!-- FILTER SIDEBAR -->
 <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
-  <h3 class="w3-bar-item">Filters</h3>
+  <h3 class="w3-bar-item" id="filters">Filters</h3>
   <button onclick="closeLeft()" id="leftCloseButton">
     <span class="glyphicon glyphicon-remove" id="closeIcon"></span>
   </button>
@@ -87,5 +85,13 @@
       <td>94</td>
     </tr>
   </table>
+  <ul id="info">
+    Information
+    <br>
+    <div>test</div><br>
+    <div>test</div><br>
+    <div>test</div><br>
+    <div>test</div><br>
+  </ul>
 </body>
 </html>
