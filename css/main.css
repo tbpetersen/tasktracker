@@ -52,15 +52,15 @@ h1{
   height: 5%;
   padding: 0px;
   background-color: transparent;
-  border-right: 2px solid black;
-  border-bottom: 2px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 
 #filters{
   height: 5%;
-  border-right: 2px solid black;
-  border-bottom: 2px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
 }
 #leftSidebar{
   position: fixed;
