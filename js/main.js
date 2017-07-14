@@ -2,15 +2,24 @@ window.onload = function(){
   openLeft();
 }
 
+/*Refresh the page*/
+function refresh(){
+  location.reload();
+}
+
+function getData(){
+  
+}
+
 /* Purpose: Open the filter pannel and move the screen with it.
 */
 function openLeft() {
   var body = document.getElementById("main");
   var sideBar = document.getElementById("leftSidebar");
   var openButton = document.getElementById("leftOpenButton");
+  body.style.marginLeft = "10%";
   sideBar.style.display = "block";
   sideBar.style.width = "10%";
-  body.style.marginLeft = "10%";
   openButton.style.opacity = 0;
 }
 
