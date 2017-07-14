@@ -54,13 +54,11 @@ h1{
   background-color: transparent;
 }
 
-
 #filters{
   height: 5%;
   border-right: 1px solid black;
   border-bottom: 1px solid black;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 }
 #leftSidebar{
   position: fixed;
@@ -69,30 +67,10 @@ h1{
   margin-top: 0px;
   padding: 0px;
   height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 #leftSidebar h3{
   margin-top: 0px;
   background-color: #FE5E5E;
 }
-
-/*#info{
-  position: absolute;
-  top: 0%;
-  right: 0%;
-  width: 25%;
-  height: 100%;
-  background-color: grey;
-  visibility: hidden;
-  overflow: auto;
-  border-style: solid;
-  border-width: 5px;
-}
-#openInfo{
-  position: absolute;
-  right: 0%;
-  top: 0%;
-  width: 2.5%;
-  height: 5%;
-  padding: 0px;
-  background-color: transparent;
-}*/
