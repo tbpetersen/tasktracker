@@ -16,7 +16,7 @@ h1{
   top: -1.1%;
   left: 0%;
   text-align: center;
-  background-color: grey;
+  background-color: lightgrey;
   padding: 0%;
   height: 5%;
   width: 100%;
@@ -52,11 +52,15 @@ h1{
   height: 5%;
   padding: 0px;
   background-color: transparent;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
 }
 
 
 #filters{
   height: 5%;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
 }
 #leftSidebar{
   position: fixed;
