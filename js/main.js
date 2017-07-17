@@ -13,16 +13,24 @@ function getData(line){
 
 /*Sort the data alphabetically*/
 function sortAlphabet(){
+  console.log("Sorting alphabetically.");
+}
+
+/*Sort the data alphabetically reversed*/
+function sortAlphabetReverse(){
+  console.log("Sorting alphabetically reverse.");
 
 }
 
 /*Sort the data by date*/
 function sortDate(){
+  console.log("Sorting Cronologically.");
 
 }
 
 /*Sort the data by status*/
 function sortStatus(){
+  console.log("Sorting by Status.");
 
 }
 

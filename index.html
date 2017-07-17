@@ -27,12 +27,11 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script src="js/main.js"></script>
-  <link rel="shortcut icon" href="https://files.slack.com/files-pri/T02F9QQAN-F69UE4H7Y/favicon.png">
-
+  <link rel="shortcut icon" href="images/favicon.png">
 </head>
 
-<img src="http://www.sdsc.edu/assets/images/logos/sdsclogo-plusname-horiz-red.jpg" onclick="refresh()" id=logo>
-<div  id=searchBar>
+<img src="images/logo.jpg" onclick="refresh()" id=logo>
+<div id=searchBar>
   <input type="text" name="search" placeholder="Search..">
   <button class="glyphicon glyphicon-search" id=searchButton></button>
 </div>
@@ -41,11 +40,13 @@
 </h1>
 
 <form action="refresh()" id=sort>
+  Sort by
   <select name="sortBy">
-    <option value="a-z">A-Z</option>
-    <option value="z-a">Z-A</option>
-    <option value="dueDate">Due Date</option>
-    <option value="startDate">Start Date</option>
+    <option value="a-z" onclick="sortAlphabet()">A-Z</option>
+    <option value="z-a" onclick="sortAlphabetReverse()">Z-A</option>
+    <option value="dueDate" onclick="sortDate()">Due Date</option>
+    <option value="startDate" onclick="sortDate()">Start Date</option>
+    <option value="startDate" onclick="sortStatus()">Status</option>
   </select>
   <input type="submit">
 </form>
