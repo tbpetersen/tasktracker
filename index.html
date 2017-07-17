@@ -9,6 +9,9 @@
   <title>Zello</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
   <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -25,6 +28,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script src="js/main.js"></script>
   <link rel="shortcut icon" href="https://files.slack.com/files-pri/T02F9QQAN-F69UE4H7Y/favicon.png">
+
 </head>
 
 <img src="http://www.sdsc.edu/assets/images/logos/sdsclogo-plusname-horiz-red.jpg" onclick="refresh()" id=logo>
@@ -36,43 +40,53 @@
   Zello
 </h1>
 
+<form action="refresh()" id=sort>
+  <select name="sortBy">
+    <option value="a-z">A-Z</option>
+    <option value="z-a">Z-A</option>
+    <option value="dueDate">Due Date</option>
+    <option value="startDate">Start Date</option>
+  </select>
+  <input type="submit">
+</form>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
-<!-- FILTER SIDEBAR -->
-<div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
-  <h3 class="w3-bar-item" id="filters">Filters</h3>
-  <button onclick="closeLeft()" id="leftCloseButton">
-    <span class="glyphicon glyphicon-remove" id="closeIcon"></span>
+  <!-- FILTER SIDEBAR -->
+  <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
+    <h3 class="w3-bar-item" id="filters">Filters</h3>
+    <button onclick="closeLeft()" id="leftCloseButton">
+      <span class="glyphicon glyphicon-remove" id="closeIcon"></span>
+    </button>
+    <button class="w3-bar-item w3-button">Not Started</button>
+    <button class="w3-bar-item w3-button">In Progress</button>
+    <button class="w3-bar-item w3-button">To Review</button>
+    <button class="w3-bar-item w3-button">Completed</button>
+    <button class="w3-bar-item w3-button">Blocked</button>
+  </div>
+  <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
+    <span class="glyphicon glyphicon-menu-hamburger"></span>
   </button>
-  <button class="w3-bar-item w3-button">A-Z</button>
-  <button class="w3-bar-item w3-button">Due Date</button>
-  <button class="w3-bar-item w3-button">Status</button>
-</div>
-<button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
-  <span class="glyphicon glyphicon-menu-hamburger"></span>
-</button>
 
-<body id="main">
-  <table style="width:100%" id="group1">
-    <tr>
-      <th>Firstname</th>
-      <th>Lastname</th>
-      <th>Age</th>
-    </tr>
-    <tr>
-      <td>Jill</td>
-      <td>Smith</td>
-      <td>50</td>
-    </tr>
-    <tr>
-      <td>Eve</td>
-      <td>Jackson</td>
-      <td>94</td>
-    </tr>
-  </table>
+  <body id="main">
+    <table style="width:100%" id="group1">
+      <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Age</th>
+      </tr>
+      <tr>
+        <td>Jill</td>
+        <td>Smith</td>
+        <td>50</td>
+      </tr>
+      <tr>
+        <td>Eve</td>
+        <td>Jackson</td>
+        <td>94</td>
+      </tr>
+    </table>
 
-  <br>
-</body>
-</html>
+    <br>
+  </body>
+  </html>

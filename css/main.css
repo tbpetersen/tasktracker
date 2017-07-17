@@ -1,6 +1,8 @@
 /* ==========================================================================
 Author's custom styles
 ========================================================================== */
+
+
 html{
   overflow: hidden;
 }
@@ -30,6 +32,11 @@ h1{
   cursor: pointer;
 }
 
+#sort{
+  position: absolute;
+  top: 11%;
+  right: 10%;
+}
 
 #searchBar{
   position: absolute;
