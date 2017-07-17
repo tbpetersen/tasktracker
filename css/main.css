@@ -6,7 +6,7 @@ html{
 }
 
 body {
-  padding-top: 10%;
+  padding-top: 7.5%;
   padding-bottom: 5%;
   padding-left: 1%;
 }
@@ -16,7 +16,7 @@ h1{
   top: 5%;
   left: 0%;
   text-align: center;
-  background-color: #FE5E5E;
+  background-color: #dd6367;
   padding: 0%;
   height: 5%;
   width: 100%;
@@ -30,12 +30,26 @@ h1{
   cursor: pointer;
 }
 
+
 #searchBar{
   position: absolute;
   top: 2.5%;
-  width: 25%;
   left: 37.5%;
+  /*border: 2px solid #dd6367;*/
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
+#searchButton{
+  float: right;
+  height: 28px;
+  top: -.1px;
+  color: #902020;
+  background-color: #dd6367;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: none;
+  /*border: 2px solid #dd6367;*/
+  }
 
 #leftCloseButton{
   border: none;
@@ -70,6 +84,7 @@ h1{
 
 #filters{
   height: 5%;
+  text-align: center;
   border-right: 1px solid black;
   border-bottom: 1px solid black;
   overflow: hidden;
@@ -87,5 +102,5 @@ h1{
 }
 #leftSidebar h3{
   margin-top: 0px;
-  background-color: #FE5E5E;
+  background-color: #dd6367;
 }
