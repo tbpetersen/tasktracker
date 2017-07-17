@@ -6,21 +6,35 @@ html{
 }
 
 body {
-padding-top: 5%;
-padding-bottom: 5%;
-padding-left: 1%;
+  padding-top: 10%;
+  padding-bottom: 5%;
+  padding-left: 1%;
 }
 
 h1{
   position: absolute;
-  top: -1.1%;
+  top: 5%;
   left: 0%;
   text-align: center;
-  background-color: lightgrey;
+  background-color: #FE5E5E;
   padding: 0%;
   height: 5%;
   width: 100%;
-  padding: 0%;
+}
+
+#logo{
+  position: absolute;
+  top: 0%;
+  width: 25%;
+  left: 5%;
+  cursor: pointer;
+}
+
+#searchBar{
+  position: absolute;
+  top: 2.5%;
+  width: 25%;
+  left: 37.5%;
 }
 
 #leftCloseButton{

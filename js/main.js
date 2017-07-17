@@ -26,8 +26,7 @@ function sortStatus(){
 
 }
 
-/* Purpose: Open the filter pannel and move the screen with it.
-*/
+/*Open the filter pannel and move the screen with it.*/
 function openLeft() {
   var body = document.getElementById("main");
   var sideBar = document.getElementById("leftSidebar");
@@ -39,8 +38,7 @@ function openLeft() {
   openButton.style.opacity = 0;
 }
 
-/* Purpose: Close the filter pannel and move the screen with it.
-*/
+/*Close the filter pannel and move the screen with it.*/
 function closeLeft() {
   var body = document.getElementById("main");
   var sideBar = document.getElementById("leftSidebar");
