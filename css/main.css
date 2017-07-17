@@ -2,6 +2,9 @@
 Author's custom styles
 ========================================================================== */
 
+body, html {
+    height: 100%;
+}
 
 html{
   overflow: hidden;
