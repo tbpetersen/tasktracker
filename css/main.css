@@ -2,8 +2,29 @@
 Author's custom styles
 ========================================================================== */
 
+@media only screen and (max-width: 1300px) {
+  body {
+    min-width: 1300px;
+    min-height: 920px;
+  }
+  h1{
+    min-width: 1300px;
+  }
+  #searchBar{
+    position: fixed;
+  }
+  #searchButton{
+    /*float: left;*/
+  }
+}
+@media only screen and (max-height: 919px) {
+  body{
+    min-height: 920px;
+  }
+}
+
 body, html {
-    height: 100%;
+  height: 100%;
 }
 
 html{
@@ -11,7 +32,7 @@ html{
 }
 
 body {
-  padding-top: 7.5%;
+  padding-top: 8%;
   padding-bottom: 5%;
   padding-left: 1%;
 }
@@ -25,14 +46,18 @@ h1{
   padding: 0%;
   height: 5%;
   width: 100%;
+  min-height: 46px;
 }
+
 
 #logo{
   position: absolute;
   top: 0%;
-  width: 25%;
+  max-width: 25%;
   left: 5%;
   cursor: pointer;
+  min-width: 420px;
+  margin: auto;
 }
 
 #sort{
@@ -45,7 +70,6 @@ h1{
   position: absolute;
   top: 2.5%;
   left: 37.5%;
-  /*border: 2px solid #dd6367;*/
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
@@ -58,8 +82,7 @@ h1{
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   border: none;
-  /*border: 2px solid #dd6367;*/
-  }
+}
 
 #leftCloseButton{
   border: none;
@@ -87,6 +110,7 @@ h1{
   left: 0%;
   top: 0%;
   width: 2.5%;
+  min-width: 37px;
   height: 5%;
   padding: 0px;
   background-color: transparent;
