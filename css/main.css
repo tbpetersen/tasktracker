@@ -2,27 +2,6 @@
 Author's custom styles
 ========================================================================== */
 
-
-/*@media only screen and (max-width: 1300px) {
-  body {
-    min-width: 1300px;
-    min-height: 920px;
-  }
-  h1{
-    min-width: 1300px;
-  }
-  #searchBar{
-    position: fixed;
-  }
-  #searchButton{
-    float: left;
-  }
-}
-@media only screen and (max-height: 919px) {
-  body{
-    min-height: 920px;
-  }*/
-
 thead th, thead td {
 	text-align: center;
 }
