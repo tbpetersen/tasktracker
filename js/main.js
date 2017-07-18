@@ -264,5 +264,4 @@ function trelloGet(url){
       reject(data)
       }
     });
-  });
-}
+  });}
