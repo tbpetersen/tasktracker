@@ -3,13 +3,11 @@ window.onload = function(){
 
 /*Refresh the page*/
 function refresh(){
+  console.log("Refreshing");
   location.reload();
 }
 
-/*Return the data from the given line of the table*/
-function getData(line){
 
-}
 
 /*Sort the data alphabetically*/
 function sortAlphabet(){
@@ -35,7 +33,7 @@ function sortStatus(){
 }
 
 /*Open the filter pannel and move the screen with it.*/
-function openLeft() {
+function openLeft(){
   var body = document.getElementById("main");
   var sideBar = document.getElementById("leftSidebar");
   var openButton = document.getElementById("leftOpenButton");
@@ -47,7 +45,7 @@ function openLeft() {
 }
 
 /*Close the filter pannel and move the screen with it.*/
-function closeLeft() {
+function closeLeft(){
   var body = document.getElementById("main");
   var sideBar = document.getElementById("leftSidebar");
   var openButton = document.getElementById("leftOpenButton");
