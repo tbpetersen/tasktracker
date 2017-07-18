@@ -10,18 +10,42 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 
+
 class Task {
+  /*
+    Member variables:
+      name - The Trello name of Zendesk subject
+      desc - The Trello description or Zendesk body
+      type - Trello is 0, Zendesk is 1
+      createdAt - timestamp of creation timestamp
+      lastModified - timestamp of time when the entity was last edited
+      url - The link to this card/ticket
+  */
   constructor(data, type) {
-    if(type == 0 /* Trello */){
-      this.name = data.name;
-      this.desc = data.desc;
-    }else /* Zendesk*/{
-      this.name = data.subject;
-      this.desc = data.description;
-    }
     this.type = type;
     this.id = data.id;
     this.url = data.url;
+    if(type == 0 /* Trello */){
+      this.name = data.name;
+      this.desc = data.desc;
+      this.lastModified = this.getTimeStampFromString(data.dateLastActivity);
+      this.createdAt = this.getTrelloCreationTime(this.id);
+    }else /* Zendesk*/{
+      this.name = data.subject;
+      this.desc = data.description;
+      this.lastModified = this.getTimeStampFromString(data.updated_at);
+      this.createdAt = this.getTimeStampFromString(data.created_at);
+    }
+  }
+
+  getTrelloCreationTime(trelloID){
+   let hexTime = trelloID.substring(0,8);
+   return parseInt(hexTime, 16);
+  }
+
+  getTimeStampFromString(timeString){
+    let date = new Date(timeString);
+    return date.getTime();
   }
 }
 
@@ -30,6 +54,7 @@ $(document).ready(function(){
   setupPage();
   setIDs().then(function(){
     getCardsAndTickets().then(function(cardsAndTickets){
+      console.log(cardsAndTickets);
       user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
       console.log(user.tasks);
     });
