@@ -1,5 +1,5 @@
 const ZEN_AUTH_URL = "https://sdsc.zendesk.com/oauth/authorizations/new?response_type=token&client_id=client_services_tool_dev&scope=read%20write";
-const TRE_AUTH_URL = "https://trello.com/1/authorize?key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost?trello";
+const TRE_AUTH_URL = "https://trello.com/1/authorize?key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost";
 
 const ZEN_API_URL = "https://sdsc.zendesk.com/api/v2/";
 const TRE_API_URL = "https://trello.com/1/";
@@ -27,13 +27,21 @@ class Task {
 
 
 $(document).ready(function(){
+  setupPage();
+  setIDs().then(function(){
+    getCardsAndTickets().then(function(cardsAndTickets){
+      user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
+      console.log(user.tasks);
+    });
+  });
 
 });
 
 function setupPage(){
-  redirectToHTTPS();
-  getTokens();
-  instantiateUser();
+  if(! redirectToHTTPS()){
+    getTokens();
+    instantiateUser();
+  }
 }
 
 function instantiateUser(){
@@ -44,8 +52,10 @@ function instantiateUser(){
 
 function redirectToHTTPS(){
   if(window.location.protocol != 'https:'){
-    window.location.href = 'https://' + window.location.hostname;
+    window.location.assign('https://' + window.location.hostname);
+    return true;
   }
+  return false;
 }
 
 function saveTokenFromURL(){
