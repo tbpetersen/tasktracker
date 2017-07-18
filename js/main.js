@@ -1,4 +1,5 @@
 /* Prevent rows from shrinking when dragged */
+/*
 var maxWidth = 0;
 $('#table td:nth-child(3)').each(function(){
     if(maxWidth < $(this).width())
@@ -25,7 +26,7 @@ $("#table tbody").sortable({
     helper: fixHelperModified,
     stop: updateIndex
 }).disableSelection();
-
+*/
 /*var fixHelper = function(e, ui) {
     ui.children().each(function() {
         $(this).width($(this).width());
@@ -37,6 +38,7 @@ $("#sort tbody").sortable({
     helper: fixHelper
 }).disableSelection();
 */
+
 //=======
 const ZEN_AUTH_URL = "https://sdsc.zendesk.com/oauth/authorizations/new?response_type=token&client_id=client_services_tool_dev&scope=read%20write";
 const TRE_AUTH_URL = "https://trello.com/1/authorize?key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost";
@@ -92,6 +94,7 @@ class Task {
 
 $(document).ready(function(){
   setupPage();
+  $('table tbody').sortable();
   setIDs().then(function(){
     getCardsAndTickets().then(function(cardsAndTickets){
       console.log(cardsAndTickets);
