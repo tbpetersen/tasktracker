@@ -1,3 +1,18 @@
+thead th, thead td {
+
+	text-align: center;
+}
+
+tbody th, tbody td {
+
+	text-align: center;
+}
+
+tfoot th, tfoot td {
+
+	text-align: center;
+}
+
 
 
 /* ==========================================================================
