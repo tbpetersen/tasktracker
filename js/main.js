@@ -1,3 +1,45 @@
+/* Prevent rows from shrinking when dragged */
+/*
+var maxWidth = 0;
+$('#table td:nth-child(3)').each(function(){
+    if(maxWidth < $(this).width())
+        maxWidth = $(this).width();
+});
+
+$('#table td:nth-child(3)').css('width',maxWidth);
+
+var fixHelperModified = function(e, tr) {
+    var $originals = tr.children();
+    var $helper = tr.clone();
+    $helper.children().each(function(index) {
+        $(this).width($originals.eq(index).width()+17); // 16 - 18
+    });
+    return $helper;
+},
+    updateIndex = function(e, ui) {
+        $('td.index', ui.item.parent()).each(function (i) {
+            $(this).html(i + 1);
+        });
+    };
+
+$("#table tbody").sortable({
+    helper: fixHelperModified,
+    stop: updateIndex
+}).disableSelection();
+*/
+/*var fixHelper = function(e, ui) {
+    ui.children().each(function() {
+        $(this).width($(this).width());
+    });
+    return ui;
+};
+
+$("#sort tbody").sortable({
+    helper: fixHelper
+}).disableSelection();
+*/
+
+//=======
 const ZEN_AUTH_URL = "https://sdsc.zendesk.com/oauth/authorizations/new?response_type=token&client_id=client_services_tool_dev&scope=read%20write";
 const TRE_AUTH_URL = "https://trello.com/1/authorize?key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost";
 
@@ -10,26 +52,52 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 
+
 class Task {
+  /*
+    Member variables:
+      name - The Trello name of Zendesk subject
+      desc - The Trello description or Zendesk body
+      type - Trello is 0, Zendesk is 1
+      createdAt - timestamp of creation timestamp
+      lastModified - timestamp of time when the entity was last edited
+      url - The link to this card/ticket
+  */
   constructor(data, type) {
-    if(type == 0 /* Trello */){
-      this.name = data.name;
-      this.desc = data.desc;
-    }else /* Zendesk*/{
-      this.name = data.subject;
-      this.desc = data.description;
-    }
     this.type = type;
     this.id = data.id;
     this.url = data.url;
+    if(type == 0 /* Trello */){
+      this.name = data.name;
+      this.desc = data.desc;
+      this.lastModified = this.getTimeStampFromString(data.dateLastActivity);
+      this.createdAt = this.getTrelloCreationTime(this.id);
+    }else /* Zendesk*/{
+      this.name = data.subject;
+      this.desc = data.description;
+      this.lastModified = this.getTimeStampFromString(data.updated_at);
+      this.createdAt = this.getTimeStampFromString(data.created_at);
+    }
+  }
+
+  getTrelloCreationTime(trelloID){
+   let hexTime = trelloID.substring(0,8);
+   return parseInt(hexTime, 16);
+  }
+
+  getTimeStampFromString(timeString){
+    let date = new Date(timeString);
+    return date.getTime();
   }
 }
 
 
 $(document).ready(function(){
   setupPage();
+  $('table tbody').sortable();
   setIDs().then(function(){
     getCardsAndTickets().then(function(cardsAndTickets){
+      console.log(cardsAndTickets);
       user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
       console.log(user.tasks);
     });

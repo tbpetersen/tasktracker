@@ -2,7 +2,8 @@
 Author's custom styles
 ========================================================================== */
 
-@media only screen and (max-width: 1300px) {
+
+/*@media only screen and (max-width: 1300px) {
   body {
     min-width: 1300px;
     min-height: 920px;
@@ -14,13 +15,24 @@ Author's custom styles
     position: fixed;
   }
   #searchButton{
-    /*float: left;*/
+    float: left;
   }
 }
 @media only screen and (max-height: 919px) {
   body{
     min-height: 920px;
-  }
+  }*/
+
+thead th, thead td {
+	text-align: center;
+}
+
+tbody th, tbody td {
+	text-align: center;
+}
+
+tfoot th, tfoot td {
+	text-align: center;
 }
 
 body, html {
@@ -32,9 +44,10 @@ html{
 }
 
 body {
-  padding-top: 8%;
-  padding-bottom: 5%;
-  padding-left: 1%;
+  padding-top: 10%;
+  padding-bottom: 20px;
+  padding-left: 0%;
+  padding-right: 0%;
 }
 
 h1{
