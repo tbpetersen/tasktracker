@@ -1,26 +1,22 @@
 /* ==========================================================================
 Author's custom styles
 ========================================================================== */
-@media only screen and (max-width: 1200px) {
-  h1{ssss
-    min-width: 1200px;
-  }
-  #sort{
-    margin: 0%;
-  }
-  #leftSidebar{
-    visibility: hidden;
-  }
+@media only screen and (max-width: 1425px) {
+	#navbar-links{
+		position: absolute;
+		top: 0%;
+		left: 810px;
+		min-width: 600px;
+	}
   #leftOpenButton{
     cursor: not-allowed;
   }
 }
-@media only screen and (max-width: 453px) {
-  body{
-    min-width: 453px;
-    position: fixed;
-    left: 0%;
-  }
+@media only screen and (max-width: 950px) {
+	#app-title{
+		/*position: absolute;*/
+		/*left: 999999999px;*/
+	}
 }
 
 thead th, thead td {
@@ -40,7 +36,7 @@ tfoot th, tfoot td {
   position: absolute;
   top: 0%;
   max-width: 25%;
-  left: 5%;
+  left: 46px;
   cursor: pointer;
   min-width: 420px;
   margin: auto;
@@ -88,6 +84,7 @@ tfoot th, tfoot td {
 #closeIcon{
   font-size: 70%;
 }
+
 
 #leftOpenButton{
   position: fixed;
@@ -210,6 +207,7 @@ tfoot th, tfoot td {
 {
   cursor: pointer;
 }
+
 
 /* Navbar */
 #navbar-links

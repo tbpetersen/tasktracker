@@ -345,6 +345,12 @@ function trelloGet(url){
   });
 }
 ////////////////////////////////////////////////////////////////////////////////
+
+window.addEventListener("resize", function(){
+    if(window.innerWidth < 1200)
+      closeLeft();
+});
+
 /*Refresh the page*/
 function refresh(){
   console.log("Refreshing");
