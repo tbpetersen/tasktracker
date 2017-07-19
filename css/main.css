@@ -230,15 +230,23 @@ tfoot th, tfoot td {
   float: right;
 }
 
-#navbar-links .btn
+#navbar-links a.btn
 {
   border-radius: 0;
   max-height: 100%;
 }
 
-#navbar-links .btn:active
+#navbar-links a.btn:active
 {
   background: #ccc;
+  border-radius: 0;
+}
+
+#app-title
+{
+  position: absolute;
+  left: 50%;
+  max-height: 100%;
 }
 
 /* Position and style the close button (top right corner) */
