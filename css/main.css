@@ -1,6 +1,27 @@
 /* ==========================================================================
 Author's custom styles
 ========================================================================== */
+@media only screen and (max-width: 1200px) {
+  h1{
+    min-width: 1200px;
+  }
+  #sort{
+    margin: 0%;
+  }
+  #leftSidebar{
+    visibility: hidden;
+  }
+  #leftOpenButton{
+    cursor: not-allowed;
+  }
+}
+@media only screen and (max-width: 453px) {
+  body{
+    min-width: 453px;
+    position: fixed;
+    left: 0%;
+  }
+}
 
 thead th, thead td {
 	text-align: center;
@@ -12,33 +33,6 @@ tbody th, tbody td {
 
 tfoot th, tfoot td {
 	text-align: center;
-}
-
-/*body, html {
-  height: 100%;
-}*/
-
-/*html{
-  overflow: hidden;
-}*/
-
-/*body {
-  padding-top: 10%;
-  padding-bottom: 20px;
-  padding-left: 0%;
-  padding-right: 0%;
-}*/
-
-/*h1{
-  position: absolute;
-  top: 5%;
-  left: 0%;
-  text-align: center;
-  background-color: #dd6367;
-  padding: 0%;
-  height: 5%;
-  width: 100%;
-  min-height: 46px;
 }
 
 
@@ -53,9 +47,6 @@ tfoot th, tfoot td {
 }
 
 #sort{
-  /*position: absolute;
-  top: 11%;
-  right: 10%;*/
   float: right;
 }
 
