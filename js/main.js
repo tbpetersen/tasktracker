@@ -392,7 +392,7 @@ function closeLeft(){
   var sideBar = document.getElementById("leftSidebar");
   var openButton = document.getElementById("leftOpenButton");
   sideBar.style.display = "none";
-  sideBar.style.width = "0%";
+  body.style.width = "100%";
   body.style.marginLeft = "0%";
   openButton.style.opacity = 1;
 }

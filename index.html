@@ -71,7 +71,8 @@
           <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
           </button>
         </form>
-      </div><!-- /.navbar-collapse -->
+      </div> 
+      <!-- /.navbar-collapse -->
     </div>
   </nav>
 
@@ -108,52 +109,54 @@
   </div>
   <!-- End of info panel -->
 
-  <div class="main" id="main">
-    <form action="js/main.js" id=sort>
-      Sort by
-      <select name="sortBy">
-        <option value="a-z" onclick="sortAlphabet()">A-Z</option>
-        <option value="z-a" onclick="sortAlphabetReverse()">Z-A</option>
-        <option value="dueDate" onclick="sortDate()">Due Date</option>
-        <option value="startDate" onclick="sortDate()">Start Date</option>
-        <option value="startDate" onclick="sortStatus()">Status</option>
-      </select>
-      <input type="submit">
-    </form>
+  <!-- FILTER SIDEBAR -->
+  <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
+    <h3 class="w3-bar-item" id="filters">Filters</h3>
+    <button onclick="closeLeft()" id="leftCloseButton">
+      <span class="glyphicon glyphicon-remove" id="closeIcon"></span>
+    </button>
+    <button class="w3-bar-item w3-button">Not Started</button>
+    <button class="w3-bar-item w3-button">In Progress</button>
+    <button class="w3-bar-item w3-button">To Review</button>
+    <button class="w3-bar-item w3-button">Completed</button>
+    <button class="w3-bar-item w3-button">Blocked</button>
+  </div>
 
-    <!-- FILTER SIDEBAR -->
-    <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
-      <h3 class="w3-bar-item" id="filters">Filters</h3>
-      <button onclick="closeLeft()" id="leftCloseButton">
-        <span class="glyphicon glyphicon-remove" id="closeIcon"></span>
-      </button>
-      <button class="w3-bar-item w3-button">Not Started</button>
-      <button class="w3-bar-item w3-button">In Progress</button>
-      <button class="w3-bar-item w3-button">To Review</button>
-      <button class="w3-bar-item w3-button">Completed</button>
-      <button class="w3-bar-item w3-button">Blocked</button>
-    </div>
-
-    <!-- <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
+  <!-- <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
     <span class="glyphicon glyphicon-menu-hamburger"></span>
-    </button> -->
-    <!-- END FILTER SIDEBAR -->
+  </button> -->
+  <!-- END FILTER SIDEBAR -->
 
-    <table id="table" class="grid table table-bordered table-hover table-condensed">
-      <thead>
-          <tr><th class="index">Title/Subject</th><th>Description</th><th>Last Modified</th><th>Category</th></tr>
-      </thead>
-      <tbody>
-          <tr><td>1</td><td>a</td><td>1-11-1111</td><td>Blocked</td></tr>
-          <tr><td>2</td><td>b</td><td>2-22-2222</td><td>In Progress</td></tr>
-          <tr><td>3</td><td>c</td><td>3-33-3333</td><td>For Review</td></tr>
-          <tr><td>4</td><td>d</td><td>4-44-4444</td><td>For Review</td></tr>
-          <tr><td>5</td><td>e</td><td>5-55-5555</td><td>Complete</td></tr>
-      </tbody>
-    </table>
-    <script type="text/javascript">
-      $('table tbody').sortable();
-    </script>
+  <div class="main" id="main">
+    <div class="container-fluid">
+      <form action="js/main.js" id="sort">
+        Sort by
+        <select name="sortBy">
+          <option value="a-z" onclick="sortAlphabet()">A-Z</option>
+          <option value="z-a" onclick="sortAlphabetReverse()">Z-A</option>
+          <option value="dueDate" onclick="sortDate()">Due Date</option>
+          <option value="startDate" onclick="sortDate()">Start Date</option>
+          <option value="startDate" onclick="sortStatus()">Status</option>
+        </select>
+        <input type="submit">
+      </form>
+
+      <table id="table" class="grid table table-bordered table-hover table-condensed">
+        <thead>
+            <tr><th class="index">Title/Subject</th><th>Description</th><th>Last Modified</th><th>Category</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>a</td><td>1-11-1111</td><td>Blocked</td></tr>
+            <tr><td>2</td><td>b</td><td>2-22-2222</td><td>In Progress</td></tr>
+            <tr><td>3</td><td>c</td><td>3-33-3333</td><td>For Review</td></tr>
+            <tr><td>4</td><td>d</td><td>4-44-4444</td><td>For Review</td></tr>
+            <tr><td>5</td><td>e</td><td>5-55-5555</td><td>Complete</td></tr>
+        </tbody>
+      </table>
+      <script type="text/javascript">
+        $('table tbody').sortable();
+      </script>
+    </div>
   </div>
 
   <!-- jQuery & JavaScript -->
