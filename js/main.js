@@ -344,21 +344,12 @@ function trelloGet(url){
     });
   });
 }
-<<<<<<< HEAD
 ////////////////////////////////////////////////////////////////////////////////
 /*Refresh the page*/
 function refresh(){
   console.log("Refreshing");
   location.reload();
 }
-=======
-//////////////////////////////////////
-// /*Refresh the page*/
-// function refresh(){
-//   console.log("Refreshing");
-//   location.reload();
-// }
->>>>>>> aee6a886267872dc7ae064156ff3c8b0944b4662
 
 /*Sort the data alphabetically*/
 function sortAlphabet(){
