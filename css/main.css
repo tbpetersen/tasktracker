@@ -14,22 +14,29 @@ tfoot th, tfoot td {
 	text-align: center;
 }
 
-body, html {
+.main
+{
+  position: relative;
+  width: 100%;
+  background-color: blue;
+}
+
+/*body, html {
   height: 100%;
-}
+}*/
 
-html{
+/*html{
   overflow: hidden;
-}
+}*/
 
-body {
+/*body {
   padding-top: 10%;
   padding-bottom: 20px;
   padding-left: 0%;
   padding-right: 0%;
-}
+}*/
 
-h1{
+/*h1{
   position: absolute;
   top: 5%;
   left: 0%;
@@ -38,24 +45,34 @@ h1{
   padding: 0%;
   height: 5%;
   width: 100%;
+<<<<<<< HEAD
   min-height: 46px;
 }
+=======
+}*/
+>>>>>>> aee6a886267872dc7ae064156ff3c8b0944b4662
 
 
 #logo{
   position: absolute;
   top: 0%;
+<<<<<<< HEAD
   max-width: 25%;
   left: 5%;
+=======
+  max-width:100%;
+  max-height:100%;
+  left: 3%;
+>>>>>>> aee6a886267872dc7ae064156ff3c8b0944b4662
   cursor: pointer;
   min-width: 420px;
   margin: auto;
 }
 
 #sort{
-  position: absolute;
+/*  position: absolute;
   top: 11%;
-  right: 10%;
+  right: 10%;*/
 }
 
 #searchBar{
@@ -130,3 +147,134 @@ h1{
   margin-top: 0px;
   background-color: #dd6367;
 }
+
+/* Side info panel */
+.info-panel
+{
+  height: 100%;
+  width: 20%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: -20%;
+  background-color: #ededed;
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+/* Side info panel toggle action*/
+.info-panel.toggled
+{
+  right: 0%;
+}
+
+/* Card list wrapper */
+.info-panel .info-cards
+{
+  height: 90%;
+  overflow-y: auto;
+}
+
+/* Card list header */
+.info-panel .info-header
+{
+  position: relative;
+  /*top: -20px;*/
+  background-color: #ccc;
+  height: 5%; 
+  display: flex; /* Align header title center */
+  align-items: center;
+  justify-content: center;
+}
+
+.info-panel .info-header h2
+{
+  margin: 0;
+  font-weight: bold;
+  /* Align right */
+  /*position: absolute;
+  top: 50%;
+  right: 0%;
+    transform: translate(0, -50%)*/
+}
+
+.info-panel #info-footer .btn-block
+{
+  font-weight: bold;
+  border-radius: 0;
+  padding: 0.9em;
+  background-color: #c60909;
+  color: #fff;
+}
+
+.info-panel #info-footer .btn-block:active
+{
+  background-color: #9e0707;
+}
+
+/* Individual cards */
+.panel
+{
+  margin: 15px;
+}
+
+.panel .panel-title
+{
+  font-weight: bold;
+}
+
+.panel-heading .glyphicon-remove-sign
+{
+  float: right;
+  cursor: pointer;
+  color: #c60909;
+}
+
+/* Table Hover */
+.table-hover td
+{
+  cursor: pointer;
+}
+
+/* Navbar */
+#navbar-links
+{
+  float: right;
+}
+
+#navbar-links a.btn
+{
+  border-radius: 0;
+  max-height: 100%;
+}
+
+#navbar-links a.btn:active
+{
+  background: #ccc;
+  border-radius: 0;
+}
+
+#app-title
+{
+  position: absolute;
+  left: 50%;
+  max-height: 100%;
+}
+
+/* Position and style the close button (top right corner) */
+/*.info-panel .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}*/
+
+/*.info-panel .info-header .divider
+{ 
+    margin: 25px 0;
+    height: 1px;
+    border: 0;
+    background: black;
+    background: -webkit-gradient(linear, 0 0, 100% 0, from(white), to(white), color-stop(50%, black));
+}*/

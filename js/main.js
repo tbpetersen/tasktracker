@@ -344,12 +344,21 @@ function trelloGet(url){
     });
   });
 }
+<<<<<<< HEAD
 ////////////////////////////////////////////////////////////////////////////////
 /*Refresh the page*/
 function refresh(){
   console.log("Refreshing");
   location.reload();
 }
+=======
+//////////////////////////////////////
+// /*Refresh the page*/
+// function refresh(){
+//   console.log("Refreshing");
+//   location.reload();
+// }
+>>>>>>> aee6a886267872dc7ae064156ff3c8b0944b4662
 
 /*Sort the data alphabetically*/
 function sortAlphabet(){
@@ -395,4 +404,35 @@ function closeLeft(){
   sideBar.style.width = "0%";
   body.style.marginLeft = "0%";
   openButton.style.opacity = 1;
+}
+
+$('td').click(function() {
+    // alert('Click!');
+
+    var newCard = document.createElement('div');
+
+    /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
+    newCard.innerHTML = '<div class="panel panel-default">' +
+    '<div class="panel-heading">' +
+    '<h3 class="panel-title">Ticket #1234 ' +
+    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();""></i>' +
+  '</h3></div>' +
+    '<div class="panel-body">Ticket Info' +
+    '</div></div>';
+
+    document.getElementById("card-list").appendChild(newCard);
+});
+
+$("#openInfo").click(function(e) {
+  e.preventDefault();
+  $(".info-panel").toggleClass("toggled");
+});
+
+$("#clearBtn").click(function() {
+  $('#card-list').empty();
+});
+
+function delCard()
+{
+  alert('Haven\'t add functionality yet!');
 }
