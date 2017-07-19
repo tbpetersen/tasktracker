@@ -14,13 +14,6 @@ tfoot th, tfoot td {
 	text-align: center;
 }
 
-.main
-{
-  position: relative;
-  width: 100%;
-  background-color: blue;
-}
-
 /*body, html {
   height: 100%;
 }*/
@@ -57,9 +50,10 @@ tfoot th, tfoot td {
 }
 
 #sort{
-/*  position: absolute;
+  /*position: absolute;
   top: 11%;
   right: 10%;*/
+  float: right;
 }
 
 #searchBar{
@@ -247,6 +241,13 @@ tfoot th, tfoot td {
   position: absolute;
   left: 50%;
   max-height: 100%;
+}
+
+#app-title h1
+{
+  color: #dd6367;
+  font-weight: bold;
+  font-family: "Lucida Console"; /* Just an example of changing font family - not committed */
 }
 
 /* Position and style the close button (top right corner) */
