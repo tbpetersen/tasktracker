@@ -14,8 +14,11 @@ Author's custom styles
 }
 @media only screen and (max-width: 950px) {
 	#app-title{
-		/*position: absolute;*/
+		position: absolute;
 		/*left: 999999999px;*/
+	}
+	#table{
+		min-width: 920px;
 	}
 }
 
@@ -44,6 +47,7 @@ tfoot th, tfoot td {
 
 #sort{
   float: right;
+	min-width: 240px;
 }
 
 #searchBar{
