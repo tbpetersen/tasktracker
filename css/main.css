@@ -45,6 +45,7 @@ tfoot th, tfoot td {
   cursor: pointer;
   min-width: 420px;
   margin: auto;
+	z-index: 1;
 }
 
 #sort{
