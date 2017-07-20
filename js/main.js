@@ -419,7 +419,7 @@ $('td').click(function() {
     newCard.innerHTML = '<div class="panel panel-default">' +
     '<div class="panel-heading">' +
     '<h3 class="panel-title">Ticket #1234 ' +
-    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();""></i>' +
+    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
   '</h3></div>' +
     '<div class="panel-body">Ticket Info' +
     '</div></div>';

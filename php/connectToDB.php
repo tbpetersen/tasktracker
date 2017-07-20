@@ -10,5 +10,5 @@ Description: connect to the sql server
   $usersTable  = "users";
   $groupsTable = "user_groups";
   $itemsTable  = "group_items";
-  $mysqli = new mysqli( "localhost", "root", '',"tasktracker_db");
+  $tasktrackerDB = new mysqli( "localhost", "root", '',"tasktracker_db");
  ?>
