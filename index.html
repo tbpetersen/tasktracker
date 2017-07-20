@@ -20,23 +20,29 @@
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="css/main.css">
 
+  <!-- Additiona Font Pack -->
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 </head>
 
 
 <body>
   <nav class="navbar navbar-default">
     <div class="container-fluid">
-      <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
+      <!-- Filter sidebar button -->
+      <!-- <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
         <span class="glyphicon glyphicon-menu-hamburger"></span>
+      </button> -->
+      <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
+        <span class="hamb-top"></span>
+        <span class="hamb-middle"></span>
+        <span class="hamb-bottom"></span>
       </button>
 
       <div class="navbar-header">
-          <a class="navbar-brand" href="index.html"><img src="images/logo.jpg" id=logo></a>
+          <a class="navbar-brand" href="index.html"><img src="images/logo.jpg" id=logo alt="SDSC"></a>
       </div>
 
-      <div id="app-title">
-        <h1>Zello</h1>
-      </div>
+      <h1 id="app-title">Zello</h1>
 
       <!-- Nav links -->
       <div class="collapse navbar-collapse" id="navbar-links">
@@ -74,9 +80,7 @@
 
   <!-- Info panel -->
   <div class="info-panel">
-    <!-- <div class="info-header"> -->
-      <h2 class="info-header">Ticket Information</h2>
-    <!-- </div> -->
+    <h2 id="info-header">Ticket Information</h2>
 
     <div class="info-cards" id="card-list">
       <div class="panel panel-default" id="card1">
@@ -97,9 +101,7 @@
       </div>
     </div>
 
-    <div id="info-footer">
-      <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
-    </div>
+    <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
   </div>
   <!-- End of info panel -->
 
@@ -115,10 +117,6 @@
     <button class="w3-bar-item w3-button">Completed</button>
     <button class="w3-bar-item w3-button">Blocked</button>
   </div>
-
-  <!-- <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
-    <span class="glyphicon glyphicon-menu-hamburger"></span>
-  </button> -->
   <!-- END FILTER SIDEBAR -->
 
   <div class="main" id="main">
@@ -135,21 +133,16 @@
         <input type="submit">
       </form>
 
-      <table id="table" class="grid table table-bordered table-hover table-condensed">
+      <table id="table" class="grid table table-bordered table-hover">
         <thead>
-            <tr><th class="index">Title/Subject</th><th>Description</th><th>Last Modified</th><th>Category</th></tr>
+          <tr>
+          <th class="title">Title/Subject</th>
+          <th class="desc">Description</th>
+          <th class="lastMod">Last Modified</th>
+          <th class="category">Category</th>
+          </tr>
         </thead>
-        <tbody>
-            <tr><td>1</td><td>a</td><td>1-11-1111</td><td>Blocked</td></tr>
-            <tr><td>2</td><td>b</td><td>2-22-2222</td><td>In Progress</td></tr>
-            <tr><td>3</td><td>c</td><td>3-33-3333</td><td>For Review</td></tr>
-            <tr><td>4</td><td>d</td><td>4-44-4444</td><td>For Review</td></tr>
-            <tr><td>5</td><td>e</td><td>5-55-5555</td><td>Complete</td></tr>
-        </tbody>
       </table>
-      <script type="text/javascript">
-        $('table tbody').sortable();
-      </script>
     </div>
   </div>
 
@@ -157,6 +150,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
   <script type="text/javascript" src="js/main.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>
 
