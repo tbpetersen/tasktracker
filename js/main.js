@@ -51,6 +51,30 @@ class Task {
 
 
 $(document).ready(function(){
+  // Hamburger menu toggle
+  var trigger = $('.hamburger'),
+  isClosed = false;
+
+  trigger.click(function () {
+    hamburger_cross();  
+  });
+
+  function hamburger_cross() {
+    if (isClosed == true) {
+      trigger.removeClass('is-open');
+      trigger.addClass('is-closed');
+      isClosed = false;
+    } else {   
+      trigger.removeClass('is-closed');
+      trigger.addClass('is-open');
+      isClosed = true;
+    }
+  }
+  
+  $('[data-toggle="offcanvas"]').click(function () {
+    $('body').toggleClass('toggled');
+  });
+
   setupPage();
   $('table tbody').sortable();
   setIDs().then(function(){
@@ -234,11 +258,11 @@ function getTrelloToken(){
 }
 
 function redirectToTrelloLogin(){
-  window.location.href = TRE_AUTH_URL
+  window.location.assign(TRE_AUTH_URL);
 }
 
 function redirectToZendeskLogin(){
-  window.location.href = ZEN_AUTH_URL;
+  window.location.assign(ZEN_AUTH_URL);
 }
 
 function setIDs(){
