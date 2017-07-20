@@ -99,18 +99,6 @@ th.category {
   font-size: 70%;
 }
 
-/*#leftOpenButton{
-  position: fixed;
-  left: 0%;
-  top: 0%;
-  width: 2.5%;
-  min-width: 37px;
-  height: 5%;
-  padding: 0px;
-  background-color: transparent;
-	z-index: 1;
-}*/
-
 #filters{
   height: 5%;
   text-align: center;
@@ -132,9 +120,7 @@ th.category {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   width: 10%;
-	/*min-width: 120px;*/
   z-index: 1;
-	/*margin-right: 5px;*/
 }
 #leftSidebar::-webkit-scrollbar {
  display: none;
@@ -147,7 +133,6 @@ th.category {
 /* Side info panel */
 .info-panel
 {
-  /*max-height: 100%;*/
   height: 100%;
   width: 20%;
   position: fixed;
@@ -259,6 +244,10 @@ th.category {
 #searchBtn
 {
   background-color: #dd6367;
+}
+
+#Zello{
+	cursor: pointer;
 }
 
 /* Hamburger menu icon */
