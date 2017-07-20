@@ -10,6 +10,7 @@ Author's custom styles
 	}
 	#app-title{
 		min-width: 1425px;
+		top: 0%;
 	}
 }
 @media only screen and (max-width: 1200px) {
@@ -81,6 +82,7 @@ tfoot th, tfoot td {
   height: 5%;
   padding: 0px;
   background-color: transparent;
+	z-index: 1;
 }
 
 #filters{
@@ -188,7 +190,6 @@ tfoot th, tfoot td {
   cursor: pointer;
 }
 
-
 /* Navbar */
 #navbar-links
 {
@@ -220,21 +221,3 @@ tfoot th, tfoot td {
   font-weight: bold;
   font-family: "Lucida Console"; /* Just an example of changing font family - not committed */
 }
-
-/* Position and style the close button (top right corner) */
-/*.info-panel .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}*/
-
-/*.info-panel .info-header .divider
-{
-    margin: 25px 0;
-    height: 1px;
-    border: 0;
-    background: black;
-    background: -webkit-gradient(linear, 0 0, 100% 0, from(white), to(white), color-stop(50%, black));
-}*/
