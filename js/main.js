@@ -429,7 +429,12 @@ window.addEventListener("resize", function(){
   var openButton = document.getElementById("leftOpenButton");
     if(window.innerWidth < 1200)
     {
-      // function(){$('body').toggleClass('toggled');};
+      if($('body.toggled').css("padding") != null)
+      {
+        $('body').toggleClass('toggled');
+        $('.hamburger').removeClass('is-open');
+        $('.hamburger').addClass('is-closed');
+      }
     }
 });
 
