@@ -2,93 +2,106 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><html class="no-js" lang=""> <![endif]-->
-<!--<<<<<<<< HEAD-->
-<html lang="en">
+<!--[if gt IE 8]>      <html class="no-js" lang=""> <![endif]-->
 <head>
   <title>Zello</title>
-  <link rel="shortcut icon" href="">
-  
+
+ <!-- Mobile Compatibility -->
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+ <!-- Bootstrap Core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+ <!-- Custom CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="css/main.css">
 
-  <script type="text/javascript" src="js/main.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script> 
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">   
-  <script src="js/vendor/bootstrap.min.js"></script>
-
-  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-  <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-
+ <!-- Additiona Font Pack -->
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 </head>
 
 
 <body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
+        <span class="glyphicon glyphicon-menu-hamburger"></span>
+      </button>
 
-<table id="table" class="grid table table-bordered table-hover table-condensed">
-  <thead>
-    <tr>
-    <th class="title">Title/Subject</th>
-    <th class="desc">Description</th>
-    <th class="lastMod">Last Modified</th>
-    <th class="category">Category</th>
-    </tr>
-  </thead>
-</table>
-<script type="text/javascript">
-  $('table tbody').sortable();
-</script>
+      <div class="navbar-header">
+          <a class="navbar-brand" href="index.html"><img src="images/logo.jpg" id=logo></a>
+      </div>
 
-</body>
-</html>
+      <div id="app-title">
+        <h1>Zello</h1>
+      </div>
 
+      <!-- Nav links -->
+      <div class="collapse navbar-collapse" id="navbar-links">
+        <ul class="nav navbar-nav">
+          <li><a class="btn" id="openInfo">View Tickets</a></li>
+          <li><a href="#">Link</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li>
+        </ul>
+        <form class="navbar-form navbar-right">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search">
+          </div>
+          <button type="submit" class="btn btn-default">
+          <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+  </nav>
 
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <!-- Info panel -->
+  <div class="info-panel">
+    <!-- <div class="info-header"> -->
+      <h2 class="info-header">Ticket Information</h2>
+    <!-- </div> -->
 
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-  <link rel="shortcut icon" href="images/favicon.png">
-</head>
-<body id="main">
-<img src="images/logo.jpg" onclick="refresh()" id=logo>
-<div id=searchBar>
-  <input type="text" name="search" placeholder="Search..">
-  <button class="glyphicon glyphicon-search" id=searchButton></button>
-</div>
+    <div class="info-cards" id="card-list">
+      <div class="panel panel-default" id="card1">
+        <div class="panel-heading">
+          <h3 class="panel-title">Ticket #1234 <i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i></h3>
+        </div>
+        <div class="panel-body">
+          Ticket info
+        </div>
+      </div>
+      <div class="panel panel-default" id="card2">
+        <div class="panel-heading">
+          <h3 class="panel-title">Ticket #5678 <i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i></h3>
+        </div>
+        <div class="panel-body">
+          Ticket info
+        </div>
+      </div>
+    </div>
 
-<h1>
-  Zello
-</h1>
+    <div id="info-footer">
+      <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
+    </div>
+  </div>
+  <!-- End of info panel -->
 
-
-<form action="js/main.js" id=sort>
-  Sort by
-  <select name="sortBy">
-    <option value="a-z" onclick="sortAlphabet()">A-Z</option>
-    <option value="z-a" onclick="sortAlphabetReverse()">Z-A</option>
-    <option value="dueDate" onclick="sortDate()">Due Date</option>
-    <option value="startDate" onclick="sortDate()">Start Date</option>
-    <option value="startDate" onclick="sortStatus()">Status</option>
-  </select>
-  <input type="submit">
-</form>
-
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
   <!-- FILTER SIDEBAR -->
   <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
@@ -102,10 +115,41 @@
     <button class="w3-bar-item w3-button">Completed</button>
     <button class="w3-bar-item w3-button">Blocked</button>
   </div>
-  <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
-    <span class="glyphicon glyphicon-menu-hamburger"></span>
-  </button>
 
-    <br>
-  </body>
-  </html>
+
+  <!-- END FILTER SIDEBAR -->
+  <div class="main" id="main">
+    <div class="container-fluid">
+      <form action="js/main.js" id="sort">
+        Sort by
+        <select name="sortBy">
+          <option value="a-z" onclick="sortAlphabet()">A-Z</option>
+          <option value="z-a" onclick="sortAlphabetReverse()">Z-A</option>
+          <option value="dueDate" onclick="sortDate()">Due Date</option>
+          <option value="startDate" onclick="sortDate()">Start Date</option>
+          <option value="startDate" onclick="sortStatus()">Status</option>
+        </select>
+        <input type="submit">
+      </form>
+
+      <table id="table" class="grid table table-bordered table-hover">
+        <thead>
+          <tr>
+          <th class="title">Title/Subject</th>
+          <th class="desc">Description</th>
+          <th class="lastMod">Last Modified</th>
+          <th class="category">Category</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+
+  <!-- jQuery & JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+
+</body>
+</html>
+

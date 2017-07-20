@@ -52,6 +52,7 @@ class Task {
 
 $(document).ready(function(){
   setupPage();
+  $('table tbody').sortable();
   setIDs().then(function(){
     getCardsAndTickets().then(function(cardsAndTickets){
       console.log(cardsAndTickets);
@@ -82,7 +83,11 @@ function addRow(tasks, index) {
   var title = tasks[index].name;
 
   // Get description's first 140 characters
-  var shortDesc = (tasks[index].desc).substring(0, 140);
+  var desc = tasks[index].desc;
+  var shortDesc = (desc).substring(0, 140);
+  if (desc.length > 140) {
+    shortDesc = shortDesc + "...";
+  }
   //console.log(shortDesc.substring(0,140));
 
   // Get last modified date from timestamp
@@ -102,7 +107,7 @@ function addRow(tasks, index) {
 
   // text for cell
   textNode1 = document.createTextNode(title);
-  textNode2 = document.createTextNode(shortDesc + "...");
+  textNode2 = document.createTextNode(shortDesc);
   textNode3 = document.createTextNode(date);
   textNode4 = document.createTextNode("bob");
 
@@ -394,7 +399,20 @@ function trelloGet(url){
     });
   });
 }
-//////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+window.addEventListener("resize", function(){
+  var openButton = document.getElementById("leftOpenButton");
+    if(window.innerWidth < 1200)
+    {
+      closeLeft();
+      $(openButton).prop("disabled", true);
+    }
+    else{
+      $(openButton).prop("disabled", false);
+    }
+});
+
 /*Refresh the page*/
 function refresh(){
   console.log("Refreshing");
@@ -442,7 +460,38 @@ function closeLeft(){
   var sideBar = document.getElementById("leftSidebar");
   var openButton = document.getElementById("leftOpenButton");
   sideBar.style.display = "none";
-  sideBar.style.width = "0%";
+  body.style.width = "100%";
   body.style.marginLeft = "0%";
   openButton.style.opacity = 1;
+}
+
+$('td').click(function() {
+    // alert('Click!');
+
+    var newCard = document.createElement('div');
+
+    /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
+    newCard.innerHTML = '<div class="panel panel-default">' +
+    '<div class="panel-heading">' +
+    '<h3 class="panel-title">Ticket #1234 ' +
+    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
+  '</h3></div>' +
+    '<div class="panel-body">Ticket Info' +
+    '</div></div>';
+
+    document.getElementById("card-list").appendChild(newCard);
+});
+
+$("#openInfo").click(function(e) {
+  e.preventDefault();
+  $(".info-panel").toggleClass("toggled");
+});
+
+$("#clearBtn").click(function() {
+  $('#card-list').empty();
+});
+
+function delCard()
+{
+  alert('Haven\'t add functionality yet!');
 }
