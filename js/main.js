@@ -347,8 +347,15 @@ function trelloGet(url){
 ////////////////////////////////////////////////////////////////////////////////
 
 window.addEventListener("resize", function(){
+  var openButton = document.getElementById("leftOpenButton");
     if(window.innerWidth < 1200)
+    {
       closeLeft();
+      $(openButton).prop("disabled", true);
+    }
+    else{
+      $(openButton).prop("disabled", false);
+    }
 });
 
 /*Refresh the page*/

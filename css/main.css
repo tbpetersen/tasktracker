@@ -8,14 +8,15 @@ Author's custom styles
 		left: 810px;
 		min-width: 600px;
 	}
-  #leftOpenButton{
-    cursor: not-allowed;
-  }
+}
+@media only screen and (max-width: 1200px) {
+	#leftOpenButton{
+		cursor: not-allowed;
+	}
 }
 @media only screen and (max-width: 950px) {
 	#app-title{
-		position: absolute;
-		/*left: 999999999px;*/
+		visibility: hidden;
 	}
 	#table{
 		min-width: 920px;
@@ -50,24 +51,6 @@ tfoot th, tfoot td {
 	min-width: 240px;
 }
 
-#searchBar{
-  position: absolute;
-  top: 2.5%;
-  left: 37.5%;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-#searchButton{
-  float: right;
-  height: 28px;
-  top: -.1px;
-  color: #902020;
-  background-color: #dd6367;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border: none;
-}
-
 #leftCloseButton{
   border: none;
   background-color: transparent;
@@ -88,7 +71,6 @@ tfoot th, tfoot td {
 #closeIcon{
   font-size: 70%;
 }
-
 
 #leftOpenButton{
   position: fixed;
