@@ -1,5 +1,5 @@
 const ZEN_AUTH_URL = "https://sdsc.zendesk.com/oauth/authorizations/new?response_type=token&client_id=client_services_tool_dev&scope=read%20write";
-const TRE_AUTH_URL = "https://trello.com/1/authorize?key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost&name=Tasktracker";
+const TRE_AUTH_URL = "https://trello.com/1/authorize?key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost";
 
 const ZEN_API_URL = "https://sdsc.zendesk.com/api/v2/";
 const TRE_API_URL = "https://trello.com/1/";
@@ -474,9 +474,19 @@ function openLeft(){
   openButton.style.opacity = 0;
 }
 
-$('td').click(function() {
-    // alert('Click!');
+/*Close the filter pannel and move the screen with it.*/
+function closeLeft(){
+  var body = document.getElementById("main");
+  var sideBar = document.getElementById("leftSidebar");
+  var openButton = document.getElementById("leftOpenButton");
+  sideBar.style.display = "none";
+  body.style.width = "100%";
+  body.style.marginLeft = "0%";
+  openButton.style.opacity = 1;
+}
 
+$(".grid").on("click", "td", function(event) {
+    event.preventDefault();
     var newCard = document.createElement('div');
 
     /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
@@ -490,6 +500,21 @@ $('td').click(function() {
 
     document.getElementById("card-list").appendChild(newCard);
 });
+
+// $('td').click(function() {
+//     var newCard = document.createElement('div');
+
+//     /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
+//     newCard.innerHTML = '<div class="panel panel-default">' +
+//     '<div class="panel-heading">' +
+//     '<h3 class="panel-title">Ticket #1234 ' +
+//     '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
+//   '</h3></div>' +
+//     '<div class="panel-body">Ticket Info' +
+//     '</div></div>';
+
+//     document.getElementById("card-list").appendChild(newCard);
+// });
 
 $("#openInfo").click(function(e) {
   e.preventDefault();
