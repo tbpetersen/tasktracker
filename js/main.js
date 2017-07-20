@@ -56,7 +56,7 @@ $(document).ready(function(){
   isClosed = false;
 
   trigger.click(function () {
-    hamburger_cross();  
+    hamburger_cross();
   });
 
   function hamburger_cross() {
@@ -64,13 +64,13 @@ $(document).ready(function(){
       trigger.removeClass('is-open');
       trigger.addClass('is-closed');
       isClosed = false;
-    } else {   
+    } else {
       trigger.removeClass('is-closed');
       trigger.addClass('is-open');
       isClosed = true;
     }
   }
-  
+
   $('[data-toggle="offcanvas"]').click(function () {
     $('body').toggleClass('toggled');
   });
@@ -118,7 +118,7 @@ function addRow(tasks, index) {
   var date = new Date(tasks[index].lastModified);
   date = date.toDateString();
   date = date.substring(4);
-  //console.log(date.toDateString());  
+  //console.log(date.toDateString());
 
   table = document.getElementById("table");
 
@@ -169,7 +169,7 @@ function highlightRow() {
 function draggableRows() {
 
   // Drag rows
-  $('#table').sortable();  
+  $('#table').sortable();
 
   // Prevent rows from shrinking while dragging
   var fixHelper = function(e, ui) {
@@ -429,11 +429,7 @@ window.addEventListener("resize", function(){
   var openButton = document.getElementById("leftOpenButton");
     if(window.innerWidth < 1200)
     {
-      closeLeft();
-      $(openButton).prop("disabled", true);
-    }
-    else{
-      $(openButton).prop("disabled", false);
+      // function(){$('body').toggleClass('toggled');};
     }
 });
 
@@ -476,17 +472,6 @@ function openLeft(){
     sideBar.style.display = "block";
     sideBar.style.width = "10%";}, 300);
   openButton.style.opacity = 0;
-}
-
-/*Close the filter pannel and move the screen with it.*/
-function closeLeft(){
-  var body = document.getElementById("main");
-  var sideBar = document.getElementById("leftSidebar");
-  var openButton = document.getElementById("leftOpenButton");
-  sideBar.style.display = "none";
-  body.style.width = "100%";
-  body.style.marginLeft = "0%";
-  openButton.style.opacity = 1;
 }
 
 $('td').click(function() {

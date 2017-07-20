@@ -9,16 +9,13 @@
 		min-width: 1425px;
 		top: 0%;
 	}
-}
-@media only screen and (max-width: 1200px) {
-	#leftOpenButton{
-		cursor: not-allowed;
+	#logo{
+		min-width: 358px;
 	}
 }
+@media only screen and (max-width: 1200px) {
+}
 @media only screen and (max-width: 950px) {
-/*	#table{
-		min-width: 920px;
-	}*/
 }
 
 body {
@@ -127,19 +124,17 @@ th.category {
   -webkit-transition: all 0.5s ease;
   background-color: #1a1a1a;
   height: 100%;
-  positon: fixed;
+  position: fixed;
   top: 0;
   left: -10%;
-  /*left: 220px;*/
-  /*margin-left: -220px;*/
-  /*margin-top: 0px;
-  padding: 0;*/
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   width: 10%;
+	/*min-width: 120px;*/
   z-index: 1;
+	/*margin-right: 5px;*/
 }
 #leftSidebar::-webkit-scrollbar {
  display: none;
