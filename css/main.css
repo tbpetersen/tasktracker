@@ -8,6 +8,9 @@ Author's custom styles
 		left: 810px;
 		min-width: 600px;
 	}
+	#app-title{
+		min-width: 1425px;
+	}
 }
 @media only screen and (max-width: 1200px) {
 	#leftOpenButton{
@@ -15,9 +18,6 @@ Author's custom styles
 	}
 }
 @media only screen and (max-width: 950px) {
-	#app-title{
-		visibility: hidden;
-	}
 	#table{
 		min-width: 920px;
 	}
@@ -215,9 +215,9 @@ tfoot th, tfoot td {
 
 #app-title
 {
+	text-align: center;
   position: absolute;
-  left: 50%;
-  max-height: 100%;
+	width: 100%;
 }
 
 #app-title h1
