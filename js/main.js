@@ -1,43 +1,3 @@
-/* Prevent rows from shrinking when dragged */
-var maxWidth = 0;
-$('#table td:nth-child(3)').each(function(){
-    if(maxWidth < $(this).width())
-        maxWidth = $(this).width();
-});
-
-$('#table td:nth-child(3)').css('width',maxWidth);
-
-var fixHelperModified = function(e, tr) {
-    var $originals = tr.children();
-    var $helper = tr.clone();
-    $helper.children().each(function(index) {
-        $(this).width($originals.eq(index).width()+17); // 16 - 18
-    });
-    return $helper;
-},
-    updateIndex = function(e, ui) {
-        $('td.index', ui.item.parent()).each(function (i) {
-            $(this).html(i + 1);
-        });
-    };
-
-$("#table tbody").sortable({
-    helper: fixHelperModified,
-    stop: updateIndex
-}).disableSelection();
-
-/*var fixHelper = function(e, ui) {
-    ui.children().each(function() {
-        $(this).width($(this).width());
-    });
-    return ui;
-};
-
-$("#sort tbody").sortable({
-    helper: fixHelper
-}).disableSelection();
-*/
-//=======
 const ZEN_AUTH_URL = "https://sdsc.zendesk.com/oauth/authorizations/new?response_type=token&client_id=client_services_tool_dev&scope=read%20write";
 const TRE_AUTH_URL = "https://trello.com/1/authorize?key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost";
 
@@ -96,11 +56,104 @@ $(document).ready(function(){
     getCardsAndTickets().then(function(cardsAndTickets){
       console.log(cardsAndTickets);
       user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
+
+      // Make/Populate table
+      populateTable(user.tasks);
       console.log(user.tasks);
     });
   });
 
 });
+
+function populateTable(tasks) {
+  var table = document.getElementById("table");
+  for(var i = 0; i < tasks.length; i++) {
+    addRow(tasks, i);
+  }
+
+  // Make new rows draggable
+  draggableRows();
+}
+
+
+function addRow(tasks, index) {
+
+  // Get title of task
+  var title = tasks[index].name;
+
+  // Get description's first 140 characters
+  var shortDesc = (tasks[index].desc).substring(0, 140);
+  //console.log(shortDesc.substring(0,140));
+
+  // Get last modified date from timestamp
+  var date = new Date(tasks[index].lastModified);
+  date = date.toDateString();
+  date = date.substring(4);
+  //console.log(date.toDateString());  
+
+  table = document.getElementById("table");
+
+  //create row and cell element
+  row = document.createElement("tr");
+  titleCell = document.createElement("td");
+  descCell = document.createElement("td");
+  modCell = document.createElement("td");
+  catCell = document.createElement("td");
+
+  // text for cell
+  textNode1 = document.createTextNode(title);
+  textNode2 = document.createTextNode(shortDesc + "...");
+  textNode3 = document.createTextNode(date);
+  textNode4 = document.createTextNode("bob");
+
+  // append text to cell
+  titleCell.appendChild(textNode1);
+  descCell.appendChild(textNode2);
+  modCell.appendChild(textNode3);
+  catCell.appendChild(textNode4);
+
+  // append text to row
+  row.appendChild(titleCell);
+  row.appendChild(descCell);
+  row.appendChild(modCell);
+  row.appendChild(catCell);
+
+  // append row to table/body
+  table.appendChild(row);
+
+  // highlight rows on hover
+  highlightRow();
+}
+
+function highlightRow() {
+
+  $("tr").not(':first').hover(
+    function () {
+      $(this).css("background","#dd6367");
+    },
+    function () {
+      $(this).css("background","");
+    }
+  );
+}
+
+function draggableRows() {
+
+  // Drag rows
+  $('#table').sortable();  
+
+  // Prevent rows from shrinking while dragging
+  var fixHelper = function(e, ui) {
+    ui.children().each(function() {
+      $(this).width($(this).width());
+    });
+    return ui;
+  };
+
+  $('#table').sortable({
+    helper: fixHelper
+  }).disableSelection();
+}
 
 function setupPage(){
   if(! redirectToHTTPS()){
