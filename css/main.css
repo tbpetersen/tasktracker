@@ -133,6 +133,7 @@ tfoot th, tfoot td {
 /* Side info panel */
 .info-panel
 {
+  /*max-height: 100%;*/
   height: 100%;
   width: 20%;
   position: fixed;
@@ -153,26 +154,29 @@ tfoot th, tfoot td {
 /* Card list wrapper */
 .info-panel .info-cards
 {
+  width: 100%;
   height: 90%;
   overflow-y: auto;
 }
 
 /* Card list header */
-.info-panel .info-header
+.info-header
 {
-  position: relative;
-  /*top: -20px;*/
+  margin: 0;
   background-color: #ccc;
-  height: 5%; 
-  display: flex; /* Align header title center */
+  height: 5%;
+  width: 100%;
+
+  /*display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center;*/
 }
 
 .info-panel .info-header h2
 {
   margin: 0;
   font-weight: bold;
+
   /* Align right */
   /*position: absolute;
   top: 50%;
@@ -249,21 +253,3 @@ tfoot th, tfoot td {
   font-weight: bold;
   font-family: "Lucida Console"; /* Just an example of changing font family - not committed */
 }
-
-/* Position and style the close button (top right corner) */
-/*.info-panel .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}*/
-
-/*.info-panel .info-header .divider
-{ 
-    margin: 25px 0;
-    height: 1px;
-    border: 0;
-    background: black;
-    background: -webkit-gradient(linear, 0 0, 100% 0, from(white), to(white), color-stop(50%, black));
-}*/
