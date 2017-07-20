@@ -51,6 +51,7 @@ class Task {
 
 
 $(document).ready(function(){
+
   setupPage();
   $('table tbody').sortable();
   setIDs().then(function(){
@@ -61,6 +62,31 @@ $(document).ready(function(){
       // Make/Populate table
       populateTable(user.tasks);
       console.log(user.tasks);
+// Hamburger menu toggle
+  var trigger = $('.hamburger'),
+  isClosed = false;
+
+ trigger.click(function () {
+    hamburger_cross();  
+ });
+
+ function hamburger_cross() {
+    if (isClosed == true) {
+      trigger.removeClass('is-open');
+      trigger.addClass('is-closed');
+      isClosed = false;
+    } else {  
+      trigger.removeClass('is-closed');
+      trigger.addClass('is-open');
+      isClosed = true;
+    }
+  }
+  
+ $('[data-toggle="offcanvas"]').click(function () {
+    $('body').toggleClass('toggled');
+  });
+
+ $('.dropdown-toggle').dropdown();
     });
   });
 
