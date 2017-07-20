@@ -485,20 +485,26 @@ function closeLeft(){
   openButton.style.opacity = 1;
 }
 
-$(".grid").on("click", "td", function(event) {
-    event.preventDefault();
-    var newCard = document.createElement('div');
+$(".grid").on("click", "td", function(e) {
+  event.preventDefault();
+  var newCard = document.createElement('div');
+  var isClosed = true;
 
-    /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
-    newCard.innerHTML = '<div class="panel panel-default">' +
-    '<div class="panel-heading">' +
-    '<h3 class="panel-title">Ticket #1234 ' +
-    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
+  if (isClosed == true) {
+    isClosed = false;
+    $(".info-panel").addClass("toggled");
+  }
+
+  /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
+  newCard.innerHTML = '<div class="panel panel-default">' +
+  '<div class="panel-heading">' +
+  '<h3 class="panel-title">Ticket #1234 ' +
+  '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
   '</h3></div>' +
-    '<div class="panel-body">Ticket Info' +
-    '</div></div>';
+  '<div class="panel-body">Ticket Info' +
+  '</div></div>';
 
-    document.getElementById("card-list").appendChild(newCard);
+  document.getElementById("card-list").appendChild(newCard);
 });
 
 // $('td').click(function() {
