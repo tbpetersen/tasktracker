@@ -489,9 +489,8 @@ function closeLeft(){
   openButton.style.opacity = 1;
 }
 
-$('td').click(function() {
-    // alert('Click!');
-
+$(".grid").on("click", "td", function(event) {
+    event.preventDefault();
     var newCard = document.createElement('div');
 
     /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
@@ -505,6 +504,21 @@ $('td').click(function() {
 
     document.getElementById("card-list").appendChild(newCard);
 });
+
+// $('td').click(function() {
+//     var newCard = document.createElement('div');
+
+//     /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
+//     newCard.innerHTML = '<div class="panel panel-default">' +
+//     '<div class="panel-heading">' +
+//     '<h3 class="panel-title">Ticket #1234 ' +
+//     '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
+//   '</h3></div>' +
+//     '<div class="panel-body">Ticket Info' +
+//     '</div></div>';
+
+//     document.getElementById("card-list").appendChild(newCard);
+// });
 
 $("#openInfo").click(function(e) {
   e.preventDefault();
