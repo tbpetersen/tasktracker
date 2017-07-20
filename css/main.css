@@ -137,7 +137,6 @@ tfoot th, tfoot td {
 .info-panel .info-header
 {
   position: relative;
-  /*top: -20px;*/
   background-color: #ccc;
   height: 5%;
   display: flex; /* Align header title center */
@@ -149,11 +148,6 @@ tfoot th, tfoot td {
 {
   margin: 0;
   font-weight: bold;
-  /* Align right */
-  /*position: absolute;
-  top: 50%;
-  right: 0%;
-    transform: translate(0, -50%)*/
 }
 
 .info-panel #info-footer .btn-block
