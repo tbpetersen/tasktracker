@@ -57,7 +57,6 @@ $(document).ready(function(){
 
   trigger.click(function () {
     hamburger_cross();
-    console.log(isClosed);
   });
 
   function hamburger_cross() {
@@ -436,14 +435,12 @@ window.addEventListener("resize", function(){
         $('body').toggleClass('toggled');
         $('.hamburger').removeClass('is-open');
         $('.hamburger').addClass('is-closed');
-        console.log(isClosed);
       }
     }
 });
 
 /*Refresh the page*/
 function refresh(){
-  console.log("Refreshing");
   location.reload();
 }
 
@@ -491,6 +488,13 @@ function closeLeft(){
   body.style.width = "100%";
   body.style.marginLeft = "0%";
   openButton.style.opacity = 1;
+}
+
+function goToZendesk(){
+  window.open("https://www.zendesk.com");
+}
+function goToTrello(){
+  window.open("https://www.trello.com");
 }
 
 $(".grid").on("click", "td", function(e) {
@@ -542,4 +546,16 @@ $("#clearBtn").click(function() {
 function delCard()
 {
   alert('Haven\'t add functionality yet!');
+}
+
+function sort(){
+  if(document.getElementsByName("sortBy")[0].value == "a-z")
+    sortAlphabet();
+  else if (document.getElementsByName("sortBy")[0].value == "z-a")
+    sortAlphabetReverse();
+  else if(document.getElementsByName("sortBy")[0].value == "dueDate")
+    sortDate();
+  // else if(document.getElementsByName("sortBy")[0].value == "startDate")
+  else if(document.getElementsByName("sortBy")[0].value == "status")
+    sortStatus();
 }

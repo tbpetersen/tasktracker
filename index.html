@@ -48,12 +48,11 @@
       <div class="collapse navbar-collapse" id="navbar-links">
         <ul class="nav navbar-nav">
           <li><a class="btn" id="openInfo">View Tickets</a></li>
-          <li><a href="#">Link</a></li>
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Links <span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
+              <li><a href="#" onclick="goToTrello()">Trello</a></li>
+              <li><a href="#" onclick="goToZendesk()">Zendesk</a></li>
               <li><a href="#">Something else here</a></li>
               <li role="separator" class="divider"></li>
               <li><a href="#">Separated link</a></li>
@@ -118,17 +117,15 @@
 
   <div class="main" id="main">
     <div class="container-fluid">
-      <form action="js/main.js" id="sort">
         Sort by
-        <select name="sortBy">
-          <option value="a-z" onclick="sortAlphabet()">A-Z</option>
-          <option value="z-a" onclick="sortAlphabetReverse()">Z-A</option>
-          <option value="dueDate" onclick="sortDate()">Due Date</option>
-          <option value="startDate" onclick="sortDate()">Start Date</option>
-          <option value="startDate" onclick="sortStatus()">Status</option>
+        <select name="sortBy" onclick="sort()">
+          <option value=""></option>
+          <option value="a-z">A-Z</option>
+          <option value="z-a">Z-A</option>
+          <option value="dueDate">Due Date</option>
+          <option value="startDate">Start Date</option>
+          <option value="status">Status</option>
         </select>
-        <input type="submit">
-      </form>
 
       <table id="table" class="grid table table-bordered table-hover">
         <thead>
