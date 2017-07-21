@@ -9,6 +9,7 @@ const TRE_APP_KEY = "8886ef1a1bc5ad08caad020068a3f9a2";
 var zendeskToken = "";
 var trelloToken = "";
 var user;
+var isClosed = false;
 
 
 class Task {
@@ -64,11 +65,11 @@ Task.prom = new Array();
 
 $(document).ready(function(){
   // Hamburger menu toggle
-  var trigger = $('.hamburger'),
-  isClosed = false;
+  var trigger = $('.hamburger');
 
   trigger.click(function () {
     hamburger_cross();
+    console.log(isClosed);
   });
 
   function hamburger_cross() {
@@ -460,7 +461,14 @@ window.addEventListener("resize", function(){
   var openButton = document.getElementById("leftOpenButton");
     if(window.innerWidth < 1200)
     {
-      // function(){$('body').toggleClass('toggled');};
+      if($('body.toggled').css("padding") != null)
+      {
+        isClosed = false;
+        $('body').toggleClass('toggled');
+        $('.hamburger').removeClass('is-open');
+        $('.hamburger').addClass('is-closed');
+        console.log(isClosed);
+      }
     }
 });
 
@@ -516,20 +524,26 @@ function closeLeft(){
   openButton.style.opacity = 1;
 }
 
-$(".grid").on("click", "td", function(event) {
-    event.preventDefault();
-    var newCard = document.createElement('div');
+$(".grid").on("click", "td", function(e) {
+  event.preventDefault();
+  var newCard = document.createElement('div');
+  var isClosed = true;
 
-    /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
-    newCard.innerHTML = '<div class="panel panel-default">' +
-    '<div class="panel-heading">' +
-    '<h3 class="panel-title">Ticket #1234 ' +
-    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
+  if (isClosed == true) {
+    isClosed = false;
+    $(".info-panel").addClass("toggled");
+  }
+
+  /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
+  newCard.innerHTML = '<div class="panel panel-default">' +
+  '<div class="panel-heading">' +
+  '<h3 class="panel-title">Ticket #1234 ' +
+  '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
   '</h3></div>' +
-    '<div class="panel-body">Ticket Info' +
-    '</div></div>';
+  '<div class="panel-body">Ticket Info' +
+  '</div></div>';
 
-    document.getElementById("card-list").appendChild(newCard);
+  document.getElementById("card-list").appendChild(newCard);
 });
 
 // $('td').click(function() {
