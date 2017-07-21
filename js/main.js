@@ -555,14 +555,25 @@ function delCard()
 }
 
 function sort(){
-  if(document.getElementsByName("sortBy")[0].value == "a-z")
+  switch(document.getElementsByName("sortBy")[0].value){
+   case "a-z":
     sortAlphabet();
-  else if (document.getElementsByName("sortBy")[0].value == "z-a")
+    break;
+
+   case "z-a":
     sortAlphabetReverse();
-  else if(document.getElementsByName("sortBy")[0].value == "dueDate")
+    break;
+
+   case "dueDate":
     sortDueDate();
-  else if(document.getElementsByName("sortBy")[0].value == "startDate")
+    break;
+
+   case "startDate":
     sortStartDate();
-  else if(document.getElementsByName("sortBy")[0].value == "status")
+    break;
+
+   case "status":
     sortStatus();
+    break;
+  }
 }

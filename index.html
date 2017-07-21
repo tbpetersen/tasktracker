@@ -117,7 +117,8 @@
 
   <div class="main" id="main">
     <div class="container-fluid">
-        Sort by
+        <div id=sort>
+          Sort by
         <select name="sortBy" onclick="sort()">
           <option value=""></option>
           <option value="a-z">A-Z</option>
@@ -126,6 +127,7 @@
           <option value="startDate">Start Date</option>
           <option value="status">Status</option>
         </select>
+      </div>
 
       <table id="table" class="grid table table-bordered table-hover">
         <thead>
