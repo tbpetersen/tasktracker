@@ -456,8 +456,14 @@ function sortAlphabetReverse(){
 }
 
 /*Sort the data by date*/
-function sortDate(){
+function sortStartDate(){
   console.log("Sorting Cronologically.");
+
+}
+
+/*Sort the data by due date*/
+function sortDueDate(){
+  console.log("Sorting by due date.");
 
 }
 
@@ -554,8 +560,9 @@ function sort(){
   else if (document.getElementsByName("sortBy")[0].value == "z-a")
     sortAlphabetReverse();
   else if(document.getElementsByName("sortBy")[0].value == "dueDate")
-    sortDate();
-  // else if(document.getElementsByName("sortBy")[0].value == "startDate")
+    sortDueDate();
+  else if(document.getElementsByName("sortBy")[0].value == "startDate")
+    sortStartDate();
   else if(document.getElementsByName("sortBy")[0].value == "status")
     sortStatus();
 }
