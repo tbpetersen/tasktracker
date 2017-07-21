@@ -9,6 +9,7 @@ const TRE_APP_KEY = "8886ef1a1bc5ad08caad020068a3f9a2";
 var zendeskToken = "";
 var trelloToken = "";
 var user;
+var isClosed = false;
 
 
 class Task {
@@ -52,11 +53,11 @@ class Task {
 
 $(document).ready(function(){
   // Hamburger menu toggle
-  var trigger = $('.hamburger'),
-  isClosed = false;
+  var trigger = $('.hamburger');
 
   trigger.click(function () {
     hamburger_cross();
+    console.log(isClosed);
   });
 
   function hamburger_cross() {
@@ -431,9 +432,11 @@ window.addEventListener("resize", function(){
     {
       if($('body.toggled').css("padding") != null)
       {
+        isClosed = false;
         $('body').toggleClass('toggled');
         $('.hamburger').removeClass('is-open');
         $('.hamburger').addClass('is-closed');
+        console.log(isClosed);
       }
     }
 });
