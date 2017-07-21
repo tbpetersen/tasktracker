@@ -30,11 +30,13 @@ class Task {
       this.desc = data.desc;
       this.lastModified = this.getTimeStampFromString(data.dateLastActivity);
       this.createdAt = this.getTrelloCreationTime(this.id);
+      this.setCategory(this,data.idList);
     }else /* Zendesk*/{
       this.name = data.subject;
       this.desc = data.description;
       this.lastModified = this.getTimeStampFromString(data.updated_at);
       this.createdAt = this.getTimeStampFromString(data.created_at);
+      this.category = data.status;
     }
   }
 
@@ -47,7 +49,17 @@ class Task {
     let date = new Date(timeString);
     return date.getTime();
   }
+
+  setCategory(task, listID){
+      let prom = trelloGet("lists/" + listID);
+      Task.prom.push(prom);
+      prom.then(function(listData){
+        task.category = listData.name;
+      })
+    }
 }
+Task.prom = new Array();
+
 
 
 $(document).ready(function(){
@@ -80,11 +92,11 @@ $(document).ready(function(){
   setIDs().then(function(){
     getCardsAndTickets().then(function(cardsAndTickets){
       console.log(cardsAndTickets);
-      user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
-
-      // Make/Populate table
-      populateTable(user.tasks);
-      console.log(user.tasks);
+      createTasksFromCardsAndTickets(cardsAndTickets).then(function(){
+        // Make/Populate table
+        populateTable(user.tasks);
+        console.log(user.tasks);
+      });
     });
   });
 
@@ -120,6 +132,8 @@ function addRow(tasks, index) {
   date = date.substring(4);
   //console.log(date.toDateString());
 
+  var cat = tasks[index].category;
+
   table = document.getElementById("table");
 
   //create row and cell element
@@ -133,7 +147,7 @@ function addRow(tasks, index) {
   textNode1 = document.createTextNode(title);
   textNode2 = document.createTextNode(shortDesc);
   textNode3 = document.createTextNode(date);
-  textNode4 = document.createTextNode("bob");
+  textNode4 = document.createTextNode(cat);
 
   // append text to cell
   titleCell.appendChild(textNode1);
@@ -274,18 +288,29 @@ function setIDs(){
 
 function setTrelloID(){
   return new Promise(function(resolve, reject){
-    trelloGet("members/me").then(function(trelloData){
+    trelloGet("members/me")
+
+    .then(function(trelloData){
       user.trello.id = trelloData.id;
       resolve();
+    })
+
+    .catch(function(trelloData){
+      reject(trelloData);
     });
   });
 }
 
 function setZendeskID(){
   return new Promise(function(resolve, reject){
-    zendeskGet("users/me").then(function(zendeskData){
+    zendeskGet("users/me")
+    .then(function(zendeskData){
       user.zendesk.id = zendeskData.user.id;
       resolve();
+    })
+
+    .catch(function(zendeskData){
+      reject(zendeskData);
     });
   });
 }
@@ -307,8 +332,17 @@ function getTrelloCards(){
       getCardsFromBoard(getBoardsIDs(boards)).then(function(cards){
         getUsersCards(cards).then(function(usersCards){
           resolve(usersCards);
+        })
+        .catch(function(getUsersCardsFailed){
+          reject(getUsersCardsFailed);
         });
+      })
+      .catch(function(getCardsFromBoardsFailed){
+        reject(getCardsFromBoardsFailed);
       });
+    })
+    .catch(function(getTrelloBoardsFailed){
+      reject(getTrelloBoardsFailed);
     });
   });
 }
@@ -340,41 +374,37 @@ function getCardsFromBoard(boardsIDs){
         }
       }
       resolve(allCards);
+    })
+    .catch(function(dataBoardPromisesFailed){
+      reject(dataBoardPromisesFailed);
     });
   });
 }
 
 function getUsersCards(cards){
-  // You need to know the user id. If you have it, use it. Otherwise, get it
-  // using the API
   return new Promise(function(resolve, reject){
-    if(user.trello.id != undefined){
-      let id = user.trello.id;
-      let usersCards = new Array();
-      for(let i = 0; i < cards.length; i++){
-        for(let j = 0; j < cards[i].idMembers.length; j++){
-          if(cards[i].idMembers[j] == id){
-            usersCards.push(cards[i]);
-          }
+    if(user == null){
+       reject("user not instantiated");
+    }
+    if(user.trello == null){
+       reject("user.trello not instantiated");
+    }
+    if(user.trello.id == null){
+      reject("Trello ID not set");
+    }
+    let id = user.trello.id;
+    let usersCards = new Array();
+    for(let i = 0; i < cards.length; i++){
+      for(let j = 0; j < cards[i].idMembers.length; j++){
+        if(cards[i].idMembers[j] == id){
+          usersCards.push(cards[i]);
         }
       }
-       resolve(usersCards);
-    }else{
-      trelloGet("members/me").then(function(meData){
-        let id = meData.id;
-        let usersCards = new Array();
-        for(let i = 0; i < cards.length; i++){
-          for(let j = 0; j < cards[i].idMembers.length; j++){
-            if(cards[i].idMembers[j] == id){
-              usersCards.push(cards[i]);
-            }
-          }
-        }
-         resolve(usersCards);
-      });
     }
+    resolve(usersCards);
   });
 }
+
 
 function getZendeskTickets(){
   //return zendeskGet("search.json?query=type:ticket status<solved assignee_id:" + user.zendesk.id);
@@ -387,8 +417,9 @@ function createTasksFromCardsAndTickets(cardsAndTickets){
     for(let j = 0; j < cardsAndTickets[i].length; j++){
       tasks.push(new Task(cardsAndTickets[i][j], i));
     }
+    user.tasks = tasks;
   }
-  return tasks;
+  return Promise.all(Task.prom);
 }
 
 function zendeskGet(url){
