@@ -13,9 +13,11 @@
 		min-width: 358px;
 	}
 }
-@media only screen and (max-width: 1200px) {
-}
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 306px) {
+	#sort{
+		position: relative;
+		left: 25px;
+	}
 }
 
 html, body {
@@ -78,7 +80,7 @@ th.category {
 
 #sort{
   float: right;
-	/*min-width: 240px;*/
+	min-width: 258px;
 }
 
 #leftCloseButton{
