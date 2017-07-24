@@ -696,6 +696,17 @@ function goToTrello(){
   window.open("https://www.trello.com");
 }
 
+function toggleInfoBtnText(btn) {
+  if (btn.text() === "Open Ticket Panel")
+  {
+    btn.text("Close Ticket Panel");
+  }
+  else
+  {
+    btn.text("Open Ticket Panel");
+  }
+}
+
 $(".grid").on("click", "td", function(e) {
   event.preventDefault();
   var newCard = document.createElement('div');
@@ -704,6 +715,7 @@ $(".grid").on("click", "td", function(e) {
   if (isClosed == true) {
     isClosed = false;
     $(".info-panel").addClass("toggled");
+    $("#openInfo").text("Close Ticket Panel");
   }
 
   /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
@@ -736,6 +748,7 @@ $(".grid").on("click", "td", function(e) {
 $("#openInfo").click(function(e) {
   e.preventDefault();
   $(".info-panel").toggleClass("toggled");
+  toggleInfoBtnText($(this));
 });
 
 $("#clearBtn").click(function() {
