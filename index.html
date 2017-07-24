@@ -2,43 +2,48 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
 <head>
   <title>Zello</title>
 
- <!-- Mobile Compatibility -->
+  <!-- Mobile Compatibility -->
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
- <!-- Bootstrap Core CSS -->
+  <!-- Bootstrap Core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
- <!-- Custom CSS -->
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="css/main.css">
 
- <!-- Additiona Font Pack -->
-  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <!-- Additiona Font Pack -->
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 
 
 <body>
   <nav class="navbar navbar-default">
     <div class="container-fluid">
-      <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
+      <!-- Filter sidebar button -->
+      <!-- <button class="w3-button w3-xlarge" onclick="openLeft()" id="leftOpenButton">
         <span class="glyphicon glyphicon-menu-hamburger"></span>
+      </button> -->
+      <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
+        <span class="hamb-top"></span>
+        <span class="hamb-middle"></span>
+        <span class="hamb-bottom"></span>
       </button>
 
       <div class="navbar-header">
-          <a class="navbar-brand" href="index.html"><img src="images/logo.jpg" id=logo></a>
+          <a class="navbar-brand" href="index.html"><img src="images/logo.jpg" id=logo alt="SDSC"></a>
       </div>
 
-      <div id="app-title">
-        <h1>Zello</h1>
-      </div>
+      <h1 id="app-title">Zello</h1>
 
       <!-- Nav links -->
       <div class="collapse navbar-collapse" id="navbar-links">
@@ -62,7 +67,7 @@
           <div class="form-group">
             <input type="text" class="form-control" placeholder="Search">
           </div>
-          <button type="submit" class="btn btn-default">
+          <button type="submit" class="btn btn-default" id="searchBtn">
           <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
           </button>
         </form>
@@ -73,9 +78,7 @@
 
   <!-- Info panel -->
   <div class="info-panel">
-    <!-- <div class="info-header"> -->
-      <h2 class="info-header">Ticket Information</h2>
-    <!-- </div> -->
+    <h2 id="info-header">Ticket Information</h2>
 
     <div class="info-cards" id="card-list">
       <div class="panel panel-default" id="card1">
@@ -96,12 +99,9 @@
       </div>
     </div>
 
-    <div id="info-footer">
-      <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
-    </div>
+    <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
   </div>
   <!-- End of info panel -->
-
 
   <!-- FILTER SIDEBAR -->
   <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
@@ -115,9 +115,8 @@
     <button class="w3-bar-item w3-button">Completed</button>
     <button class="w3-bar-item w3-button">Blocked</button>
   </div>
-
-
   <!-- END FILTER SIDEBAR -->
+
   <div class="main" id="main">
     <div class="container-fluid">
       <form action="js/main.js" id="sort">
@@ -132,7 +131,8 @@
         <input type="submit">
       </form>
 
-      <table id="table" class="grid table table-bordered table-hover">
+      <!--
+      <table id="table" class="table table-bordered table-hover">
         <thead>
           <tr>
           <th class="title">Title/Subject</th>
@@ -142,6 +142,7 @@
           </tr>
         </thead>
       </table>
+      -->
     </div>
   </div>
 
@@ -149,7 +150,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
   <script type="text/javascript" src="js/main.js"></script>
-
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>
 

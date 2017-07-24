@@ -52,6 +52,30 @@ class Task {
 
 $(document).ready(function(){
 
+  // Hamburger menu toggle
+  var trigger = $('.hamburger'),
+  isClosed = false;
+
+  trigger.click(function () {
+    hamburger_cross();  
+  });
+
+  function hamburger_cross() {
+    if (isClosed == true) {
+      trigger.removeClass('is-open');
+      trigger.addClass('is-closed');
+      isClosed = false;
+    } else {   
+      trigger.removeClass('is-closed');
+      trigger.addClass('is-open');
+      isClosed = true;
+    }
+  }
+  
+  $('[data-toggle="offcanvas"]').click(function () {
+    $('body').toggleClass('toggled');
+  });
+
   setupPage();
   $('table tbody').sortable();
   setIDs().then(function(){
@@ -60,33 +84,10 @@ $(document).ready(function(){
       user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
       // Make/Populate table
-      populateTable(user.tasks);
-      console.log(user.tasks);
-// Hamburger menu toggle
-  var trigger = $('.hamburger'),
-  isClosed = false;
+      //populateTable(user.tasks);
 
- trigger.click(function () {
-    hamburger_cross();  
- });
-
- function hamburger_cross() {
-    if (isClosed == true) {
-      trigger.removeClass('is-open');
-      trigger.addClass('is-closed');
-      isClosed = false;
-    } else {  
-      trigger.removeClass('is-closed');
-      trigger.addClass('is-open');
-      isClosed = true;
-    }
-  }
-  
- $('[data-toggle="offcanvas"]').click(function () {
-    $('body').toggleClass('toggled');
-  });
-
- $('.dropdown-toggle').dropdown();
+      createTable(user.tasks);
+      //console.log(document.getElementById("table").id);
     });
   });
 
@@ -96,12 +97,73 @@ function populateTable(tasks) {
   var table = document.getElementById("table");
   for(var i = 0; i < tasks.length; i++) {
     addRow(tasks, i);
+
   }
+
+  // assign IDs to rows
+  assignIDtoRows();
+
+  // THIS IS HOW YOU ACCESS AN INDIVIDUAL CELL IN THE TABLE
+  //console.log(document.getElementById("table").rows[2].cells.item(3).innerHTML);
 
   // Make new rows draggable
   draggableRows();
 }
 
+function createTable(tasks) {
+  var table = document.createElement("TABLE");
+  document.body.appendChild(table);
+
+  table.setAttribute("id", "table");
+
+  table = document.getElementById("table");
+
+  //create row and cell element
+  row = document.createElement("tr");
+  titleCell = document.createElement("th");
+  descCell = document.createElement("th");
+  modCell = document.createElement("th");
+  catCell = document.createElement("th");
+
+  row.setAttribute("id", "firstRow");
+  titleCell.setAttribute("id", "titleCell");
+  descCell.setAttribute("id", "descCell");
+  modCell.setAttribute("id", "modCell");
+  catCell.setAttribute("id", "catCell");
+
+  // text for cell
+  textNode1 = document.createTextNode("Title");
+  textNode2 = document.createTextNode("Description");
+  textNode3 = document.createTextNode("Last Modified");
+  textNode4 = document.createTextNode("Category");
+
+  // append text to cell
+  titleCell.appendChild(textNode1);
+  descCell.appendChild(textNode2);
+  modCell.appendChild(textNode3);
+  catCell.appendChild(textNode4);
+
+  // append text to row
+  row.appendChild(titleCell);
+  row.appendChild(descCell);
+  row.appendChild(modCell);
+  row.appendChild(catCell);
+
+
+  // append row to table/body
+  table.appendChild(row);
+
+
+  populateTable(tasks);
+
+  document.getElementById("titleCell").style.textAlign = "center";
+  document.getElementById("descCell").style.textAlign = "center";
+  document.getElementById("modCell").style.textAlign = "center";
+  document.getElementById("catCell").style.textAlign = "center";
+
+  document.getElementById("modCell").style.width = "10%";
+  document.getElementById("catCell").style.width = "10%";
+}
 
 function addRow(tasks, index) {
 
@@ -154,6 +216,14 @@ function addRow(tasks, index) {
 
   // highlight rows on hover
   highlightRow();
+}
+
+function assignIDtoRows() {
+  var rows = document.getElementById("table").rows;
+  for(var i = 0; i < rows.length; ++i) {
+    document.getElementById("table").rows[i].id = i;
+    //console.log(rows[i]);
+  }
 }
 
 function highlightRow() {
@@ -260,11 +330,11 @@ function getTrelloToken(){
 }
 
 function redirectToTrelloLogin(){
-  window.location.href = TRE_AUTH_URL
+  window.location.assign(TRE_AUTH_URL);
 }
 
 function redirectToZendeskLogin(){
-  window.location.href = ZEN_AUTH_URL;
+  window.location.assign(ZEN_AUTH_URL);
 }
 
 function setIDs(){
