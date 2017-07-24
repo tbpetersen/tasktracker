@@ -99,9 +99,6 @@ $(document).ready(function(){
       });
     });
   });
-
-}
-
 });
 
 function populateTable(tasks) {
@@ -791,5 +788,85 @@ function sort(){
     case "lastModifiedReversed":
       sortlastModifiedReversed();
       break;
+  }
+}
+
+function filterNotStared(){
+  var table, i;
+  table = document.getElementById("table");
+  rows = table.getElementsByTagName("TR");
+  var currentRow;
+  for (i = 1; i < (rows.length); i++) {
+    currentRow = rows[i]
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Not Started")
+    {
+      currentRow.style.visibility = "hidden";
+    }else{
+      currentRow.style.visibility = "visible";
+    }
+  }
+}
+
+function filterInProgress(){
+  var table, i;
+  table = document.getElementById("table");
+  rows = table.getElementsByTagName("TR");
+  var currentRow;
+  for (i = 1; i < (rows.length); i++) {
+    currentRow = rows[i]
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "In Progress")
+    {
+      currentRow.style.visibility = "hidden";
+    }else{
+      currentRow.style.visibility = "visible";
+    }
+  }
+}
+
+function filterToReview(){
+  var table, i;
+  table = document.getElementById("table");
+  rows = table.getElementsByTagName("TR");
+  var currentRow;
+  for (i = 1; i < (rows.length); i++) {
+    currentRow = rows[i]
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "To Review")
+    {
+      currentRow.style.visibility = "hidden";
+    }else{
+      currentRow.style.visibility = "visible";
+    }
+  }
+}
+
+function filterCompleted(){
+  var table, i;
+  table = document.getElementById("table");
+  rows = table.getElementsByTagName("TR");
+  var currentRow;
+  for (i = 1; i < (rows.length); i++) {
+    currentRow = rows[i]
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Completed")
+    {
+      currentRow.style.visibility = "hidden";
+    }else{
+      currentRow.style.visibility = "visible";
+    }
+  }
+}
+
+function filterBlocked(){
+  var table, i;
+  table = document.getElementById("table");
+  rows = table.getElementsByTagName("TR");
+  var currentRow;
+  for (i = 1; i < (rows.length); i++) {
+    currentRow = rows[i]
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Blocked")
+    {
+      currentRow.style.visibility = "hidden";
+    }else{
+      currentRow.style.visibility = "visible";
+    }
   }
 }
