@@ -100,6 +100,8 @@ $(document).ready(function(){
     });
   });
 
+}
+
 });
 
 function populateTable(tasks) {
