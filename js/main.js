@@ -475,6 +475,8 @@ function refresh(){
   location.reload();
 }
 
+/* ------------------ SORT FILTERS ------------------ */
+
 /*Sort the data alphabetically*/
 function sortAlphabet(){
   var table, rows, switching, i, x, y, shouldSwitch;
@@ -666,6 +668,10 @@ function sortlastModifiedReversed(){
   }
 }
 
+/* ------------------ END OF SORT FILTERS ------------------ */
+
+/* ------------------ FILTER PANEL ------------------ */
+
 /*Open the filter pannel and move the screen with it.*/
 function openLeft(){
   var body = document.getElementById("main");
@@ -689,6 +695,8 @@ function closeLeft(){
   openButton.style.opacity = 1;
 }
 
+/* ------------------ END OF FILTER PANEL ------------------ */
+
 function goToZendesk(){
   window.open("https://www.zendesk.com");
 }
@@ -696,17 +704,10 @@ function goToTrello(){
   window.open("https://www.trello.com");
 }
 
-function toggleInfoBtnText(btn) {
-  if (btn.text() === "Open Ticket Panel")
-  {
-    btn.text("Close Ticket Panel");
-  }
-  else
-  {
-    btn.text("Open Ticket Panel");
-  }
-}
+/* ------------------ TICKET PANEL ------------------ */
 
+/* Clicking on table rows will open ticket panel view
+   and creates a ticket card */
 $(".grid").on("click", "td", function(e) {
   event.preventDefault();
   var newCard = document.createElement('div');
@@ -745,20 +746,34 @@ $(".grid").on("click", "td", function(e) {
 //     document.getElementById("card-list").appendChild(newCard);
 // });
 
+/* Click event listener for openInfo to toggle the ticket panel view */
 $("#openInfo").click(function(e) {
   e.preventDefault();
   $(".info-panel").toggleClass("toggled");
-  toggleInfoBtnText($(this));
+  
+  if ($(this).text() === "Open Ticket Panel")
+  {
+    $(this).text("Close Ticket Panel");
+  }
+  else
+  {
+    $(this).text("Open Ticket Panel");
+  }
 });
 
+/* Clears all ticket cards inside ticket panel */
 $("#clearBtn").click(function() {
   $('#card-list').empty();
 });
 
+/* Method that will delegate which ticket card is clicked and delete that
+   particular card */
 function delCard()
 {
   alert('Haven\'t add functionality yet!');
 }
+
+/* ------------------ END OF TICKET PANEL ------------------ */
 
 function sort(){
   switch(document.getElementsByName("sortBy")[0].value){
