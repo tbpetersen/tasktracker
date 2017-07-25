@@ -723,6 +723,19 @@ function goToTrello(){
   window.open("https://www.trello.com");
 }
 
+/*-------------------- THEME CHANGE ------------------------------------------*/
+function changeColor(){
+  var body = document.body.style;
+  if(body.backgroundColor = "#white"){
+    body.backgroundColor = "#1E1E1E";
+    body.color = "lightgrey";
+  }else{
+    console.log("hitting else");
+    body.backgroundColor = "#FFF";
+    body.color = "#333";
+  }
+}
+
 /* ------------------ TICKET PANEL ------------------ */
 
 /* Clicking on table rows will open ticket panel view

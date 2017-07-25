@@ -28,8 +28,6 @@ html, body {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   height: 100%;
-/*  overflow-y: hidden;
-  overflow-x: hidden;*/
 }
 
 body.toggled {
@@ -81,6 +79,9 @@ th.category {
 #sort{
   float: right;
 	min-width: 258px;
+}
+select#sortList {
+    color: black;
 }
 
 #leftCloseButton{
@@ -219,6 +220,14 @@ th.category {
   width: 100%;
 }
 
+nav.navbar.navbar-default {
+    background-color: lightgrey;
+}
+
+ul.nav.navbar-nav {
+    height: 5.5vh;
+}
+
 #navbar-links
 {
   float: right;
@@ -227,13 +236,12 @@ th.category {
 #navbar-links a.btn
 {
   border-radius: 0;
-  max-height: 100%;
 }
 
 #navbar-links a.btn:active
 {
   background: #ccc;
-  border-radius: 0;
+  border-radius: 0%;
 }
 
 #app-title
