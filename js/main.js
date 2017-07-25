@@ -598,6 +598,8 @@ function sortCategory(){
 /*Sort by the latest modified first*/
 function sortLastModified(){
   var table, rows, switching, i, x, y, shouldSwitch;
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
+    "Oct", "Nov", "Dec"];
   table = document.getElementById("table");
   switching = true;
   /*Make a loop that will continue until
@@ -616,7 +618,15 @@ function sortLastModified(){
       x = rows[i].getElementsByTagName("TD")[2];
       y = rows[i + 1].getElementsByTagName("TD")[2];
       //check if the two rows should switch place:
-      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+      var month = x.innerHTML.substring(0,3);
+      var month2 = y.innerHTML.substring(0,3);
+      var date = x.innerHTML.substring(4);
+      var date2 = y.innerHTML.substring(4);
+      if (months.indexOf(month) > months.indexOf(month2) && months.indexOf(month) != months.indexOf(month2)) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch= true;
+        break;
+      }else if(months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() > date2.toLowerCase()){
         //if so, mark as a switch and break the loop:
         shouldSwitch= true;
         break;
@@ -634,6 +644,8 @@ function sortLastModified(){
 /*Sort by the latest modified last*/
 function sortlastModifiedReversed(){
   var table, rows, switching, i, x, y, shouldSwitch;
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
+    "Oct", "Nov", "Dec"];
   table = document.getElementById("table");
   switching = true;
   /*Make a loop that will continue until
@@ -652,7 +664,15 @@ function sortlastModifiedReversed(){
       x = rows[i].getElementsByTagName("TD")[2];
       y = rows[i + 1].getElementsByTagName("TD")[2];
       //check if the two rows should switch place:
-      if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+      var month = x.innerHTML.substring(0,3);
+      var month2 = y.innerHTML.substring(0,3);
+      var date = x.innerHTML.substring(4);
+      var date2 = y.innerHTML.substring(4);
+      if(months.indexOf(month) < months.indexOf(month2) && months.indexOf(month) != months.indexOf(month2)) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch= true;
+        break;
+      }else if(months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() < date2.toLowerCase()){
         //if so, mark as a switch and break the loop:
         shouldSwitch= true;
         break;
