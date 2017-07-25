@@ -792,81 +792,88 @@ function sort(){
 }
 
 function filterNotStared(){
+  filterAll();
   var table, i;
   table = document.getElementById("table");
   rows = table.getElementsByTagName("TR");
   var currentRow;
-  for (i = 1; i < (rows.length); i++) {
+  for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Not Started")
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Not Started" && currentRow.style.display != "none")
     {
-      currentRow.style.visibility = "hidden";
-    }else{
-      currentRow.style.visibility = "visible";
+      $(currentRow).toggle();
     }
   }
 }
 
 function filterInProgress(){
+  filterAll();
   var table, i;
   table = document.getElementById("table");
   rows = table.getElementsByTagName("TR");
   var currentRow;
-  for (i = 1; i < (rows.length); i++) {
+  for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "In Progress")
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "In Progress" && currentRow.style.display != "none")
     {
-      currentRow.style.visibility = "hidden";
-    }else{
-      currentRow.style.visibility = "visible";
+      $(currentRow).toggle();
     }
   }
 }
 
 function filterToReview(){
+  filterAll();
   var table, i;
   table = document.getElementById("table");
   rows = table.getElementsByTagName("TR");
   var currentRow;
-  for (i = 1; i < (rows.length); i++) {
+  for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "To Review")
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "To Review" && currentRow.style.display != "none")
     {
-      currentRow.style.visibility = "hidden";
-    }else{
-      currentRow.style.visibility = "visible";
+      $(currentRow).toggle();
     }
   }
 }
 
 function filterCompleted(){
+  filterAll();
   var table, i;
   table = document.getElementById("table");
   rows = table.getElementsByTagName("TR");
   var currentRow;
-  for (i = 1; i < (rows.length); i++) {
+  for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Completed")
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Completed" && currentRow.style.display != "none")
     {
-      currentRow.style.visibility = "hidden";
-    }else{
-      currentRow.style.visibility = "visible";
+      $(currentRow).toggle();
     }
   }
 }
 
 function filterBlocked(){
+  filterAll();
   var table, i;
   table = document.getElementById("table");
   rows = table.getElementsByTagName("TR");
   var currentRow;
-  for (i = 1; i < (rows.length); i++) {
+  for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Blocked")
+    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Blocked" && currentRow.style.display != "none")
     {
-      currentRow.style.visibility = "hidden";
-    }else{
-      currentRow.style.visibility = "visible";
+      $(currentRow).toggle();
     }
+  }
+}
+
+function filterAll(){
+  var table, i;
+  table = document.getElementById("table");
+  rows = table.getElementsByTagName("TR");
+  var currentRow;
+  for (i = 1; i < (rows.length); i++)
+  {
+    currentRow = rows[i]
+    currentRow.style.display = "table-row";
   }
 }
