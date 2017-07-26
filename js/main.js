@@ -724,12 +724,14 @@ function goToTrello(){
 }
 
 /*-------------------- THEME CHANGE ------------------------------------------*/
+var alternate = 1;
 function changeColor(){
   var body = document.body.style;
   var ticketBarHead = document.getElementById("info-header").style;
   var ticketHeads = document.getElementsByClassName("panel-heading");
   var tickets = document.getElementsByClassName("panel-body");
-  if(body.backgroundColor = "#white"){
+
+  if(alternate == 1){
     body.backgroundColor = "#1E1E1E";
     body.color = "lightgrey";
     ticketBarHead.backgroundColor = "#1E1E1E";
@@ -740,11 +742,17 @@ function changeColor(){
       ticketHeads[i].style.backgroundColor = "#6E6E6E";
     }
    }
-  // else{
-  //   console.log("hitting else");
-  //   body.backgroundColor = "#FFF";
-  //   body.color = "#333";
-  // }
+  else{
+    body.backgroundColor = "#FFF";
+    body.color = "#333";
+    ticketBarHead.backgroundColor = "#CCC";
+    for(var i = 0; i < tickets.length; i++)
+    {
+      tickets[i].style.backgroundColor = "#FFF";
+      ticketHeads[i].style.backgroundColor = "#F5F5F5";
+    }
+  }
+ alternate  = alternate % 2 + 1;
 }
 
 /* ------------------ TICKET PANEL ------------------ */
