@@ -13,12 +13,20 @@
 		min-width: 358px;
 	}
 }
+
 @media only screen and (max-width: 1200px) {
 }
 @media only screen and (max-width: 950px) {
 
 	#table{
 		min-width: 920px;
+  }
+}
+
+@media only screen and (max-width: 306px) {
+	#sort{
+		position: relative;
+		left: 25px;
 	}
 }
 
@@ -30,8 +38,6 @@ html, body {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   height: 100%;
-/*  overflow-y: hidden;
-  overflow-x: hidden;*/
 }
 
 body.toggled {
@@ -52,9 +58,9 @@ td, #modCell {width: 10%; text-align: center;}
 td, #catCell {width: 10%; text-align: center;}
 
 td, #title {text-align: left;}
-td, #shortDesc {text-align: left;}
-td, #date {text-align: left;}
-td, #cat {text-align: left;}
+td, #desc {text-align: left;}
+td, #mod {text-align: center;}
+td, #cat {text-align: center;}
 
 td {
   border-style: solid;
@@ -86,7 +92,10 @@ tr:not(:first-child):hover {
 
 #sort{
   float: right;
-	/*min-width: 240px;*/
+	min-width: 258px;
+}
+select#sortList {
+    color: black;
 }
 
 #leftCloseButton{
@@ -206,6 +215,7 @@ tr:not(:first-child):hover {
 
 .panel .panel-title
 {
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -225,6 +235,14 @@ tr:not(:first-child):hover {
   width: 100%;
 }
 
+nav.navbar.navbar-default {
+    background-color: lightgrey;
+}
+
+ul.nav.navbar-nav {
+    height: 5.5vh;
+}
+
 #navbar-links
 {
   float: right;
@@ -233,13 +251,12 @@ tr:not(:first-child):hover {
 #navbar-links a.btn
 {
   border-radius: 0;
-  max-height: 100%;
 }
 
 #navbar-links a.btn:active
 {
   background: #ccc;
-  border-radius: 0;
+  border-radius: 0%;
 }
 
 #app-title
