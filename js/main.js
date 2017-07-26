@@ -767,6 +767,7 @@ $(".grid").on("click", "td", function(e) {
   var isClosed = true;
 
   // var index = $('table tr').index(tr);
+  // alert(index);
 
   if (isClosed == true) {
     isClosed = false;
