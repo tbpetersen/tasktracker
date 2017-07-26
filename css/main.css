@@ -2,7 +2,7 @@
 	#navbar-links{
 		position: absolute;
 		top: 0%;
-		left: 908px;
+		left: 87vh;
 		min-width: 600px;
 	}
 	#app-title{
@@ -11,6 +11,9 @@
 	}
 	#logo{
 		min-width: 358px;
+	}
+	.navbar-form{
+		left: 87vh;
 	}
 }
 @media only screen and (max-width: 306px) {

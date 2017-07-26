@@ -724,18 +724,17 @@ function goToTrello(){
 }
 
 /*-------------------- THEME CHANGE ------------------------------------------*/
-var alternate = 1;
+var alternate = 1; //Used with alternate % 2 + 1 to alternate between 1 and 2
 function changeColor(){
   var body = document.body.style;
   var ticketBarHead = document.getElementById("info-header").style;
   var ticketHeads = document.getElementsByClassName("panel-heading");
   var tickets = document.getElementsByClassName("panel-body");
-
+  //Check if alternate is 1
   if(alternate == 1){
     body.backgroundColor = "#1E1E1E";
     body.color = "lightgrey";
     ticketBarHead.backgroundColor = "#1E1E1E";
-    console.log(tickets);
     for(var i = 0; i < tickets.length; i++)
     {
       tickets[i].style.backgroundColor = "#7E7E7E";
@@ -752,7 +751,7 @@ function changeColor(){
       ticketHeads[i].style.backgroundColor = "#F5F5F5";
     }
   }
- alternate  = alternate % 2 + 1;
+ alternate  = alternate % 2 + 1; //Increment/decrement alternate.
 }
 
 /* ------------------ TICKET PANEL ------------------ */
@@ -938,9 +937,31 @@ function filterAll(){
   table = document.getElementById("table");
   rows = table.getElementsByTagName("TR");
   var currentRow;
-  for (i = 1; i < (rows.length); i++)
+  for (i = 1; i < rows.length; i++)
   {
     currentRow = rows[i]
     currentRow.style.display = "table-row";
+  }
+}
+
+/*---------------------------------Search-------------------------------------*/
+function search(){
+  var searchFor = document.getElementsByClassName("form-control")[0].value;
+  table = document.getElementById("table");
+  rows = table.getElementsByTagName("TR");
+  var currentRow, items, i, td;
+  for (i = 1; i < rows.length; i++) {
+    currentRow = rows[i]
+    items = currentRow.getElementsByTagName("TD");
+    for(td = 0; td < items.length; td++)
+    {
+      if(items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase()))
+      {
+        currentRow.style.display = "table-row";
+        break;
+      }
+      if(td == items.length - 1 && currentRow.style.display != "none")
+        $(currentRow).toggle();
+    }
   }
 }

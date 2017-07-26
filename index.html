@@ -75,9 +75,9 @@
               <div class="form-group">
                 <input type="text" class="form-control" placeholder="Search">
               </div>
-              <button type="submit" class="btn btn-default">
-            <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
-            </button>
+              <button class="btn btn-default" onclick="search()">
+                <span class="glyphicon glyphicon-search"></span>
+              </button>
             </form>
           </li>
         </ul>
@@ -96,123 +96,123 @@
         <div class="panel-heading">
           <h3 class="panel-title">Ticket #1234
             <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"
-              onclick="delCard();">
-            </i>
-          </h3>
-        </div>
-        <div class="panel-body">
-          Ticket info
-        </div>
+            onclick="delCard();">
+          </i>
+        </h3>
       </div>
-      <div class="panel panel-default" id="card2">
-        <div class="panel-heading">
-          <h3 class="panel-title">Ticket #5678
-            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"
-            onclick="delCard();"></i>
-          </h3>
-        </div>
-        <div class="panel-body">
-          Ticket info
-        </div>
+      <div class="panel-body">
+        Ticket info
       </div>
     </div>
-
-    <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
+    <div class="panel panel-default" id="card2">
+      <div class="panel-heading">
+        <h3 class="panel-title">Ticket #5678
+          <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"
+          onclick="delCard();"></i>
+        </h3>
+      </div>
+      <div class="panel-body">
+        Ticket info
+      </div>
+    </div>
   </div>
-  <!-- End of info panel -->
 
-  <!-- FILTER SIDEBAR -->
-  <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
-    <h3 class="w3-bar-item" id="filters">Filters</h3>
-    <button class="w3-bar-item w3-button" onclick="filterAll()">
-      View All</button>
+  <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
+</div>
+<!-- End of info panel -->
+
+<!-- FILTER SIDEBAR -->
+<div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
+  <h3 class="w3-bar-item" id="filters">Filters</h3>
+  <button class="w3-bar-item w3-button" onclick="filterAll()">
+    View All</button>
     <button class="w3-bar-item w3-button" onclick="filterNotStared()">
       Not Started</button>
-    <button class="w3-bar-item w3-button" onclick="filterInProgress()">
-      In Progress</button>
-    <button class="w3-bar-item w3-button" onclick="filterToReview()">
-      To Review</button>
-    <button class="w3-bar-item w3-button" onclick="filterCompleted()">
-      Completed</button>
-    <button class="w3-bar-item w3-button" onclick="filterBlocked()">
-      Blocked</button>
-  </div>
-  <!-- END FILTER SIDEBAR -->
+      <button class="w3-bar-item w3-button" onclick="filterInProgress()">
+        In Progress</button>
+        <button class="w3-bar-item w3-button" onclick="filterToReview()">
+          To Review</button>
+          <button class="w3-bar-item w3-button" onclick="filterCompleted()">
+            Completed</button>
+            <button class="w3-bar-item w3-button" onclick="filterBlocked()">
+              Blocked</button>
+            </div>
+            <!-- END FILTER SIDEBAR -->
 
-  <div class="main" id="main">
-    <div class="container-fluid">
-      <div id=sort>
-        Sort by
-        <select name="sortBy" onclick="sort()" id=sortList>
-          <option value=""></option>
-          <option value="a-z">A-Z</option>
-          <option value="z-a">Z-A</option>
-          <option value="category">Category</option>
-          <option value="lastModified">Last Modified</option>
-          <option value="lastModifiedReversed">Last Modified Reversed</option>
-          <option value="customSort">Custom</option>
-        </select>
-      </div>
+            <div class="main" id="main">
+              <div class="container-fluid">
+                <div id=sort>
+                  Sort by
+                  <select name="sortBy" onclick="sort()" id=sortList>
+                    <option value=""></option>
+                    <option value="a-z">A-Z</option>
+                    <option value="z-a">Z-A</option>
+                    <option value="category">Category</option>
+                    <option value="lastModified">Last Modified</option>
+                    <option value="lastModifiedReversed">Last Modified Reversed</option>
+                    <option value="customSort">Custom</option>
+                  </select>
+                </div>
 
-      <table id="table" class="grid table table-bordered table-hover">
-        <thead>
-          <tr>
-            <th class="title">Title/Subject</th>
-            <th class="desc">Description</th>
-            <th class="lastMod">Last Modified</th>
-            <th class="category">Category</th>
-          </tr>
-        </thead>
-      </table>
-    </div>
-  </div>
+                <table id="table" class="grid table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th class="title">Title/Subject</th>
+                      <th class="desc">Description</th>
+                      <th class="lastMod">Last Modified</th>
+                      <th class="category">Category</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
 
-  <!-- jQuery & JavaScript -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
-  <script type="text/javascript" src="js/main.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-</body>
+            <!-- jQuery & JavaScript -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+            <script type="text/javascript" src="js/main.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+          </body>
 
-</html>
+          </html>
 
 
-<!--
-for each new category, create a new table? then iterate through each cell
-var table1 = document.getElementbyId("table");
-for(var i = 0; i < array.length; i++) {
+          <!--
+          for each new category, create a new table? then iterate through each cell
+          var table1 = document.getElementbyId("table");
+          for(var i = 0; i < array.length; i++) {
 
-	addRow()
-	for(var j = 0; j < array[i].length; j++) {
+          addRow()
+          for(var j = 0; j < array[i].length; j++) {
 
-	}
-}
+        }
+      }
 
-function addRow(array)
-	//create row and cell element
-	row=document.createElement("tr");
-	titleCell=document.createElement("td");
-	descriptionCell=document.createElement("td");
-	modCell=document.createElement("td");
-	catCell=document.createElement("td");
+      function addRow(array)
+      //create row and cell element
+      row=document.createElement("tr");
+      titleCell=document.createElement("td");
+      descriptionCell=document.createElement("td");
+      modCell=document.createElement("td");
+      catCell=document.createElement("td");
 
-	// text for cell
-	textNode1=document.createTextNode()
-	textNode2=document.createTextNode()
-	textNode3=document.createTextNode()
-	textNode4=document.createTextNode()
+      // text for cell
+      textNode1=document.createTextNode()
+      textNode2=document.createTextNode()
+      textNode3=document.createTextNode()
+      textNode4=document.createTextNode()
 
-	// append text to cell
-	titleCell.appendChild(textNode1)
-	descriptionCell.appendChild(textNode2)
-	modCell.appendChild(textNode3)
-	catCell.appendChild(textNode4)
+      // append text to cell
+      titleCell.appendChild(textNode1)
+      descriptionCell.appendChild(textNode2)
+      modCell.appendChild(textNode3)
+      catCell.appendChild(textNode4)
 
-	// append text to row
-	row.appendChild(titleCell)
-	row.appendChild(descriptionCell)
-	row.appendChild(modCell)
-	row.appendChild(catCell)
+      // append text to row
+      row.appendChild(titleCell)
+      row.appendChild(descriptionCell)
+      row.appendChild(modCell)
+      row.appendChild(catCell)
 
-	// append row to table/body
--->
+      // append row to table/body
+    -->
