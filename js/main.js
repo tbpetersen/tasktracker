@@ -9,7 +9,8 @@ const TRE_APP_KEY = "8886ef1a1bc5ad08caad020068a3f9a2";
 var zendeskToken = "";
 var trelloToken = "";
 var user;
-
+var isClosed = false;
+var IDs = 0;
 
 class Task {
   /*
@@ -30,11 +31,13 @@ class Task {
       this.desc = data.desc;
       this.lastModified = this.getTimeStampFromString(data.dateLastActivity);
       this.createdAt = this.getTrelloCreationTime(this.id);
+      this.setCategory(this,data.idList);
     }else /* Zendesk*/{
       this.name = data.subject;
       this.desc = data.description;
       this.lastModified = this.getTimeStampFromString(data.updated_at);
       this.createdAt = this.getTimeStampFromString(data.created_at);
+      this.category = data.status;
     }
   }
 
@@ -47,17 +50,26 @@ class Task {
     let date = new Date(timeString);
     return date.getTime();
   }
+
+  setCategory(task, listID){
+      let prom = trelloGet("lists/" + listID);
+      Task.prom.push(prom);
+      prom.then(function(listData){
+        task.category = listData.name;
+      })
+    }
 }
+Task.prom = new Array();
+
 
 
 $(document).ready(function(){
 
   // Hamburger menu toggle
-  var trigger = $('.hamburger'),
-  isClosed = false;
+  var trigger = $('.hamburger');
 
   trigger.click(function () {
-    hamburger_cross();  
+    hamburger_cross();
   });
 
   function hamburger_cross() {
@@ -65,58 +77,82 @@ $(document).ready(function(){
       trigger.removeClass('is-open');
       trigger.addClass('is-closed');
       isClosed = false;
-    } else {   
+    } else {
       trigger.removeClass('is-closed');
       trigger.addClass('is-open');
       isClosed = true;
     }
   }
-  
+
   $('[data-toggle="offcanvas"]').click(function () {
     $('body').toggleClass('toggled');
   });
 
   setupPage();
-  $('table tbody').sortable();
+
   setIDs().then(function(){
     getCardsAndTickets().then(function(cardsAndTickets){
       console.log(cardsAndTickets);
+
       user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
-      // Make/Populate table
-      //populateTable(user.tasks);
 
-      createTable(user.tasks);
-      //console.log(document.getElementById("table").id);
+      createTasksFromCardsAndTickets(cardsAndTickets).then(function(){
+
+        var trelloCat = ["Not Started", "Blocked", "In Progess", "For Review", "Completed", "July Billing"];
+        var zendCat = ["open", "pending", "closed", "new", "solved"];
+
+        //var actualTrello = [];
+        for (var i = 0; i < trelloCat.length; i++) {
+          for (var j = 0; j < user.tasks.length; j++) {
+            if (user.tasks[j].category == trelloCat[i]) {
+              if(document.getElementById(user.tasks[j].category) == null) {
+                createTable(user.tasks[j].category);
+                
+                //actualTrello.push(user.tasks[j].category);
+              }
+              populateTable(user.tasks[j], user.tasks[j].category);
+            }
+          }
+        }
+        
+        /*for(var i = 0; i < actualTrello.length; i++) {
+          for(var j = 0; j < actualTrello.length; j++) {
+          var string = '#' + actualTrello[i];
+          var stringg = '#' + actualTrello[j];
+          console.log(string);
+          console.log(stringg);
+          $('#' + actualTrello[i], '#' + actualTrello[j]).sortable({
+            connectWith: string, stringg
+          });
+        }
+        }*/
+
+        for (var i = 0; i < zendCat.length; i++) {
+          for (var j = 0; j < user.tasks.length; j++) {
+            if (user.tasks[j].category == zendCat[i]) {
+              if(document.getElementById(user.tasks[j].category) == null) {
+                createTable(user.tasks[j].category);
+              }
+              populateTable(user.tasks[j], user.tasks[j].category);
+            }
+          }
+        }
+        
+        console.log(user.tasks);
+      });
     });
   });
 
 });
 
-function populateTable(tasks) {
-  var table = document.getElementById("table");
-  for(var i = 0; i < tasks.length; i++) {
-    addRow(tasks, i);
-
-  }
-
-  // assign IDs to rows
-  assignIDtoRows();
-
-  // THIS IS HOW YOU ACCESS AN INDIVIDUAL CELL IN THE TABLE
-  //console.log(document.getElementById("table").rows[2].cells.item(3).innerHTML);
-
-  // Make new rows draggable
-  draggableRows();
-}
-
-function createTable(tasks) {
+function createTable(tableName) {
   var table = document.createElement("TABLE");
   document.body.appendChild(table);
 
-  table.setAttribute("id", "table");
+  table.setAttribute("id", tableName);
 
-  table = document.getElementById("table");
+  table = document.getElementById(tableName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -126,6 +162,9 @@ function createTable(tasks) {
   catCell = document.createElement("th");
 
   row.setAttribute("id", "firstRow");
+  row.setAttribute("class", "fixed");
+
+
   titleCell.setAttribute("id", "titleCell");
   descCell.setAttribute("id", "descCell");
   modCell.setAttribute("id", "modCell");
@@ -153,38 +192,43 @@ function createTable(tasks) {
   // append row to table/body
   table.appendChild(row);
 
-
-  populateTable(tasks);
-
-  document.getElementById("titleCell").style.textAlign = "center";
-  document.getElementById("descCell").style.textAlign = "center";
-  document.getElementById("modCell").style.textAlign = "center";
-  document.getElementById("catCell").style.textAlign = "center";
-
-  document.getElementById("modCell").style.width = "10%";
-  document.getElementById("catCell").style.width = "10%";
+  draggableRows(tableName);
 }
 
-function addRow(tasks, index) {
+function populateTable(tasks, tableName) {
+  var table = document.getElementById(tableName);
+  //for(var i = 0; i < tasks.length; i++) {
+    addRow(tasks, tableName);
+  //}
+
+  // assign IDs to rows
+  assignIDtoRows(tableName);
+
+  // THIS IS HOW YOU ACCESS AN INDIVIDUAL CELL IN THE TABLE
+  //console.log(document.getElementById("table").rows[2].cells.item(3).innerHTML);
+}
+
+function addRow(tasks, tableName) {
 
   // Get title of task
-  var title = tasks[index].name;
+  var title = tasks.name;
 
   // Get description's first 140 characters
-  var desc = tasks[index].desc;
+  var desc = tasks.desc;
   var shortDesc = (desc).substring(0, 140);
   if (desc.length > 140) {
     shortDesc = shortDesc + "...";
   }
-  //console.log(shortDesc.substring(0,140));
 
   // Get last modified date from timestamp
-  var date = new Date(tasks[index].lastModified);
+  var date = new Date(tasks.lastModified);
   date = date.toDateString();
   date = date.substring(4);
-  //console.log(date.toDateString());  
 
-  table = document.getElementById("table");
+  // Get category of task
+  var cat = tasks.category;
+
+  table = document.getElementById(tableName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -197,7 +241,7 @@ function addRow(tasks, index) {
   textNode1 = document.createTextNode(title);
   textNode2 = document.createTextNode(shortDesc);
   textNode3 = document.createTextNode(date);
-  textNode4 = document.createTextNode("bob");
+  textNode4 = document.createTextNode(cat);
 
   // append text to cell
   titleCell.appendChild(textNode1);
@@ -213,35 +257,21 @@ function addRow(tasks, index) {
 
   // append row to table/body
   table.appendChild(row);
-
-  // highlight rows on hover
-  highlightRow();
+  //draggableRows(tableName);
 }
 
-function assignIDtoRows() {
-  var rows = document.getElementById("table").rows;
+function assignIDtoRows(tableName) {
+  var rows = document.getElementById(tableName).rows;
   for(var i = 0; i < rows.length; ++i) {
-    document.getElementById("table").rows[i].id = i;
-    //console.log(rows[i]);
+    document.getElementById(tableName).rows[i].id = i;
   }
 }
 
-function highlightRow() {
-
-  $("tr").not(':first').hover(
-    function () {
-      $(this).css("background","#dd6367");
-    },
-    function () {
-      $(this).css("background","");
-    }
-  );
-}
-
-function draggableRows() {
+function draggableRows(tableName) {
+  console.log(tableName);
 
   // Drag rows
-  $('#table').sortable();  
+  $('#' + tableName).sortable();
 
   // Prevent rows from shrinking while dragging
   var fixHelper = function(e, ui) {
@@ -250,10 +280,14 @@ function draggableRows() {
     });
     return ui;
   };
-
-  $('#table').sortable({
-    helper: fixHelper
+  
+  $('#' + tableName).sortable({
+    helper: fixHelper,
+    cancel: ".ui-state-disabled",
+    items: "tr:not(.ui-state-disabled)"
   }).disableSelection();
+
+  $(".fixed").addClass("ui-state-disabled");
 }
 
 function setupPage(){
@@ -346,18 +380,29 @@ function setIDs(){
 
 function setTrelloID(){
   return new Promise(function(resolve, reject){
-    trelloGet("members/me").then(function(trelloData){
+    trelloGet("members/me")
+
+    .then(function(trelloData){
       user.trello.id = trelloData.id;
       resolve();
+    })
+
+    .catch(function(trelloData){
+      reject(trelloData);
     });
   });
 }
 
 function setZendeskID(){
   return new Promise(function(resolve, reject){
-    zendeskGet("users/me").then(function(zendeskData){
+    zendeskGet("users/me")
+    .then(function(zendeskData){
       user.zendesk.id = zendeskData.user.id;
       resolve();
+    })
+
+    .catch(function(zendeskData){
+      reject(zendeskData);
     });
   });
 }
@@ -379,8 +424,17 @@ function getTrelloCards(){
       getCardsFromBoard(getBoardsIDs(boards)).then(function(cards){
         getUsersCards(cards).then(function(usersCards){
           resolve(usersCards);
+        })
+        .catch(function(getUsersCardsFailed){
+          reject(getUsersCardsFailed);
         });
+      })
+      .catch(function(getCardsFromBoardsFailed){
+        reject(getCardsFromBoardsFailed);
       });
+    })
+    .catch(function(getTrelloBoardsFailed){
+      reject(getTrelloBoardsFailed);
     });
   });
 }
@@ -412,41 +466,37 @@ function getCardsFromBoard(boardsIDs){
         }
       }
       resolve(allCards);
+    })
+    .catch(function(dataBoardPromisesFailed){
+      reject(dataBoardPromisesFailed);
     });
   });
 }
 
 function getUsersCards(cards){
-  // You need to know the user id. If you have it, use it. Otherwise, get it
-  // using the API
   return new Promise(function(resolve, reject){
-    if(user.trello.id != undefined){
-      let id = user.trello.id;
-      let usersCards = new Array();
-      for(let i = 0; i < cards.length; i++){
-        for(let j = 0; j < cards[i].idMembers.length; j++){
-          if(cards[i].idMembers[j] == id){
-            usersCards.push(cards[i]);
-          }
+    if(user == null){
+       reject("user not instantiated");
+    }
+    if(user.trello == null){
+       reject("user.trello not instantiated");
+    }
+    if(user.trello.id == null){
+      reject("Trello ID not set");
+    }
+    let id = user.trello.id;
+    let usersCards = new Array();
+    for(let i = 0; i < cards.length; i++){
+      for(let j = 0; j < cards[i].idMembers.length; j++){
+        if(cards[i].idMembers[j] == id){
+          usersCards.push(cards[i]);
         }
       }
-       resolve(usersCards);
-    }else{
-      trelloGet("members/me").then(function(meData){
-        let id = meData.id;
-        let usersCards = new Array();
-        for(let i = 0; i < cards.length; i++){
-          for(let j = 0; j < cards[i].idMembers.length; j++){
-            if(cards[i].idMembers[j] == id){
-              usersCards.push(cards[i]);
-            }
-          }
-        }
-         resolve(usersCards);
-      });
     }
+    resolve(usersCards);
   });
 }
+
 
 function getZendeskTickets(){
   //return zendeskGet("search.json?query=type:ticket status<solved assignee_id:" + user.zendesk.id);
@@ -459,8 +509,9 @@ function createTasksFromCardsAndTickets(cardsAndTickets){
     for(let j = 0; j < cardsAndTickets[i].length; j++){
       tasks.push(new Task(cardsAndTickets[i][j], i));
     }
+    user.tasks = tasks;
   }
-  return tasks;
+  return Promise.all(Task.prom);
 }
 
 function zendeskGet(url){
@@ -501,41 +552,210 @@ window.addEventListener("resize", function(){
   var openButton = document.getElementById("leftOpenButton");
     if(window.innerWidth < 1200)
     {
-      closeLeft();
-      $(openButton).prop("disabled", true);
-    }
-    else{
-      $(openButton).prop("disabled", false);
+      if($('body.toggled').css("padding") != null)
+      {
+        isClosed = false;
+        $('body').toggleClass('toggled');
+        $('.hamburger').removeClass('is-open');
+        $('.hamburger').addClass('is-closed');
+      }
     }
 });
 
 /*Refresh the page*/
 function refresh(){
-  console.log("Refreshing");
   location.reload();
 }
 
 /*Sort the data alphabetically*/
 function sortAlphabet(){
-  console.log("Sorting alphabetically.");
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("table");
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[0];
+      y = rows[i + 1].getElementsByTagName("TD")[0];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch= true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
 }
+
 
 /*Sort the data alphabetically reversed*/
 function sortAlphabetReverse(){
-  console.log("Sorting alphabetically reverse.");
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("table");
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[0];
+      y = rows[i + 1].getElementsByTagName("TD")[0];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch= true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
+
+/*Sort the data by due date*/
+function sortDueDate(){
 
 }
 
 /*Sort the data by date*/
-function sortDate(){
-  console.log("Sorting Cronologically.");
+function sortStartDate(){
 
 }
 
-/*Sort the data by status*/
-function sortStatus(){
-  console.log("Sorting by Status.");
+/*Sort the data by Category*/
+function sortCategory(){
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("table");
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[3];
+      y = rows[i + 1].getElementsByTagName("TD")[3];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch= true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
 
+/*Sort by the latest modified first*/
+function sortLastModified(){
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("table");
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[2];
+      y = rows[i + 1].getElementsByTagName("TD")[2];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch= true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
+
+/*Sort by the latest modified last*/
+function sortlastModifiedReversed(){
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("table");
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[2];
+      y = rows[i + 1].getElementsByTagName("TD")[2];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch= true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
 }
 
 /*Open the filter pannel and move the screen with it.*/
@@ -561,22 +781,49 @@ function closeLeft(){
   openButton.style.opacity = 1;
 }
 
-$('td').click(function() {
-    // alert('Click!');
+function goToZendesk(){
+  window.open("https://www.zendesk.com");
+}
+function goToTrello(){
+  window.open("https://www.trello.com");
+}
 
-    var newCard = document.createElement('div');
+$(".grid").on("click", "td", function(e) {
+  event.preventDefault();
+  var newCard = document.createElement('div');
+  var isClosed = true;
 
-    /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
-    newCard.innerHTML = '<div class="panel panel-default">' +
-    '<div class="panel-heading">' +
-    '<h3 class="panel-title">Ticket #1234 ' +
-    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
+  if (isClosed == true) {
+    isClosed = false;
+    $(".info-panel").addClass("toggled");
+  }
+
+  /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
+  newCard.innerHTML = '<div class="panel panel-default">' +
+  '<div class="panel-heading">' +
+  '<h3 class="panel-title">Ticket #1234 ' +
+  '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
   '</h3></div>' +
-    '<div class="panel-body">Ticket Info' +
-    '</div></div>';
+  '<div class="panel-body">Ticket Info' +
+  '</div></div>';
 
-    document.getElementById("card-list").appendChild(newCard);
+  document.getElementById("card-list").appendChild(newCard);
 });
+
+// $('td').click(function() {
+//     var newCard = document.createElement('div');
+
+//     /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
+//     newCard.innerHTML = '<div class="panel panel-default">' +
+//     '<div class="panel-heading">' +
+//     '<h3 class="panel-title">Ticket #1234 ' +
+//     '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
+//   '</h3></div>' +
+//     '<div class="panel-body">Ticket Info' +
+//     '</div></div>';
+
+//     document.getElementById("card-list").appendChild(newCard);
+// });
 
 $("#openInfo").click(function(e) {
   e.preventDefault();
@@ -590,4 +837,36 @@ $("#clearBtn").click(function() {
 function delCard()
 {
   alert('Haven\'t add functionality yet!');
+}
+
+function sort(){
+  switch(document.getElementsByName("sortBy")[0].value){
+    case "a-z":
+      sortAlphabet();
+      break;
+
+    case "z-a":
+      sortAlphabetReverse();
+      break;
+
+    case "dueDate":
+      sortDueDate();
+      break;
+
+    case "startDate":
+      sortStartDate();
+      break;
+
+    case "category":
+      sortCategory();
+      break;
+
+    case "lastModified":
+      sortLastModified();
+      break;
+
+    case "lastModifiedReversed":
+      sortlastModifiedReversed();
+      break;
+  }
 }

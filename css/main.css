@@ -2,32 +2,36 @@
 	#navbar-links{
 		position: absolute;
 		top: 0%;
-		left: 810px;
+		left: 908px;
 		min-width: 600px;
 	}
 	#app-title{
 		min-width: 1425px;
 		top: 0%;
 	}
-}
-@media only screen and (max-width: 1200px) {
-	#leftOpenButton{
-		cursor: not-allowed;
+	#logo{
+		min-width: 358px;
 	}
 }
+@media only screen and (max-width: 1200px) {
+}
 @media only screen and (max-width: 950px) {
+
 	#table{
 		min-width: 920px;
 	}
 }
 
-body {
+html, body {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
   -webkit-transition: all 0.5s ease;
   padding-left: 0;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
+  height: 100%;
+/*  overflow-y: hidden;
+  overflow-x: hidden;*/
 }
 
 body.toggled {
@@ -37,9 +41,20 @@ body.toggled {
 body.toggled #leftSidebar { left: 0%; }
 
 /* Tables */
-thead th, thead td {
-  text-align: center;
+table, th {
+  width: 100%;
+  margin-bottom: 5%;  
 }
+
+td, #titleCell {width: 25%; text-align: center;}
+td, #descCell {width: 55%; text-align: center;}
+td, #modCell {width: 10%; text-align: center;}
+td, #catCell {width: 10%; text-align: center;}
+
+td, #title {text-align: left;}
+td, #shortDesc {text-align: left;}
+td, #date {text-align: left;}
+td, #cat {text-align: left;}
 
 td {
   border-style: solid;
@@ -49,16 +64,8 @@ td {
   padding: .75%;
 }
 
-th.lastMod {
-  width: 10%;
-}
-
-th.category {
-  width: 10%;
-}
-
-#another{
-  width: 100%;
+tr:not(:first-child):hover {
+    background-color: #dd6367;
 }
 
 .table-hover td
@@ -74,6 +81,7 @@ th.category {
   cursor: pointer;
   max-height:100%;
   margin: auto;
+	z-index: 1;
 }
 
 #sort{
@@ -102,18 +110,6 @@ th.category {
   font-size: 70%;
 }
 
-/*#leftOpenButton{
-  position: fixed;
-  left: 0%;
-  top: 0%;
-  width: 2.5%;
-  min-width: 37px;
-  height: 5%;
-  padding: 0px;
-  background-color: transparent;
-	z-index: 1;
-}*/
-
 #filters{
   height: 5%;
   text-align: center;
@@ -127,13 +123,9 @@ th.category {
   -webkit-transition: all 0.5s ease;
   background-color: #1a1a1a;
   height: 100%;
-  positon: fixed;
+  position: fixed;
   top: 0;
   left: -10%;
-  /*left: 220px;*/
-  /*margin-left: -220px;*/
-  /*margin-top: 0px;
-  padding: 0;*/
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-transition: all 0.5s ease;
@@ -152,7 +144,6 @@ th.category {
 /* Side info panel */
 .info-panel
 {
-  /*max-height: 100%;*/
   height: 100%;
   width: 20%;
   position: fixed;
@@ -264,6 +255,10 @@ th.category {
 #searchBtn
 {
   background-color: #dd6367;
+}
+
+#Zello{
+	cursor: pointer;
 }
 
 /* Hamburger menu icon */
