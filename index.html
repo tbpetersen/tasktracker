@@ -95,86 +95,83 @@
       <div class="panel panel-default" id="card1">
         <div class="panel-heading">
           <h3 class="panel-title">Ticket #1234
-            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"
-            onclick="delCard();">
-          </i>
-        </h3>
+            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>
+          </h3>
+        </div>
+        <div class="panel-body">
+          Ticket info
+        </div>
       </div>
-      <div class="panel-body">
-        Ticket info
-      </div>
-    </div>
-    <div class="panel panel-default" id="card2">
-      <div class="panel-heading">
-        <h3 class="panel-title">Ticket #5678
-          <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"
-          onclick="delCard();"></i>
-        </h3>
-      </div>
-      <div class="panel-body">
-        Ticket info
+      <div class="panel panel-default" id="card2">
+        <div class="panel-heading">
+          <h3 class="panel-title">Ticket #5678
+            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>
+          </h3>
+        </div>
+        <div class="panel-body">
+          Ticket info
+        </div>
       </div>
     </div>
-  </div>
 
-  <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
-</div>
+    <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
+  </div>
 <!-- End of info panel -->
 
 <!-- FILTER SIDEBAR -->
-<div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
-  <h3 class="w3-bar-item" id="filters">Filters</h3>
-  <button class="w3-bar-item w3-button" onclick="filterAll()">
-    View All</button>
+  <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
+    <h3 class="w3-bar-item" id="filters">Filters</h3>
+    <button class="w3-bar-item w3-button" onclick="filterAll()">
+      View All</button>
     <button class="w3-bar-item w3-button" onclick="filterNotStared()">
       Not Started</button>
-      <button class="w3-bar-item w3-button" onclick="filterInProgress()">
-        In Progress</button>
-        <button class="w3-bar-item w3-button" onclick="filterToReview()">
-          To Review</button>
-          <button class="w3-bar-item w3-button" onclick="filterCompleted()">
-            Completed</button>
-            <button class="w3-bar-item w3-button" onclick="filterBlocked()">
-              Blocked</button>
-            </div>
-            <!-- END FILTER SIDEBAR -->
+    <button class="w3-bar-item w3-button" onclick="filterInProgress()">
+      In Progress</button>
+    <button class="w3-bar-item w3-button" onclick="filterToReview()">
+      To Review</button>
+    <button class="w3-bar-item w3-button" onclick="filterCompleted()">
+      Completed</button>
+    <button class="w3-bar-item w3-button" onclick="filterBlocked()">
+      Blocked</button>
+  </div>
+<!-- END FILTER SIDEBAR -->
 
-            <div class="main" id="main">
-              <div class="container-fluid">
-                <div id=sort>
-                  Sort by
-                  <select name="sortBy" onclick="sort()" id=sortList>
-                    <option value=""></option>
-                    <option value="a-z">A-Z</option>
-                    <option value="z-a">Z-A</option>
-                    <option value="category">Category</option>
-                    <option value="lastModified">Last Modified</option>
-                    <option value="lastModifiedReversed">Last Modified Reversed</option>
-                    <option value="customSort">Custom</option>
-                  </select>
-                </div>
+<div class="main" id="main">
+  <div class="container-fluid">
+    <div id=sort>
+      Sort by
+      <select name="sortBy" onclick="sort()" id=sortList>
+        <option value=""></option>
+        <option value="a-z">A-Z</option>
+        <option value="z-a">Z-A</option>
+        <option value="category">Category</option>
+        <option value="lastModified">Last Modified</option>
+        <option value="lastModifiedReversed">Last Modified Reversed</option>
+        <option value="customSort">Custom</option>
+      </select>
+    </div>
 
-                <table id="table" class="grid table table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th class="title">Title/Subject</th>
-                      <th class="desc">Description</th>
-                      <th class="lastMod">Last Modified</th>
-                      <th class="category">Category</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-            </div>
+    <table id="table" class="grid table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th class="title">Title/Subject</th>
+          <th class="desc">Description</th>
+          <th class="lastMod">Last Modified</th>
+          <th class="category">Category</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+</div>
 
-            <!-- jQuery & JavaScript -->
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
-            <script type="text/javascript" src="js/main.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-          </body>
+<!-- jQuery & JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-          </html>
+</body>
+</html>
 
 
           <!--
