@@ -15,7 +15,7 @@ var isClosed = false;
 class Task {
   /*
     Member variables:
-      name - The Trello name of Zendesk subject
+      name - The Trello name or Zendesk subject
       desc - The Trello description or Zendesk body
       type - Trello is 0, Zendesk is 1
       createdAt - timestamp of creation timestamp
@@ -106,7 +106,7 @@ function populateTable(tasks) {
   for(var i = 0; i < tasks.length; i++) {
     addRow(tasks, i);
   }
-
+  
   // Make new rows draggable
   draggableRows();
 }
@@ -764,6 +764,8 @@ $(".grid").on("click", "td", function(e) {
   var newCard = document.createElement('div');
   var isClosed = true;
 
+  // var index = $('table tr').index(tr);
+
   if (isClosed == true) {
     isClosed = false;
     $(".info-panel").addClass("toggled");
@@ -781,21 +783,6 @@ $(".grid").on("click", "td", function(e) {
 
   document.getElementById("card-list").appendChild(newCard);
 });
-
-// $('td').click(function() {
-//     var newCard = document.createElement('div');
-
-//     /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
-//     newCard.innerHTML = '<div class="panel panel-default">' +
-//     '<div class="panel-heading">' +
-//     '<h3 class="panel-title">Ticket #1234 ' +
-//     '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
-//   '</h3></div>' +
-//     '<div class="panel-body">Ticket Info' +
-//     '</div></div>';
-
-//     document.getElementById("card-list").appendChild(newCard);
-// });
 
 /* Click event listener for openInfo to toggle the ticket panel view */
 $("#openInfo").click(function(e) {
@@ -819,10 +806,9 @@ $("#clearBtn").click(function() {
 
 /* Method that will delegate which ticket card is clicked and delete that
    particular card */
-function delCard()
-{
-  alert('Haven\'t add functionality yet!');
-}
+$(".info-panel").on("click", ".glyphicon-remove-sign", function(e) {
+  $(this).closest('.panel-default').remove();
+});
 
 /* ------------------ END OF TICKET PANEL ------------------ */
 
