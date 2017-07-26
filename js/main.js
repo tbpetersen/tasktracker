@@ -11,7 +11,6 @@ var trelloToken = "";
 var user;
 var isClosed = false;
 
-
 class Task {
   /*
     Member variables:
@@ -26,13 +25,13 @@ class Task {
     this.type = type;
     this.id = data.id;
     this.url = data.url;
-    if(type == 0 /* Trello */){
+    if (type == 0 /* Trello */ ) {
       this.name = data.name;
       this.desc = data.desc;
       this.lastModified = this.getTimeStampFromString(data.dateLastActivity);
       this.createdAt = this.getTrelloCreationTime(this.id);
-      this.setCategory(this,data.idList);
-    }else /* Zendesk*/{
+      this.setCategory(this, data.idList);
+    } else /* Zendesk*/ {
       this.name = data.subject;
       this.desc = data.description;
       this.lastModified = this.getTimeStampFromString(data.updated_at);
@@ -41,33 +40,33 @@ class Task {
     }
   }
 
-  getTrelloCreationTime(trelloID){
-   let hexTime = trelloID.substring(0,8);
-   return parseInt(hexTime, 16);
+  getTrelloCreationTime(trelloID) {
+    let hexTime = trelloID.substring(0, 8);
+    return parseInt(hexTime, 16);
   }
 
-  getTimeStampFromString(timeString){
+  getTimeStampFromString(timeString) {
     let date = new Date(timeString);
     return date.getTime();
   }
 
-  setCategory(task, listID){
-      let prom = trelloGet("lists/" + listID);
-      Task.prom.push(prom);
-      prom.then(function(listData){
-        task.category = listData.name;
-      })
-    }
+  setCategory(task, listID) {
+    let prom = trelloGet("lists/" + listID);
+    Task.prom.push(prom);
+    prom.then(function(listData) {
+      task.category = listData.name;
+    })
+  }
 }
 Task.prom = new Array();
 
 
 
-$(document).ready(function(){
+$(document).ready(function() {
   // Hamburger menu toggle
   var trigger = $('.hamburger');
 
-  trigger.click(function () {
+  trigger.click(function() {
     hamburger_cross();
   });
 
@@ -83,16 +82,16 @@ $(document).ready(function(){
     }
   }
 
-  $('[data-toggle="offcanvas"]').click(function () {
+  $('[data-toggle="offcanvas"]').click(function() {
     $('body').toggleClass('toggled');
   });
 
   setupPage();
   $('table tbody').sortable();
-  setIDs().then(function(){
-    getCardsAndTickets().then(function(cardsAndTickets){
+  setIDs().then(function() {
+    getCardsAndTickets().then(function(cardsAndTickets) {
       console.log(cardsAndTickets);
-      createTasksFromCardsAndTickets(cardsAndTickets).then(function(){
+      createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
         // Make/Populate table
         populateTable(user.tasks);
         console.log(user.tasks);
@@ -103,7 +102,7 @@ $(document).ready(function(){
 
 function populateTable(tasks) {
   var table = document.getElementById("table");
-  for(var i = 0; i < tasks.length; i++) {
+  for (var i = 0; i < tasks.length; i++) {
     addRow(tasks, i);
   }
 
@@ -170,11 +169,11 @@ function addRow(tasks, index) {
 function highlightRow() {
 
   $("tr").not(':first').hover(
-    function () {
-      $(this).css("background","#dd6367");
+    function() {
+      $(this).css("background", "#dd6367");
     },
-    function () {
-      $(this).css("background","");
+    function() {
+      $(this).css("background", "");
     }
   );
 }
@@ -197,37 +196,37 @@ function draggableRows() {
   }).disableSelection();
 }
 
-function setupPage(){
-  if(! redirectToHTTPS()){
+function setupPage() {
+  if (!redirectToHTTPS()) {
     getTokens();
     instantiateUser();
   }
 }
 
-function instantiateUser(){
+function instantiateUser() {
   user = new Object();
   user.trello = new Object();
   user.zendesk = new Object();
 }
 
-function redirectToHTTPS(){
-  if(window.location.protocol != 'https:'){
+function redirectToHTTPS() {
+  if (window.location.protocol != 'https:') {
     window.location.assign('https://' + window.location.hostname);
     return true;
   }
   return false;
 }
 
-function saveTokenFromURL(){
+function saveTokenFromURL() {
   saveTrelloTokenFromURL();
   saveZendeskTokenFromURL();
 }
 
-function saveTrelloTokenFromURL(){
+function saveTrelloTokenFromURL() {
   var url = window.location.href;
   var tokenString = "#token=";
 
-  if(! url.includes(tokenString)){
+  if (!url.includes(tokenString)) {
     return;
   }
 
@@ -236,11 +235,11 @@ function saveTrelloTokenFromURL(){
   localStorage["trelloToken"] = token;
 }
 
-function saveZendeskTokenFromURL(){
+function saveZendeskTokenFromURL() {
   var url = window.location.href;
   var tokenString = "#access_token=";
 
-  if(! url.includes(tokenString)){
+  if (!url.includes(tokenString)) {
     return;
   }
 
@@ -250,152 +249,152 @@ function saveZendeskTokenFromURL(){
   localStorage["zendeskToken"] = token;
 }
 
-function getTokens(){
-    saveTokenFromURL();
-    getZendeskToken();
-    getTrelloToken();
+function getTokens() {
+  saveTokenFromURL();
+  getZendeskToken();
+  getTrelloToken();
 }
 
-function getZendeskToken(){
+function getZendeskToken() {
   zendeskToken = localStorage.getItem("zendeskToken");
-  if(zendeskToken == undefined){
+  if (zendeskToken == undefined) {
     redirectToZendeskLogin();
   }
 }
 
-function getTrelloToken(){
+function getTrelloToken() {
   trelloToken = localStorage.getItem("trelloToken");
-  if(trelloToken == undefined){
+  if (trelloToken == undefined) {
     redirectToTrelloLogin();
   }
 }
 
-function redirectToTrelloLogin(){
+function redirectToTrelloLogin() {
   window.location.assign(TRE_AUTH_URL);
 }
 
-function redirectToZendeskLogin(){
+function redirectToZendeskLogin() {
   window.location.assign(ZEN_AUTH_URL);
 }
 
-function setIDs(){
+function setIDs() {
   let setIDTre = setTrelloID();
   let setIDZen = setZendeskID();
 
   return Promise.all(new Array(setIDTre, setIDZen));
 }
 
-function setTrelloID(){
-  return new Promise(function(resolve, reject){
+function setTrelloID() {
+  return new Promise(function(resolve, reject) {
     trelloGet("members/me")
 
-    .then(function(trelloData){
-      user.trello.id = trelloData.id;
-      resolve();
-    })
+      .then(function(trelloData) {
+        user.trello.id = trelloData.id;
+        resolve();
+      })
 
-    .catch(function(trelloData){
-      reject(trelloData);
-    });
+      .catch(function(trelloData) {
+        reject(trelloData);
+      });
   });
 }
 
-function setZendeskID(){
-  return new Promise(function(resolve, reject){
+function setZendeskID() {
+  return new Promise(function(resolve, reject) {
     zendeskGet("users/me")
-    .then(function(zendeskData){
-      user.zendesk.id = zendeskData.user.id;
-      resolve();
-    })
+      .then(function(zendeskData) {
+        user.zendesk.id = zendeskData.user.id;
+        resolve();
+      })
 
-    .catch(function(zendeskData){
-      reject(zendeskData);
-    });
+      .catch(function(zendeskData) {
+        reject(zendeskData);
+      });
   });
 }
 
-function getCardsAndTickets(){
-  return new Promise(function(resolve, reject){
+function getCardsAndTickets() {
+  return new Promise(function(resolve, reject) {
     let trelloCards = getTrelloCards();
     let zendeskTickets = getZendeskTickets();
 
-    Promise.all([trelloCards, zendeskTickets]).then(function(data){
+    Promise.all([trelloCards, zendeskTickets]).then(function(data) {
       resolve([data[0], data[1].results]);
     });
   });
 }
 
-function getTrelloCards(){
-  return new Promise(function(resolve, reject){
-    getTrelloBoards().then(function(boards){
-      getCardsFromBoard(getBoardsIDs(boards)).then(function(cards){
-        getUsersCards(cards).then(function(usersCards){
-          resolve(usersCards);
-        })
-        .catch(function(getUsersCardsFailed){
-          reject(getUsersCardsFailed);
-        });
+function getTrelloCards() {
+  return new Promise(function(resolve, reject) {
+    getTrelloBoards().then(function(boards) {
+        getCardsFromBoard(getBoardsIDs(boards)).then(function(cards) {
+            getUsersCards(cards).then(function(usersCards) {
+                resolve(usersCards);
+              })
+              .catch(function(getUsersCardsFailed) {
+                reject(getUsersCardsFailed);
+              });
+          })
+          .catch(function(getCardsFromBoardsFailed) {
+            reject(getCardsFromBoardsFailed);
+          });
       })
-      .catch(function(getCardsFromBoardsFailed){
-        reject(getCardsFromBoardsFailed);
+      .catch(function(getTrelloBoardsFailed) {
+        reject(getTrelloBoardsFailed);
       });
-    })
-    .catch(function(getTrelloBoardsFailed){
-      reject(getTrelloBoardsFailed);
-    });
   });
 }
 
-function getTrelloBoards(){
+function getTrelloBoards() {
   return trelloGet("members/me/boards");
 }
 
-function getBoardsIDs(boards){
+function getBoardsIDs(boards) {
   let boardIDs = new Array();
-  for(let i = 0; i < boards.length; i++){
+  for (let i = 0; i < boards.length; i++) {
     boardIDs.push(boards[i].id);
   }
   return boardIDs;
 }
 
-function getCardsFromBoard(boardsIDs){
-  return new Promise(function(resolve, reject){
+function getCardsFromBoard(boardsIDs) {
+  return new Promise(function(resolve, reject) {
     let boardDataPromises = new Array();
-    for(let i = 0; i < boardsIDs.length; i++){
+    for (let i = 0; i < boardsIDs.length; i++) {
       boardDataPromises.push(trelloGet("boards/" + boardsIDs[i] + "/cards"));
     }
-    Promise.all(boardDataPromises).then(function(cardArrays){
-      let allCards = new Array();
-      for(let i = 0; i < cardArrays.length; i++){
-        let singleArray = cardArrays[i];
-        for(let j = 0; j < singleArray.length; j++ ){
-          allCards.push(singleArray[j]);
+    Promise.all(boardDataPromises).then(function(cardArrays) {
+        let allCards = new Array();
+        for (let i = 0; i < cardArrays.length; i++) {
+          let singleArray = cardArrays[i];
+          for (let j = 0; j < singleArray.length; j++) {
+            allCards.push(singleArray[j]);
+          }
         }
-      }
-      resolve(allCards);
-    })
-    .catch(function(dataBoardPromisesFailed){
-      reject(dataBoardPromisesFailed);
-    });
+        resolve(allCards);
+      })
+      .catch(function(dataBoardPromisesFailed) {
+        reject(dataBoardPromisesFailed);
+      });
   });
 }
 
-function getUsersCards(cards){
-  return new Promise(function(resolve, reject){
-    if(user == null){
-       reject("user not instantiated");
+function getUsersCards(cards) {
+  return new Promise(function(resolve, reject) {
+    if (user == null) {
+      reject("user not instantiated");
     }
-    if(user.trello == null){
-       reject("user.trello not instantiated");
+    if (user.trello == null) {
+      reject("user.trello not instantiated");
     }
-    if(user.trello.id == null){
+    if (user.trello.id == null) {
       reject("Trello ID not set");
     }
     let id = user.trello.id;
     let usersCards = new Array();
-    for(let i = 0; i < cards.length; i++){
-      for(let j = 0; j < cards[i].idMembers.length; j++){
-        if(cards[i].idMembers[j] == id){
+    for (let i = 0; i < cards.length; i++) {
+      for (let j = 0; j < cards[i].idMembers.length; j++) {
+        if (cards[i].idMembers[j] == id) {
           usersCards.push(cards[i]);
         }
       }
@@ -405,15 +404,15 @@ function getUsersCards(cards){
 }
 
 
-function getZendeskTickets(){
+function getZendeskTickets() {
   //return zendeskGet("search.json?query=type:ticket status<solved assignee_id:" + user.zendesk.id);
   return zendeskGet("search.json?query=type:ticket status<solved");
 }
 
-function createTasksFromCardsAndTickets(cardsAndTickets){
+function createTasksFromCardsAndTickets(cardsAndTickets) {
   let tasks = new Array();
-  for(let i = 0; i < cardsAndTickets.length; i++){
-    for(let j = 0; j < cardsAndTickets[i].length; j++){
+  for (let i = 0; i < cardsAndTickets.length; i++) {
+    for (let j = 0; j < cardsAndTickets[i].length; j++) {
       tasks.push(new Task(cardsAndTickets[i][j], i));
     }
     user.tasks = tasks;
@@ -421,63 +420,61 @@ function createTasksFromCardsAndTickets(cardsAndTickets){
   return Promise.all(Task.prom);
 }
 
-function zendeskGet(url){
-  return new Promise(function(resolve, reject){
+function zendeskGet(url) {
+  return new Promise(function(resolve, reject) {
     $.ajax({
-    type: "GET",
-    beforeSend: function(request) {
-      request.setRequestHeader("Authorization", "Bearer " + zendeskToken);
-    },
-    url: ZEN_API_URL + url,
-    success: function(data){
-      resolve(data)
-    },
-    error: function(data){
-      reject(data)
+      type: "GET",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", "Bearer " + zendeskToken);
+      },
+      url: ZEN_API_URL + url,
+      success: function(data) {
+        resolve(data)
+      },
+      error: function(data) {
+        reject(data)
       }
     });
   });
 }
 
-function trelloGet(url){
-  return new Promise(function(resolve, reject){
+function trelloGet(url) {
+  return new Promise(function(resolve, reject) {
     $.ajax({
-    type: "GET",
-    url: TRE_API_URL + url + "?token=" + trelloToken + "&key=" + TRE_APP_KEY,
-    success: function(data){
-      resolve(data)
-    },
-    error: function(data){
-      reject(data)
+      type: "GET",
+      url: TRE_API_URL + url + "?token=" + trelloToken + "&key=" + TRE_APP_KEY,
+      success: function(data) {
+        resolve(data)
+      },
+      error: function(data) {
+        reject(data)
       }
     });
   });
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-window.addEventListener("resize", function(){
+window.addEventListener("resize", function() {
   var openButton = document.getElementById("leftOpenButton");
-    if(window.innerWidth < 1200)
-    {
-      if($('body.toggled').css("padding") != null)
-      {
-        isClosed = false;
-        $('body').toggleClass('toggled');
-        $('.hamburger').removeClass('is-open');
-        $('.hamburger').addClass('is-closed');
-      }
+  if (window.innerWidth < 1200) {
+    if ($('body.toggled').css("padding") != null) {
+      isClosed = false;
+      $('body').toggleClass('toggled');
+      $('.hamburger').removeClass('is-open');
+      $('.hamburger').addClass('is-closed');
     }
+  }
 });
 
 /*Refresh the page*/
-function refresh(){
+function refresh() {
   location.reload();
 }
 
 /* ------------------ SORT FILTERS ------------------ */
 
 /*Sort the data alphabetically*/
-function sortAlphabet(){
+function sortAlphabet() {
   var table, rows, switching, i, x, y, shouldSwitch;
   table = document.getElementById("table");
   switching = true;
@@ -499,7 +496,7 @@ function sortAlphabet(){
       //check if the two rows should switch place:
       if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
-        shouldSwitch= true;
+        shouldSwitch = true;
         break;
       }
     }
@@ -514,7 +511,7 @@ function sortAlphabet(){
 
 
 /*Sort the data alphabetically reversed*/
-function sortAlphabetReverse(){
+function sortAlphabetReverse() {
   var table, rows, switching, i, x, y, shouldSwitch;
   table = document.getElementById("table");
   switching = true;
@@ -536,7 +533,7 @@ function sortAlphabetReverse(){
       //check if the two rows should switch place:
       if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
-        shouldSwitch= true;
+        shouldSwitch = true;
         break;
       }
     }
@@ -550,17 +547,17 @@ function sortAlphabetReverse(){
 }
 
 /*Sort the data by due date*/
-function sortDueDate(){
+function sortDueDate() {
 
 }
 
 /*Sort the data by date*/
-function sortStartDate(){
+function sortStartDate() {
 
 }
 
 /*Sort the data by Category*/
-function sortCategory(){
+function sortCategory() {
   var table, rows, switching, i, x, y, shouldSwitch;
   table = document.getElementById("table");
   switching = true;
@@ -582,7 +579,7 @@ function sortCategory(){
       //check if the two rows should switch place:
       if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
-        shouldSwitch= true;
+        shouldSwitch = true;
         break;
       }
     }
@@ -596,10 +593,11 @@ function sortCategory(){
 }
 
 /*Sort by the latest modified first*/
-function sortLastModified(){
+function sortLastModified() {
   var table, rows, switching, i, x, y, shouldSwitch;
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
-    "Oct", "Nov", "Dec"];
+    "Oct", "Nov", "Dec"
+  ];
   table = document.getElementById("table");
   switching = true;
   /*Make a loop that will continue until
@@ -618,17 +616,17 @@ function sortLastModified(){
       x = rows[i].getElementsByTagName("TD")[2];
       y = rows[i + 1].getElementsByTagName("TD")[2];
       //check if the two rows should switch place:
-      var month = x.innerHTML.substring(0,3);
-      var month2 = y.innerHTML.substring(0,3);
+      var month = x.innerHTML.substring(0, 3);
+      var month2 = y.innerHTML.substring(0, 3);
       var date = x.innerHTML.substring(4);
       var date2 = y.innerHTML.substring(4);
       if (months.indexOf(month) > months.indexOf(month2) && months.indexOf(month) != months.indexOf(month2)) {
         //if so, mark as a switch and break the loop:
-        shouldSwitch= true;
+        shouldSwitch = true;
         break;
-      }else if(months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() > date2.toLowerCase()){
+      } else if (months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() > date2.toLowerCase()) {
         //if so, mark as a switch and break the loop:
-        shouldSwitch= true;
+        shouldSwitch = true;
         break;
       }
     }
@@ -642,10 +640,11 @@ function sortLastModified(){
 }
 
 /*Sort by the latest modified last*/
-function sortlastModifiedReversed(){
+function sortlastModifiedReversed() {
   var table, rows, switching, i, x, y, shouldSwitch;
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
-    "Oct", "Nov", "Dec"];
+    "Oct", "Nov", "Dec"
+  ];
   table = document.getElementById("table");
   switching = true;
   /*Make a loop that will continue until
@@ -664,17 +663,17 @@ function sortlastModifiedReversed(){
       x = rows[i].getElementsByTagName("TD")[2];
       y = rows[i + 1].getElementsByTagName("TD")[2];
       //check if the two rows should switch place:
-      var month = x.innerHTML.substring(0,3);
-      var month2 = y.innerHTML.substring(0,3);
+      var month = x.innerHTML.substring(0, 3);
+      var month2 = y.innerHTML.substring(0, 3);
       var date = x.innerHTML.substring(4);
       var date2 = y.innerHTML.substring(4);
-      if(months.indexOf(month) < months.indexOf(month2) && months.indexOf(month) != months.indexOf(month2)) {
+      if (months.indexOf(month) < months.indexOf(month2) && months.indexOf(month) != months.indexOf(month2)) {
         //if so, mark as a switch and break the loop:
-        shouldSwitch= true;
+        shouldSwitch = true;
         break;
-      }else if(months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() < date2.toLowerCase()){
+      } else if (months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() < date2.toLowerCase()) {
         //if so, mark as a switch and break the loop:
-        shouldSwitch= true;
+        shouldSwitch = true;
         break;
       }
     }
@@ -692,19 +691,20 @@ function sortlastModifiedReversed(){
 /* ------------------ FILTER PANEL ------------------ */
 
 /*Open the filter pannel and move the screen with it.*/
-function openLeft(){
+function openLeft() {
   var body = document.getElementById("main");
   var sideBar = document.getElementById("leftSidebar");
   var openButton = document.getElementById("leftOpenButton");
   body.style.marginLeft = "10%";
-  setTimeout(function(){
+  setTimeout(function() {
     sideBar.style.display = "block";
-    sideBar.style.width = "10%";}, 300);
+    sideBar.style.width = "10%";
+  }, 300);
   openButton.style.opacity = 0;
 }
 
 /*Close the filter pannel and move the screen with it.*/
-function closeLeft(){
+function closeLeft() {
   var body = document.getElementById("main");
   var sideBar = document.getElementById("leftSidebar");
   var openButton = document.getElementById("leftOpenButton");
@@ -716,44 +716,43 @@ function closeLeft(){
 
 /* ------------------ END OF FILTER PANEL ------------------ */
 
-function goToZendesk(){
+function goToZendesk() {
   window.open("https://www.zendesk.com");
 }
-function goToTrello(){
+
+function goToTrello() {
   window.open("https://www.trello.com");
 }
 
 /*-------------------- THEME CHANGE ------------------*/
 
 var alternate = 1;
-function changeColor(){
+
+function changeColor() {
   var body = document.body.style;
   var ticketBarHead = document.getElementById("info-header").style;
   var ticketHeads = document.getElementsByClassName("panel-heading");
   var tickets = document.getElementsByClassName("panel-body");
 
-  if(alternate == 1){
+  if (alternate == 1) {
     body.backgroundColor = "#1E1E1E";
     body.color = "lightgrey";
     ticketBarHead.backgroundColor = "#1E1E1E";
     console.log(tickets);
-    for(var i = 0; i < tickets.length; i++)
-    {
+    for (var i = 0; i < tickets.length; i++) {
       tickets[i].style.backgroundColor = "#7E7E7E";
       ticketHeads[i].style.backgroundColor = "#6E6E6E";
     }
-   }
-  else{
+  } else {
     body.backgroundColor = "#FFF";
     body.color = "#333";
     ticketBarHead.backgroundColor = "#CCC";
-    for(var i = 0; i < tickets.length; i++)
-    {
+    for (var i = 0; i < tickets.length; i++) {
       tickets[i].style.backgroundColor = "#FFF";
       ticketHeads[i].style.backgroundColor = "#F5F5F5";
     }
   }
- alternate  = alternate % 2 + 1; //Increment/decrement alternate.
+  alternate = alternate % 2 + 1; //Increment/decrement alternate.
 }
 /* ------------------ END THEME CHANGE ------------------ */
 
@@ -776,12 +775,12 @@ $(".grid").on("click", "td", function(e) {
 
   /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
   newCard.innerHTML = '<div class="panel panel-default">' +
-  '<div class="panel-heading">' +
-  '<h3 class="panel-title">Ticket #1234 ' +
-  '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
-  '</h3></div>' +
-  '<div class="panel-body">Ticket Info' +
-  '</div></div>';
+    '<div class="panel-heading">' +
+    '<h3 class="panel-title">Ticket #1234 ' +
+    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
+    '</h3></div>' +
+    '<div class="panel-body">Ticket Info' +
+    '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
 });
@@ -791,12 +790,9 @@ $("#openInfo").click(function(e) {
   e.preventDefault();
   $(".info-panel").toggleClass("toggled");
 
-  if ($(this).text() === "Open Ticket Panel")
-  {
+  if ($(this).text() === "Open Ticket Panel") {
     $(this).text("Close Ticket Panel");
-  }
-  else
-  {
+  } else {
     $(this).text("Open Ticket Panel");
   }
 });
@@ -814,8 +810,8 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e) {
 
 /* ------------------ END OF TICKET PANEL ------------------ */
 
-function sort(){
-  switch(document.getElementsByName("sortBy")[0].value){
+function sort() {
+  switch (document.getElementsByName("sortBy")[0].value) {
     case "a-z":
       sortAlphabet();
       break;
@@ -846,7 +842,7 @@ function sort(){
   }
 }
 
-function filterNotStared(){
+function filterNotStared() {
   filterAll();
   var table, i;
   table = document.getElementById("table");
@@ -854,14 +850,13 @@ function filterNotStared(){
   var currentRow;
   for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Not Started" && currentRow.style.display != "none")
-    {
+    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "Not Started" && currentRow.style.display != "none") {
       $(currentRow).toggle();
     }
   }
 }
 
-function filterInProgress(){
+function filterInProgress() {
   filterAll();
   var table, i;
   table = document.getElementById("table");
@@ -869,14 +864,13 @@ function filterInProgress(){
   var currentRow;
   for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "In Progress" && currentRow.style.display != "none")
-    {
+    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "In Progress" && currentRow.style.display != "none") {
       $(currentRow).toggle();
     }
   }
 }
 
-function filterToReview(){
+function filterToReview() {
   filterAll();
   var table, i;
   table = document.getElementById("table");
@@ -884,14 +878,13 @@ function filterToReview(){
   var currentRow;
   for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "To Review" && currentRow.style.display != "none")
-    {
+    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "To Review" && currentRow.style.display != "none") {
       $(currentRow).toggle();
     }
   }
 }
 
-function filterCompleted(){
+function filterCompleted() {
   filterAll();
   var table, i;
   table = document.getElementById("table");
@@ -899,14 +892,13 @@ function filterCompleted(){
   var currentRow;
   for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Completed" && currentRow.style.display != "none")
-    {
+    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "Completed" && currentRow.style.display != "none") {
       $(currentRow).toggle();
     }
   }
 }
 
-function filterBlocked(){
+function filterBlocked() {
   filterAll();
   var table, i;
   table = document.getElementById("table");
@@ -914,20 +906,18 @@ function filterBlocked(){
   var currentRow;
   for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
-    if(currentRow.getElementsByTagName("TD")[3].innerHTML != "Blocked" && currentRow.style.display != "none")
-    {
+    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "Blocked" && currentRow.style.display != "none") {
       $(currentRow).toggle();
     }
   }
 }
 
-function filterAll(){
+function filterAll() {
   var table, i;
   table = document.getElementById("table");
   rows = table.getElementsByTagName("TR");
   var currentRow;
-  for (i = 1; i < rows.length; i++)
-  {
+  for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
     currentRow.style.display = "table-row";
   }
@@ -935,7 +925,7 @@ function filterAll(){
 
 /*---------------------------------Search-------------------------------------*/
 
-function search(){
+function search() {
   var searchFor = document.getElementsByClassName("form-control")[0].value;
   table = document.getElementById("table");
   rows = table.getElementsByTagName("TR");
@@ -943,14 +933,12 @@ function search(){
   for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
     items = currentRow.getElementsByTagName("TD");
-    for(td = 0; td < items.length; td++)
-    {
-      if(items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase()))
-      {
+    for (td = 0; td < items.length; td++) {
+      if (items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase())) {
         currentRow.style.display = "table-row";
         break;
       }
-      if(td == items.length - 1 && currentRow.style.display != "none")
+      if (td == items.length - 1 && currentRow.style.display != "none")
         $(currentRow).toggle();
     }
   }
