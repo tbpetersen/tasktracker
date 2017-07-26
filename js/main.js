@@ -723,18 +723,20 @@ function goToTrello(){
   window.open("https://www.trello.com");
 }
 
-/*-------------------- THEME CHANGE ------------------------------------------*/
-var alternate = 1; //Used with alternate % 2 + 1 to alternate between 1 and 2
+/*-------------------- THEME CHANGE ------------------*/
+
+var alternate = 1;
 function changeColor(){
   var body = document.body.style;
   var ticketBarHead = document.getElementById("info-header").style;
   var ticketHeads = document.getElementsByClassName("panel-heading");
   var tickets = document.getElementsByClassName("panel-body");
-  //Check if alternate is 1
+
   if(alternate == 1){
     body.backgroundColor = "#1E1E1E";
     body.color = "lightgrey";
     ticketBarHead.backgroundColor = "#1E1E1E";
+    console.log(tickets);
     for(var i = 0; i < tickets.length; i++)
     {
       tickets[i].style.backgroundColor = "#7E7E7E";
@@ -753,6 +755,7 @@ function changeColor(){
   }
  alternate  = alternate % 2 + 1; //Increment/decrement alternate.
 }
+/* ------------------ END THEME CHANGE ------------------ */
 
 /* ------------------ TICKET PANEL ------------------ */
 
@@ -775,7 +778,7 @@ $(".grid").on("click", "td", function(e) {
   newCard.innerHTML = '<div class="panel panel-default">' +
   '<div class="panel-heading">' +
   '<h3 class="panel-title">Ticket #1234 ' +
-  '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
+  '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
   '</h3></div>' +
   '<div class="panel-body">Ticket Info' +
   '</div></div>';
