@@ -99,18 +99,20 @@ $(document).ready(function(){
 
       createTasksFromCardsAndTickets(cardsAndTickets).then(function(){
 
-        var trelloCat = ["Not Started", "Blocked", "In Progess", "For Review", "Completed", "July Billing"];
+        var trelloCat = ["Not_Started", "Blocked", "In Progess", "For_Review", "Completed", "July_Billing"];
         var zendCat = ["open", "pending", "closed", "new", "solved"];
 
         var actual = [];
         for (var i = 0; i < trelloCat.length; i++) {
           for (var j = 0; j < user.tasks.length; j++) {
-            if (user.tasks[j].category == trelloCat[i]) {
-              if(document.getElementById(user.tasks[j].category) == null) {
-                createTable(user.tasks[j].category);
+            var str = user.tasks[j].category;
+            var cat = str.split(' ').join('_');
+            if (cat === trelloCat[i]) {
+              if(document.getElementById(cat) == null) {
+                createTable(cat);
                 //actualTrello.push(user.tasks[j].category);
               }
-              populateTable(user.tasks[j], user.tasks[j].category);
+              populateTable(user.tasks[j], cat);
             }
           }
         }
@@ -823,7 +825,8 @@ function goToTrello(){
   window.open("https://www.trello.com");
 }
 
-/*-------------------- THEME CHANGE ------------------------------------------*/
+/*-------------------- THEME CHANGE ------------------*/
+
 var alternate = 1;
 function changeColor(){
   var body = document.body.style;
@@ -852,8 +855,9 @@ function changeColor(){
       ticketHeads[i].style.backgroundColor = "#F5F5F5";
     }
   }
- alternate  = alternate % 2 + 1;
+ alternate  = alternate % 2 + 1; //Increment/decrement alternate.
 }
+/* ------------------ END THEME CHANGE ------------------ */
 
 /* ------------------ TICKET PANEL ------------------ */
 
@@ -865,6 +869,7 @@ $(".grid").on("click", "td", function(e) {
   var isClosed = true;
 
   // var index = $('table tr').index(tr);
+  // alert(index);
 
   if (isClosed == true) {
     isClosed = false;
@@ -876,7 +881,7 @@ $(".grid").on("click", "td", function(e) {
   newCard.innerHTML = '<div class="panel panel-default">' +
   '<div class="panel-heading">' +
   '<h3 class="panel-title">Ticket #1234 ' +
-  '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true" onclick="delCard();"></i>' +
+  '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
   '</h3></div>' +
   '<div class="panel-body">Ticket Info' +
   '</div></div>';
@@ -1024,9 +1029,31 @@ function filterAll(){
   table = document.getElementById("table");
   rows = table.getElementsByTagName("TR");
   var currentRow;
-  for (i = 1; i < (rows.length); i++)
+  for (i = 1; i < rows.length; i++)
   {
     currentRow = rows[i]
     currentRow.style.display = "table-row";
+  }
+}
+
+/*---------------------------------Search-------------------------------------*/
+function search(){
+  var searchFor = document.getElementsByClassName("form-control")[0].value;
+  table = document.getElementById("table");
+  rows = table.getElementsByTagName("TR");
+  var currentRow, items, i, td;
+  for (i = 1; i < rows.length; i++) {
+    currentRow = rows[i]
+    items = currentRow.getElementsByTagName("TD");
+    for(td = 0; td < items.length; td++)
+    {
+      if(items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase()))
+      {
+        currentRow.style.display = "table-row";
+        break;
+      }
+      if(td == items.length - 1 && currentRow.style.display != "none")
+        $(currentRow).toggle();
+    }
   }
 }

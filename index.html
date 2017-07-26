@@ -74,9 +74,9 @@
               <div class="form-group">
                 <input type="text" class="form-control" placeholder="Search">
               </div>
-              <button type="submit" class="btn btn-default">
-            <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
-            </button>
+              <button class="btn btn-default" onclick="search()">
+                <span class="glyphicon glyphicon-search"></span>
+              </button>
             </form>
           </li>
         </ul>
@@ -94,9 +94,7 @@
       <div class="panel panel-default" id="card1">
         <div class="panel-heading">
           <h3 class="panel-title">Ticket #1234
-            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"
-              onclick="delCard();">
-            </i>
+            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>
           </h3>
         </div>
         <div class="panel-body">
@@ -106,8 +104,7 @@
       <div class="panel panel-default" id="card2">
         <div class="panel-heading">
           <h3 class="panel-title">Ticket #5678
-            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"
-            onclick="delCard();"></i>
+            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>
           </h3>
         </div>
         <div class="panel-body">
@@ -118,9 +115,9 @@
 
     <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
   </div>
-  <!-- End of info panel -->
+<!-- End of info panel -->
 
-  <!-- FILTER SIDEBAR -->
+<!-- FILTER SIDEBAR -->
   <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
     <h3 class="w3-bar-item" id="filters">Filters</h3>
     <button class="w3-bar-item w3-button" onclick="filterAll()">
@@ -165,15 +162,14 @@
         </thead>
       </table>
       -->
-    </div>
   </div>
+</div>
 
-  <!-- jQuery & JavaScript -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
-  <script type="text/javascript" src="js/main.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- jQuery & JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 </body>
-
 </html>
-

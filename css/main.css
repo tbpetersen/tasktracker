@@ -2,7 +2,7 @@
 	#navbar-links{
 		position: absolute;
 		top: 0%;
-		left: 908px;
+		left: 87vh;
 		min-width: 600px;
 	}
 	#app-title{
@@ -11,6 +11,9 @@
 	}
 	#logo{
 		min-width: 358px;
+	}
+	.navbar-form{
+		left: 87vh;
 	}
 }
 
@@ -82,7 +85,6 @@ tr:not(:first-child):hover {
 #logo{
   position: absolute;
   top: 0%;
-  max-width: 25%;
   left: 70px;
   cursor: pointer;
   max-height:100%;
@@ -148,6 +150,10 @@ select#sortList {
 #leftSidebar h3{
   margin-top: 0px;
   background-color: #dd6367;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Side info panel */
@@ -161,6 +167,7 @@ select#sortList {
   right: -20%;
   background-color: #ededed;
   overflow-x: hidden;
+  overflow-y: hidden;
   transition: 0.5s;
 }
 
@@ -183,7 +190,8 @@ select#sortList {
 {
   margin: 0;
   background-color: #ccc;
-  height: 5%;
+  /*height: 5%;*/
+  height: 50px;
   width: 100%;
   font-weight: bold;
   font-size: 2vw;
@@ -230,17 +238,10 @@ select#sortList {
 .navbar
 {
   positon: relative;
-  background-color: #fff;
+  background-color: lightgrey;
   border-bottom-color: #262626;
   width: 100%;
-}
-
-nav.navbar.navbar-default {
-    background-color: lightgrey;
-}
-
-ul.nav.navbar-nav {
-    height: 5.5vh;
+  height: 50px;
 }
 
 #navbar-links
