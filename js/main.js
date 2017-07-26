@@ -106,7 +106,7 @@ function populateTable(tasks) {
   for(var i = 0; i < tasks.length; i++) {
     addRow(tasks, i);
   }
-  
+
   // Make new rows draggable
   draggableRows();
 }
@@ -931,6 +931,7 @@ function filterAll(){
 }
 
 /*---------------------------------Search-------------------------------------*/
+
 function search(){
   var searchFor = document.getElementsByClassName("form-control")[0].value;
   table = document.getElementById("table");
@@ -950,4 +951,5 @@ function search(){
         $(currentRow).toggle();
     }
   }
+  return false; //Used to disable submitting.
 }
