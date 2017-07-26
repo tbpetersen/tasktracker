@@ -249,14 +249,6 @@ select#sortList {
   height: 50px;
 }
 
-nav.navbar.navbar-default {
-  background-color: lightgrey;
-}
-
-ul.nav.navbar-nav {
-  height: 5.5vh;
-}
-
 #navbar-links {
   float: right;
 }

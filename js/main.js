@@ -926,6 +926,7 @@ function filterAll() {
 
 /*---------------------------------Search-------------------------------------*/
 
+<<<<<<< Updated upstream
 function search() {
   var searchFor = document.getElementsByClassName("form-control")[0].value;
   table = document.getElementById("table");
