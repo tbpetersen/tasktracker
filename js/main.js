@@ -847,7 +847,6 @@ function changeColor() {
     body.backgroundColor = "#1E1E1E";
     body.color = "lightgrey";
     ticketBarHead.backgroundColor = "#1E1E1E";
-    console.log(tickets);
     for (var i = 0; i < tickets.length; i++) {
       tickets[i].style.backgroundColor = "#7E7E7E";
       ticketHeads[i].style.backgroundColor = "#6E6E6E";
