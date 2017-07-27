@@ -1004,9 +1004,11 @@ function filterAll() {
 
 function search() {
   var searchFor = document.getElementsByClassName("form-control")[0].value;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow, items, i, td;
+  var tables = document.getElementsByTagName("table");
+  var rows;
+  var currentRow, items, i, j, td;
+  for(j = 0; j < tables.length; j++) {
+    rows = tables[j].getElementsByTagName("TR");
   for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
     items = currentRow.getElementsByTagName("TD");
@@ -1019,5 +1021,6 @@ function search() {
         $(currentRow).toggle();
     }
   }
+}
   return false; //Used to disable submitting.
 }
