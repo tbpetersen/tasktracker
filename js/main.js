@@ -882,9 +882,6 @@ $(".main").on("click", "table > tbody > tr", function(e) {
   var newCard = document.createElement('div');
   var isClosed = true;
 
-  // var index = $('table tr').index(tr);
-  // alert(index);
-
   if (isClosed == true) {
     isClosed = false;
     $(".info-panel").addClass("toggled");
