@@ -69,12 +69,13 @@ td, #descCell {width: 55%; text-align: center;}
 td, #modCell {width: 10%; text-align: center;}
 td, #catCell {width: 10%; text-align: center;}
 
-td, #title {text-align: left;}
-td, #desc {text-align: left;}
-td, #mod {text-align: center;}
-td, #cat {text-align: center;}
+td, #title {width: 25%; text-align: left;}
+td, #desc {width: 55%; text-align: left;}
+td, #mod {width: 10%; text-align: center;}
+td, #cat {width: 10%; text-align: center;}
 
 td {
+  height: 69px;
   border-style: solid;
   word-wrap: break-word;
   border-width: 1px;
