@@ -39,7 +39,7 @@
   }
 }
 
-html, body {
+body {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
   -webkit-transition: all 0.5s ease;
@@ -47,6 +47,7 @@ html, body {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   height: 100%;
+  padding-top: 70px;
 }
 
 body.toggled {
@@ -56,7 +57,6 @@ body.toggled {
 body.toggled #leftSidebar {
   left: 0%;
 }
-
 
 /* Tables */
 table, th {
@@ -252,10 +252,18 @@ select#sortList {
 
 /* Navbar */
 .navbar {
-  positon: relative;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  padding-left: 0;
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
   background-color: lightgrey;
-  width: 100%;
   height: 55px;
+}
+
+.navbar.toggled {
+  margin-left: 10%;;
 }
 
 .navbar-brand

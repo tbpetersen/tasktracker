@@ -86,6 +86,7 @@ $(document).ready(function() {
 
   $('[data-toggle="offcanvas"]').click(function() {
     $('body').toggleClass('toggled');
+    $('.navbar').toggleClass('toggled');
   });
 
   setupPage();
@@ -856,7 +857,7 @@ $(".main").on("click", "table > tbody > tr", function(e) {
   var cardTitle = task.name;
   var cardDesc = task.desc;
 
-  alert(this.id);
+  // alert(this.id);
 
   if (isClosed == true) {
     isClosed = false;
