@@ -877,6 +877,28 @@ function changeColor() {
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
 $(".main").on("click", "table > tbody > tr", function(e) {
+  event.preventDefault();
+  var newCard = document.createElement('div');
+  var isClosed = true;
+  var task = user.tasks[this.id];
+  var cardTitle = task.name;
+  var cardDesc = task.desc;
+
+  if (isClosed == true) {
+    isClosed = false;
+    $(".info-panel").addClass("toggled");
+    $("#openInfo").text("Close Ticket Panel");
+  }
+
+  /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
+  newCard.innerHTML = '<div class="panel panel-default">' +
+    '<div class="panel-heading">' +
+    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
+    '</h3></div>' +
+    '<div class="panel-body">' + cardDesc +
+    '</div></div>';
+
+  document.getElementById("card-list").appendChild(newCard);
 });
 
 /* Click event listener for openInfo to toggle the ticket panel view */
