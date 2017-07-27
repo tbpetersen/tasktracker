@@ -65,7 +65,6 @@ Task.prom = new Array();
 
 
 $(document).ready(function() {
-
   // Hamburger menu toggle
   var trigger = $('.hamburger');
 
@@ -849,13 +848,13 @@ function changeColor() {
 
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
-$(".grid").on("click", "td", function(e) {
+$(".main").on("click", "table > tbody > tr", function(e) {
   event.preventDefault();
   var newCard = document.createElement('div');
   var isClosed = true;
-
-  // var index = $('table tr').index(tr);
-  // alert(index);
+  var task = user.tasks[this.id];
+  var cardTitle = task.name;
+  var cardDesc = task.desc;
 
   if (isClosed == true) {
     isClosed = false;
@@ -863,13 +862,11 @@ $(".grid").on("click", "td", function(e) {
     $("#openInfo").text("Close Ticket Panel");
   }
 
-  /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
   newCard.innerHTML = '<div class="panel panel-default">' +
     '<div class="panel-heading">' +
-    '<h3 class="panel-title">Ticket #1234 ' +
-    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
+    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
     '</h3></div>' +
-    '<div class="panel-body">Ticket Info' +
+    '<div class="panel-body">' + cardDesc +
     '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
