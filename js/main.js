@@ -877,6 +877,14 @@ function changeColor() {
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
 $(".main").on("click", "table > tbody > tr", function(e) {
+  var ticketHTML = this.innerHTML;
+  // console.log(this.childNodes);
+  var title = this.childNodes[0].innerHTML;
+  var description = this.childNodes[1].innerHTML;
+  var date = this.childNodes[2].innerHTML;
+  var category = this.childNodes[3].innerHTML;
+  var details = description + date + category;
+  console.log(title + description + date + category);
   event.preventDefault();
   var newCard = document.createElement('div');
   var isClosed = true;
@@ -893,10 +901,10 @@ $(".main").on("click", "table > tbody > tr", function(e) {
   /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
   newCard.innerHTML = '<div class="panel panel-default">' +
     '<div class="panel-heading">' +
-    '<h3 class="panel-title">Ticket #1234 ' +
+    '<h3 class="panel-title">' + title +
     '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
     '</h3></div>' +
-    '<div class="panel-body">Ticket Info' +
+    '<div class="panel-body">'+ details +
     '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
