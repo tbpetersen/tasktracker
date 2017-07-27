@@ -238,6 +238,8 @@ select#sortList {
   float: right;
   cursor: pointer;
   color: #c60909;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 
@@ -279,7 +281,7 @@ select#sortList {
 #app-title {
   cursor: pointer;
   position: absolute;
-  width: 100%;
+  left: 50%;
   height: 100%;
   margin: 0;
   display: flex;

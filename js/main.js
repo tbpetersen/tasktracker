@@ -881,6 +881,9 @@ $(".main").on("click", "table > tbody > tr", function(e) {
   event.preventDefault();
   var newCard = document.createElement('div');
   var isClosed = true;
+  var task = user.tasks[this.id];
+  var cardTitle = task.name;
+  var cardDesc = task.desc;
 
   if (isClosed == true) {
     isClosed = false;
@@ -891,10 +894,9 @@ $(".main").on("click", "table > tbody > tr", function(e) {
   /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
   newCard.innerHTML = '<div class="panel panel-default">' +
     '<div class="panel-heading">' +
-    '<h3 class="panel-title">Ticket #1234 ' +
-    '<i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
+    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
     '</h3></div>' +
-    '<div class="panel-body">Ticket Info' +
+    '<div class="panel-body">' + cardDesc +
     '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
