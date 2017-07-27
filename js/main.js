@@ -147,7 +147,6 @@ $(document).ready(function() {
             }
           }*/
 
-
         for (var i = 0; i < trelloCat.length; i++) {
           if (document.getElementById(trelloCat[i]) != null) {
             assignIDtoRows(trelloCat[i]);
