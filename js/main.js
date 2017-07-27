@@ -856,6 +856,8 @@ $(".main").on("click", "table > tbody > tr", function(e) {
   var cardTitle = task.name;
   var cardDesc = task.desc;
 
+  alert(this.id);
+
   if (isClosed == true) {
     isClosed = false;
     $(".info-panel").addClass("toggled");
@@ -866,10 +868,11 @@ $(".main").on("click", "table > tbody > tr", function(e) {
     '<div class="panel-heading">' +
     '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
     '</h3></div>' +
-    '<div class="panel-body">' + cardDesc +
+    '<div class="panel-body">' + cardDesc
     '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
+  newCard.scrollIntoView();
 });
 
 /* Click event listener for openInfo to toggle the ticket panel view */
