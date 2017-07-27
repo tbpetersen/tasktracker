@@ -99,11 +99,11 @@ $(document).ready(function() {
 
 
       createTasksFromCardsAndTickets(cardsAndTickets).then(function(){
-
-        var trelloCat = ["Not_Started", "Blocked", "In Progess", "For_Review", "Completed", "July_Billing"];
+      console.log(user.tasks);
+        var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review", "Completed", "July_Billing"];
         var zendCat = ["open", "pending", "closed", "new", "solved"];
 
-        var actual = [];
+        var actualTrello = [];
         for (var i = 0; i < trelloCat.length; i++) {
           for (var j = 0; j < user.tasks.length; j++) {
             var str = user.tasks[j].category;
@@ -111,7 +111,7 @@ $(document).ready(function() {
             if (cat === trelloCat[i]) {
               if(document.getElementById(cat) == null) {
                 createTable(cat);
-                //actualTrello.push(user.tasks[j].category);
+                actualTrello.push(user.tasks[j].category);
               }
               populateTable(user.tasks[j], cat);
             }
@@ -128,6 +128,24 @@ $(document).ready(function() {
             }
           }
         }
+
+        /*
+        for(var i = 0; i < actualTrello.length; i++) {
+          for(var j = 0; j < actualTrello.length; j++) {
+            var str = actualTrello[i];
+            var cat = str.split(' ').join('_');
+            var str2 = actualTrello[j];
+            var cat2 = str2.split(' ').join('_');
+            var string = '#' + cat;
+            var stringg = '#' + cat2;
+            console.log(string);
+            console.log(stringg);
+            var stringgg = string + ", " + stringg;
+            $(stringgg).sortable({
+              connectWith: stringgg
+            });
+            }
+          }*/
 
         for(var i = 0; i < trelloCat.length; i++) {
           if(document.getElementById(trelloCat[i]) != null) {
@@ -221,6 +239,7 @@ function addRow(tasks, tableName) {
 
   // Get category of task
   var cat = tasks.category;
+  //console.log(tasks);
 
   table = document.getElementById(tableName);
 
@@ -286,17 +305,7 @@ function draggableRows(tableName) {
 
   $(".fixed").addClass("ui-state-disabled");
           
-  /*for(var i = 0; i < actualTrello.length; i++) {
-    for(var j = 0; j < actualTrello.length; j++) {
-    var string = '#' + actualTrello[i];
-    var stringg = '#' + actualTrello[j];
-    console.log(string);
-    console.log(stringg);
-    $('#' + actualTrello[i], '#' + actualTrello[j]).sortable({
-      connectWith: string, stringg
-    });
-  }
-  }*/
+
 }
 
 function setupPage() {
@@ -519,6 +528,8 @@ function createTasksFromCardsAndTickets(cardsAndTickets) {
       tasks.push(new Task(cardsAndTickets[i][j], i));
     }
     user.tasks = tasks;
+    //console.log(tasks);
+    //console.log(user.tasks);
   }
   return Promise.all(Task.prom);
 }
