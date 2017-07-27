@@ -192,6 +192,7 @@ select#sortList {
 .info-panel .info-cards {
   width: 100%;
   height: 90%;
+  direction: rtl;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -228,6 +229,7 @@ select#sortList {
 /* Individual cards */
 
 .panel {
+  direction: ltr;
   margin: 15px;
 }
 
