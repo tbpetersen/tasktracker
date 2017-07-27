@@ -86,6 +86,7 @@ $(document).ready(function() {
 
   $('[data-toggle="offcanvas"]').click(function() {
     $('body').toggleClass('toggled');
+    $('.navbar').toggleClass('toggled');
   });
 
   setupPage();
@@ -100,9 +101,8 @@ $(document).ready(function() {
       createTasksFromCardsAndTickets(cardsAndTickets).then(function(){
       console.log(user.tasks);
         var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review", "Completed", "July_Billing"];
-        var zendCat = ["open", "pending", "closed", "new", "solved"];
+        var zendCat = ["open", "pending", "closed", "new", "solved", "hold"];
 
-        var actualTrello = [];
         for (var i = 0; i < trelloCat.length; i++) {
           for (var j = 0; j < user.tasks.length; j++) {
             var str = user.tasks[j].category;
@@ -110,9 +110,12 @@ $(document).ready(function() {
             if (cat === trelloCat[i]) {
               if (document.getElementById(cat) == null) {
                 createTable(cat);
-                actualTrello.push(user.tasks[j].category);
               }
-              populateTable(user.tasks[j], cat);
+              populateTable(user.tasks[j], cat, j);  
+              /* Checking id of rows/tasks
+              var table = document.getElementById(user.tasks[j].category);
+              console.log(table.rows[table.rows.length-1].id);
+              console.log(user.tasks[j]);  */       
             }
           }
         }
@@ -123,38 +126,8 @@ $(document).ready(function() {
               if (document.getElementById(user.tasks[j].category) == null) {
                 createTable(user.tasks[j].category);
               }
-              populateTable(user.tasks[j], user.tasks[j].category);
+              populateTable(user.tasks[j], user.tasks[j].category, j);
             }
-          }
-        }
-
-        /*
-        for(var i = 0; i < actualTrello.length; i++) {
-          for(var j = 0; j < actualTrello.length; j++) {
-            var str = actualTrello[i];
-            var cat = str.split(' ').join('_');
-            var str2 = actualTrello[j];
-            var cat2 = str2.split(' ').join('_');
-            var string = '#' + cat;
-            var stringg = '#' + cat2;
-            console.log(string);
-            console.log(stringg);
-            var stringgg = string + ", " + stringg;
-            $(stringgg).sortable({
-              connectWith: stringgg
-            });
-            }
-          }*/
-
-        for (var i = 0; i < trelloCat.length; i++) {
-          if (document.getElementById(trelloCat[i]) != null) {
-            assignIDtoRows(trelloCat[i]);
-          }
-        }
-
-        for (var i = 0; i < zendCat.length; i++) {
-          if (document.getElementById(zendCat[i]) != null) {
-            assignIDtoRows(zendCat[i]);
           }
         }
 
@@ -174,8 +147,6 @@ function createTable(tableName) {
   mainDiv.appendChild(table);
   table.setAttribute("id", tableName);
 
-  // table = document.getElementById(tableName);
-
   //create row and cell element
   row = document.createElement("tr");
   titleCell = document.createElement("th");
@@ -185,6 +156,7 @@ function createTable(tableName) {
 
   row.setAttribute("id", "firstRow");
   row.setAttribute("class", "fixed");
+  body.setAttribute("class", "body");
 
 
   titleCell.setAttribute("id", "titleCell");
@@ -216,33 +188,33 @@ function createTable(tableName) {
   draggableRows(tableName);
 }
 
-function populateTable(tasks, tableName) {
+function populateTable(task, tableName, index) {
   var table = document.getElementById(tableName);
-  addRow(tasks, tableName);
+  addRow(task, tableName, index);
 
   // THIS IS HOW YOU ACCESS AN INDIVIDUAL CELL IN THE TABLE
   //console.log(document.getElementById("table").rows[2].cells.item(3).innerHTML);
 }
 
-function addRow(tasks, tableName) {
+function addRow(task, tableName, index) {
 
   // Get title of task
-  var title = tasks.name;
+  var title = task.name;
 
   // Get description's first 140 characters
-  var desc = tasks.desc;
+  var desc = task.desc;
   var shortDesc = (desc).substring(0, 140);
   if (desc.length > 140) {
     shortDesc = shortDesc + "...";
   }
 
   // Get last modified date from timestamp
-  var date = new Date(tasks.lastModified);
+  var date = new Date(task.lastModified);
   date = date.toDateString();
   date = date.substring(4);
 
   // Get category of task
-  var cat = tasks.category;
+  var cat = task.category;
 
   // table = document.getElementById(tableName);
   var body = document.getElementById(tableName).getElementsByTagName('tbody')[0];
@@ -277,21 +249,16 @@ function addRow(tasks, tableName) {
   row.appendChild(modCell);
   row.appendChild(catCell);
 
+  row.setAttribute("id", index);
+
   // append row to table/body
   body.appendChild(row);
-}
 
-function assignIDtoRows(tableName) {
-  var rows = document.getElementById(tableName).rows.length;
-  for (var i = 1; i < rows; ++i) {
-    document.getElementById(tableName).rows[i].id = ID;
-    ID++;
-  }
 }
 
 function draggableRows(tableName) {
   // Drag rows
-  $('#' + tableName).sortable();
+  //$('#' + tableName).sortable();
 
   // Prevent rows from shrinking while dragging
   var fixHelper = function(e, ui) {
@@ -301,6 +268,12 @@ function draggableRows(tableName) {
     return ui;
   };
 
+  $("tbody.body").sortable();
+  $("tbody.body").sortable({
+    connectWith: ".body",
+    helper: fixHelper
+  }).disableSelection();
+  
   $('#' + tableName).sortable({
     helper: fixHelper,
     cancel: ".ui-state-disabled",
@@ -883,6 +856,8 @@ $(".main").on("click", "table > tbody > tr", function(e) {
   var cardTitle = task.name;
   var cardDesc = task.desc;
 
+  // alert(this.id);
+
   if (isClosed == true) {
     isClosed = false;
     $(".info-panel").addClass("toggled");
@@ -893,10 +868,11 @@ $(".main").on("click", "table > tbody > tr", function(e) {
     '<div class="panel-heading">' +
     '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
     '</h3></div>' +
-    '<div class="panel-body">' + cardDesc +
+    '<div class="panel-body">' + cardDesc
     '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
+  newCard.scrollIntoView();
 });
 
 /* Click event listener for openInfo to toggle the ticket panel view */

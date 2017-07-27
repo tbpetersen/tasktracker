@@ -39,7 +39,7 @@
   }
 }
 
-html, body {
+body {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
   -webkit-transition: all 0.5s ease;
@@ -47,6 +47,7 @@ html, body {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   height: 100%;
+  padding-top: 70px;
 }
 
 body.toggled {
@@ -56,7 +57,6 @@ body.toggled {
 body.toggled #leftSidebar {
   left: 0%;
 }
-
 
 /* Tables */
 table, th {
@@ -69,12 +69,13 @@ td, #descCell {width: 55%; text-align: center;}
 td, #modCell {width: 10%; text-align: center;}
 td, #catCell {width: 10%; text-align: center;}
 
-td, #title {text-align: left;}
-td, #desc {text-align: left;}
-td, #mod {text-align: center;}
-td, #cat {text-align: center;}
+td, #title {width: 25%; text-align: left;}
+td, #desc {width: 55%; text-align: left;}
+td, #mod {width: 10%; text-align: center;}
+td, #cat {width: 10%; text-align: center;}
 
 td {
+  height: 69px;
   border-style: solid;
   word-wrap: break-word;
   border-width: 1px;
@@ -166,10 +167,11 @@ select#sortList {
 
 .info-panel {
   height: 100%;
-  width: 20%;
+  width: 20%; 
   position: fixed;
   z-index: 1;
   top: 0;
+  padding-top: 55px;
   right: -20%;
   background-color: #ededed;
   overflow-x: hidden;
@@ -190,7 +192,9 @@ select#sortList {
 .info-panel .info-cards {
   width: 100%;
   height: 90%;
+  direction: rtl;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 
@@ -199,8 +203,7 @@ select#sortList {
 #info-header {
   margin: 0;
   background-color: #ccc;
-  /*height: 5%;*/
-  height: 55px;
+  height: 5%;
   width: 100%;
   font-weight: bold;
   font-size: 2vw;
@@ -226,6 +229,7 @@ select#sortList {
 /* Individual cards */
 
 .panel {
+  direction: ltr;
   margin: 15px;
 }
 
@@ -242,13 +246,27 @@ select#sortList {
   margin-right: 2px;
 }
 
+.panel-body
+{
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
 
 /* Navbar */
 .navbar {
-  positon: relative;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  padding-left: 0;
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
   background-color: lightgrey;
-  width: 100%;
   height: 55px;
+}
+
+.navbar.toggled {
+  margin-left: 10%;;
 }
 
 .navbar-brand
