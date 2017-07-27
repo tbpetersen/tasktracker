@@ -148,7 +148,8 @@ $(document).ready(function() {
 
 function createTable(tableName) {
   var table = document.createElement("TABLE");
-  document.body.appendChild(table);
+  var mainDiv = document.getElementById("main-container");
+  mainDiv.appendChild(table);
 
   table.setAttribute("id", tableName);
 
