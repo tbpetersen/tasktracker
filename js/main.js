@@ -91,14 +91,14 @@ $(document).ready(function() {
 
   setupPage();
 
-  setIDs().then(function(){
-    getCardsAndTickets().then(function(cardsAndTickets){
+  setIDs().then(function() {
+    getCardsAndTickets().then(function(cardsAndTickets) {
       console.log(cardsAndTickets);
 
       user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
 
-      createTasksFromCardsAndTickets(cardsAndTickets).then(function(){
+      createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
 
         var trelloCat = ["Not_Started", "Blocked", "In Progess", "For_Review", "Completed", "July_Billing"];
         var zendCat = ["open", "pending", "closed", "new", "solved"];
@@ -109,7 +109,7 @@ $(document).ready(function() {
             var str = user.tasks[j].category;
             var cat = str.split(' ').join('_');
             if (cat === trelloCat[i]) {
-              if(document.getElementById(cat) == null) {
+              if (document.getElementById(cat) == null) {
                 createTable(cat);
                 //actualTrello.push(user.tasks[j].category);
               }
@@ -121,7 +121,7 @@ $(document).ready(function() {
         for (var i = 0; i < zendCat.length; i++) {
           for (var j = 0; j < user.tasks.length; j++) {
             if (user.tasks[j].category == zendCat[i]) {
-              if(document.getElementById(user.tasks[j].category) == null) {
+              if (document.getElementById(user.tasks[j].category) == null) {
                 createTable(user.tasks[j].category);
               }
               populateTable(user.tasks[j], user.tasks[j].category);
@@ -129,14 +129,14 @@ $(document).ready(function() {
           }
         }
 
-        for(var i = 0; i < trelloCat.length; i++) {
-          if(document.getElementById(trelloCat[i]) != null) {
+        for (var i = 0; i < trelloCat.length; i++) {
+          if (document.getElementById(trelloCat[i]) != null) {
             assignIDtoRows(trelloCat[i]);
           }
         }
 
-        for(var i = 0; i < zendCat.length; i++) {
-          if(document.getElementById(zendCat[i]) != null) {
+        for (var i = 0; i < zendCat.length; i++) {
+          if (document.getElementById(zendCat[i]) != null) {
             assignIDtoRows(zendCat[i]);
           }
         }
@@ -260,7 +260,7 @@ function addRow(tasks, tableName) {
 
 function assignIDtoRows(tableName) {
   var rows = document.getElementById(tableName).rows.length;
-  for(var i = 1; i < rows; ++i) {
+  for (var i = 1; i < rows; ++i) {
     document.getElementById(tableName).rows[i].id = ID;
     ID++;
   }
@@ -277,7 +277,7 @@ function draggableRows(tableName) {
     });
     return ui;
   };
-  
+
   $('#' + tableName).sortable({
     helper: fixHelper,
     cancel: ".ui-state-disabled",
@@ -285,7 +285,7 @@ function draggableRows(tableName) {
   }).disableSelection();
 
   $(".fixed").addClass("ui-state-disabled");
-          
+
   /*for(var i = 0; i < actualTrello.length; i++) {
     for(var j = 0; j < actualTrello.length; j++) {
     var string = '#' + actualTrello[i];
@@ -946,84 +946,51 @@ function sort() {
   }
 }
 
-function filterNotStared() {
+function filterBy(category) {
+  //Reset everything, easier to manipulate then.
   filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "Not Started" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
+  var table, currentRow, i, j;
+  tables = document.getElementsByTagName("table");
+  for (j = 0; j < tables.length; j++) { // Grab each table.
+    rows = tables[j].getElementsByTagName("TR"); // Grab the rows of each table.
+    for (i = 1; i < rows.length; i++) { // Manipulate said row.
+      currentRow = rows[i]
+      if (currentRow.getElementsByTagName("TD")[3].innerHTML != category && currentRow.style.display != "none") {
+        $(currentRow).toggle(); // If the row is not whats filtered, hide it.
+      }
     }
   }
+}
+
+function filterNotStared() {
+  filterBy("Not Started");
 }
 
 function filterInProgress() {
-  filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "In Progress" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
-    }
-  }
+  filterBy("In Progress");
 }
 
 function filterToReview() {
-  filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "To Review" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
-    }
-  }
+  filterBy("To Review");
 }
 
 function filterCompleted() {
-  filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "Completed" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
-    }
-  }
+  filterBy("Completed");
 }
 
 function filterBlocked() {
-  filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "Blocked" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
-    }
-  }
+  filterBy("Blocked");
 }
 
 function filterAll() {
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    currentRow.style.display = "table-row";
+  var table, i, j, currentRow;
+  tables = document.getElementsByTagName("table");
+  for (j = 0; j < tables.length; j++) {
+    rows = tables[j].getElementsByTagName("TR");
+    for (i = 1; i < rows.length; i++) {
+      currentRow = rows[i]
+      currentRow.style.display = "table-row";
+    }
   }
 }
 
