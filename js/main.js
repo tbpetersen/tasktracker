@@ -957,7 +957,7 @@ function filterBy(category) {
     for (i = 1; i < rows.length; i++) { // Manipulate said row.
       currentRow = rows[i]
       if (currentRow.getElementsByTagName("TD")[3].innerHTML != category && currentRow.style.display != "none") {
-        $(currentRow).toggle(); // If the row is not whats filtered, hide it.
+        $(currentRow).toggle(); // If the row is not what's filtered, hide it.
       }
     }
   }
