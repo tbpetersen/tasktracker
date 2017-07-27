@@ -83,7 +83,7 @@ td {
   cursor: pointer;
 }
 
-tr:not(:first-child):hover {
+tbody tr:hover {
     background-color: #dd6367;
 }
 
