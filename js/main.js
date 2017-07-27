@@ -869,7 +869,7 @@ function changeColor() {
 
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
-$(".grid").on("click", "td", function(e) {
+$(".main").on("click", "table > tbody > tr", function(e) {
   event.preventDefault();
   var newCard = document.createElement('div');
   var isClosed = true;
