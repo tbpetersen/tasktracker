@@ -149,11 +149,15 @@ $(document).ready(function() {
 function createTable(tableName) {
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
-  mainDiv.appendChild(table);
+  var head = document.createElement("thead");
+  var body = document.createElement("tbody");
 
+  table.appendChild(head);
+  table.appendChild(body);
+  mainDiv.appendChild(table);
   table.setAttribute("id", tableName);
 
-  table = document.getElementById(tableName);
+  // table = document.getElementById(tableName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -190,7 +194,7 @@ function createTable(tableName) {
   row.appendChild(catCell);
 
   // append row to table/body
-  table.appendChild(row);
+  head.appendChild(row);
 
   draggableRows(tableName);
 }
@@ -223,7 +227,8 @@ function addRow(tasks, tableName) {
   // Get category of task
   var cat = tasks.category;
 
-  table = document.getElementById(tableName);
+  // table = document.getElementById(tableName);
+  var body = document.getElementById(tableName).getElementsByTagName('tbody')[0];
 
   //create row and cell element
   row = document.createElement("tr");
@@ -256,7 +261,7 @@ function addRow(tasks, tableName) {
   row.appendChild(catCell);
 
   // append row to table/body
-  table.appendChild(row);
+  body.appendChild(row);
 }
 
 function assignIDtoRows(tableName) {
