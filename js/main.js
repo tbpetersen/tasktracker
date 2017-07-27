@@ -65,7 +65,6 @@ Task.prom = new Array();
 
 
 $(document).ready(function() {
-
   // Hamburger menu toggle
   var trigger = $('.hamburger');
 
@@ -890,7 +889,6 @@ $(".main").on("click", "table > tbody > tr", function(e) {
     $("#openInfo").text("Close Ticket Panel");
   }
 
-  /* Later on, make id="" maybe ticket ID of Zendesk or Trello to easily find dupes */
   newCard.innerHTML = '<div class="panel panel-default">' +
     '<div class="panel-heading">' +
     '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
