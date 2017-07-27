@@ -80,14 +80,11 @@ td {
   border-width: 1px;
   border-color: #d3d3d3;
   padding: .75%;
+  cursor: pointer;
 }
 
 tr:not(:first-child):hover {
     background-color: #dd6367;
-}
-
-.table-hover td {
-  cursor: pointer;
 }
 
 #logo {
