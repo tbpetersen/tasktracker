@@ -91,8 +91,8 @@ $(document).ready(function() {
 
   setupPage();
 
-  setIDs().then(function(){
-    getCardsAndTickets().then(function(cardsAndTickets){
+  setIDs().then(function() {
+    getCardsAndTickets().then(function(cardsAndTickets) {
       console.log(cardsAndTickets);
 
       user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
@@ -109,7 +109,7 @@ $(document).ready(function() {
             var str = user.tasks[j].category;
             var cat = str.split(' ').join('_');
             if (cat === trelloCat[i]) {
-              if(document.getElementById(cat) == null) {
+              if (document.getElementById(cat) == null) {
                 createTable(cat);
                 actualTrello.push(user.tasks[j].category);
               }
@@ -121,7 +121,7 @@ $(document).ready(function() {
         for (var i = 0; i < zendCat.length; i++) {
           for (var j = 0; j < user.tasks.length; j++) {
             if (user.tasks[j].category == zendCat[i]) {
-              if(document.getElementById(user.tasks[j].category) == null) {
+              if (document.getElementById(user.tasks[j].category) == null) {
                 createTable(user.tasks[j].category);
               }
               populateTable(user.tasks[j], user.tasks[j].category);
@@ -147,14 +147,15 @@ $(document).ready(function() {
             }
           }*/
 
-        for(var i = 0; i < trelloCat.length; i++) {
-          if(document.getElementById(trelloCat[i]) != null) {
+
+        for (var i = 0; i < trelloCat.length; i++) {
+          if (document.getElementById(trelloCat[i]) != null) {
             assignIDtoRows(trelloCat[i]);
           }
         }
 
-        for(var i = 0; i < zendCat.length; i++) {
-          if(document.getElementById(zendCat[i]) != null) {
+        for (var i = 0; i < zendCat.length; i++) {
+          if (document.getElementById(zendCat[i]) != null) {
             assignIDtoRows(zendCat[i]);
           }
         }
@@ -166,11 +167,16 @@ $(document).ready(function() {
 
 function createTable(tableName) {
   var table = document.createElement("TABLE");
-  document.body.appendChild(table);
+  var mainDiv = document.getElementById("main-container");
+  var head = document.createElement("thead");
+  var body = document.createElement("tbody");
 
+  table.appendChild(head);
+  table.appendChild(body);
+  mainDiv.appendChild(table);
   table.setAttribute("id", tableName);
 
-  table = document.getElementById(tableName);
+  // table = document.getElementById(tableName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -207,7 +213,7 @@ function createTable(tableName) {
   row.appendChild(catCell);
 
   // append row to table/body
-  table.appendChild(row);
+  head.appendChild(row);
 
   draggableRows(tableName);
 }
@@ -239,9 +245,9 @@ function addRow(tasks, tableName) {
 
   // Get category of task
   var cat = tasks.category;
-  //console.log(tasks);
 
-  table = document.getElementById(tableName);
+  // table = document.getElementById(tableName);
+  var body = document.getElementById(tableName).getElementsByTagName('tbody')[0];
 
   //create row and cell element
   row = document.createElement("tr");
@@ -274,12 +280,12 @@ function addRow(tasks, tableName) {
   row.appendChild(catCell);
 
   // append row to table/body
-  table.appendChild(row);
+  body.appendChild(row);
 }
 
 function assignIDtoRows(tableName) {
   var rows = document.getElementById(tableName).rows.length;
-  for(var i = 1; i < rows; ++i) {
+  for (var i = 1; i < rows; ++i) {
     document.getElementById(tableName).rows[i].id = ID;
     ID++;
   }
@@ -296,7 +302,7 @@ function draggableRows(tableName) {
     });
     return ui;
   };
-  
+
   $('#' + tableName).sortable({
     helper: fixHelper,
     cancel: ".ui-state-disabled",
@@ -304,8 +310,6 @@ function draggableRows(tableName) {
   }).disableSelection();
 
   $(".fixed").addClass("ui-state-disabled");
-          
-
 }
 
 function setupPage() {
@@ -957,84 +961,51 @@ function sort() {
   }
 }
 
-function filterNotStared() {
+function filterBy(category) {
+  //Reset everything, easier to manipulate then.
   filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "Not Started" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
+  var table, currentRow, i, j;
+  tables = document.getElementsByTagName("table");
+  for (j = 0; j < tables.length; j++) { // Grab each table.
+    rows = tables[j].getElementsByTagName("TR"); // Grab the rows of each table.
+    for (i = 1; i < rows.length; i++) { // Manipulate said row.
+      currentRow = rows[i]
+      if (currentRow.getElementsByTagName("TD")[3].innerHTML != category && currentRow.style.display != "none") {
+        $(currentRow).toggle(); // If the row is not whats filtered, hide it.
+      }
     }
   }
+}
+
+function filterNotStared() {
+  filterBy("Not Started");
 }
 
 function filterInProgress() {
-  filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "In Progress" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
-    }
-  }
+  filterBy("In Progress");
 }
 
 function filterToReview() {
-  filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "To Review" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
-    }
-  }
+  filterBy("To Review");
 }
 
 function filterCompleted() {
-  filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "Completed" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
-    }
-  }
+  filterBy("Completed");
 }
 
 function filterBlocked() {
-  filterAll();
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    if (currentRow.getElementsByTagName("TD")[3].innerHTML != "Blocked" && currentRow.style.display != "none") {
-      $(currentRow).toggle();
-    }
-  }
+  filterBy("Blocked");
 }
 
 function filterAll() {
-  var table, i;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow;
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    currentRow.style.display = "table-row";
+  var table, i, j, currentRow;
+  tables = document.getElementsByTagName("table");
+  for (j = 0; j < tables.length; j++) {
+    rows = tables[j].getElementsByTagName("TR");
+    for (i = 1; i < rows.length; i++) {
+      currentRow = rows[i]
+      currentRow.style.display = "table-row";
+    }
   }
 }
 
@@ -1042,9 +1013,11 @@ function filterAll() {
 
 function search() {
   var searchFor = document.getElementsByClassName("form-control")[0].value;
-  table = document.getElementById("table");
-  rows = table.getElementsByTagName("TR");
-  var currentRow, items, i, td;
+  var tables = document.getElementsByTagName("table");
+  var rows;
+  var currentRow, items, i, j, td;
+  for(j = 0; j < tables.length; j++) {
+    rows = tables[j].getElementsByTagName("TR");
   for (i = 1; i < rows.length; i++) {
     currentRow = rows[i]
     items = currentRow.getElementsByTagName("TD");
@@ -1057,5 +1030,6 @@ function search() {
         $(currentRow).toggle();
     }
   }
+}
   return false; //Used to disable submitting.
 }

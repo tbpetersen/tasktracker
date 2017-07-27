@@ -80,14 +80,11 @@ td {
   border-width: 1px;
   border-color: #d3d3d3;
   padding: .75%;
-}
-
-tr:not(:first-child):hover {
-    background-color: #dd6367;
-}
-
-.table-hover td {
   cursor: pointer;
+}
+
+tbody tr:hover {
+    background-color: #dd6367;
 }
 
 #logo {
@@ -275,9 +272,13 @@ select#sortList {
 
 #app-title {
   cursor: pointer;
-  text-align: center;
   position: absolute;
   width: 100%;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #dd6367;
   font-weight: bold;
   font-family: 'Roboto', sans-serif;
