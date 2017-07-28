@@ -456,9 +456,18 @@ select#sortList {
   opacity: 1;
 }
 
-.sortButton{
-  background-color: transparent;
+.sortButton, .deleteButton{
   border: none;
   height: 2vh;
   width: 3vh;
+}
+
+.sortButton{
+  background-color: transparent;
+}
+
+.deleteButton{
+  background-color: red;
+  color: black;
+  float: right;
 }

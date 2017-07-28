@@ -101,7 +101,6 @@ $(document).ready(function() {
     },
     offset: 20,
     spacing: 10,
-    z_index: 1031,
     delay: 500,
   });
 
@@ -153,6 +152,31 @@ $(document).ready(function() {
   });
 });
 
+/*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+  Generates and returns a random string ID.*/
+function makeID() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+  for (var i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
+/*Creates a new table with a random ID, as it cannot be coded to have it
+  dynamically created if it isn't random.*/
+function createNewTable(){
+  $.notify({
+    icon: 'glyphicon glyphicon-info-sign',
+    message: "Table created."
+    },{
+    type: 'info',
+  });
+  createTable(makeID()); // Create a table with a random ID;
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
 function createTable(tableName) {
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
@@ -164,17 +188,20 @@ function createTable(tableName) {
   var descriptionSort = document.createElement("button");
   var modifiedSort = document.createElement("button");
   var categorySort = document.createElement("button");
+  var deleteTable = document.createElement("button");
 
   //Assign classes to the sorting buttons
   titleSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
   descriptionSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
   modifiedSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
   categorySort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  deleteTable.setAttribute("class", "deleteButton glyphicon glyphicon-remove");
 
   titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0, false)");
   descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");
   modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
   categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
+  deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
 
 
   table.appendChild(head);
@@ -218,6 +245,7 @@ function createTable(tableName) {
   descCell.appendChild(descriptionSort);
   modCell.appendChild(modifiedSort);
   catCell.appendChild(categorySort);
+  catCell.appendChild(deleteTable);
 
   // append text to row
   row.appendChild(titleCell);
@@ -227,8 +255,23 @@ function createTable(tableName) {
 
   // append row to table/body
   head.appendChild(row);
-  
+
   draggableRows(tableName);
+}
+
+function deleteTable(tableName){
+  table = $(tableName).closest('table');
+  if(isEmpty(tableName))
+    table.remove();
+  else if(confirm("This table isn't empty!\nAre you sure you want to delete it?"))
+    table.remove();
+}
+
+function isEmpty(tableName){
+  var tableLength = $(tableName).closest('table').find("td").length
+  if(tableLength < 1)
+    return true;
+  return false;
 }
 
 function populateTable(task, tableName, index) {
