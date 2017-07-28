@@ -227,6 +227,12 @@ select#sortList {
   background-color: #9e0707;
 }
 
+#addTable{
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
 
 /* Individual cards */
 

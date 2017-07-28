@@ -211,7 +211,7 @@ function createTable(tableName) {
 
   // append row to table/body
   head.appendChild(row);
-
+  
   draggableRows(tableName);
 }
 
