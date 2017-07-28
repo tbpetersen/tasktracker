@@ -1002,6 +1002,7 @@ $("#openInfo").click(function(e) {
 /* Clears all ticket cards inside ticket panel */
 $("#clearBtn").click(function() {
   $('#card-list').empty();
+  cardsCreated.clear();
 });
 
 /* Method that will delegate which ticket card is clicked and delete that
