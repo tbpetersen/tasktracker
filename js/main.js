@@ -11,7 +11,7 @@ var trelloToken = "";
 var user;
 var isClosed = false;
 var ID = 0;
-
+var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
 class Task {
   /*
@@ -847,13 +847,11 @@ function changeColor() {
 
 /* ------------------ TICKET PANEL ------------------ */
 
-/* Clicking on table rows will open ticket panel view
-   and creates a ticket card */
-$(".main").on("click", "table > tbody > tr", function(e) {
-  event.preventDefault();
+/* Helper method that creates the card div */
+function createTicketCard(cardIndex) {
   var newCard = document.createElement('div');
   var isClosed = true;
-  var task = user.tasks[this.id];
+  var task = user.tasks[cardIndex];
   var cardTitle = task.name;
   var cardDesc = task.desc;
 
@@ -865,8 +863,10 @@ $(".main").on("click", "table > tbody > tr", function(e) {
     $("#openInfo").text("Close Ticket Panel");
   }
 
-  newCard.innerHTML = '<div class="panel panel-default">' +
-    '<div class="panel-heading">' +
+  newCard.className = 'panel panel-default';
+  newCard.id = cardIndex;
+
+  newCard.innerHTML = '<div class="panel-heading">' +
     '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
     '</h3></div>' +
     '<div class="panel-body">' + cardDesc
@@ -874,6 +874,23 @@ $(".main").on("click", "table > tbody > tr", function(e) {
 
   document.getElementById("card-list").appendChild(newCard);
   newCard.scrollIntoView();
+}
+
+/* Clicking on table rows will open ticket panel view
+   and creates a ticket card */
+$(".main").on("click", "table > tbody > tr", function(e) {
+  event.preventDefault();
+
+  // Check if card id exists in set
+  if (cardsCreated.has(this.id))
+  {
+    return;
+  }
+  else
+  {
+    cardsCreated.add(this.id);
+    createTicketCard(this.id);
+  }
 });
 
 /* Click event listener for openInfo to toggle the ticket panel view */
@@ -896,6 +913,14 @@ $("#clearBtn").click(function() {
 /* Method that will delegate which ticket card is clicked and delete that
    particular card */
 $(".info-panel").on("click", ".glyphicon-remove-sign", function(e) {
+  var card = $(this).closest('.panel-default');
+  var index = card.attr('id');
+
+  if (cardsCreated.has(index))
+  {
+    cardsCreated.delete(index);
+  }
+
   $(this).closest('.panel-default').remove();
 });
 
