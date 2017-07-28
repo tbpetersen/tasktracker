@@ -98,8 +98,8 @@ $(document).ready(function() {
       user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
 
-      createTasksFromCardsAndTickets(cardsAndTickets).then(function(){
-      console.log(user.tasks);
+      createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
+        console.log(user.tasks);
         var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review", "Completed", "July_Billing"];
         var zendCat = ["open", "pending", "closed", "new", "solved", "hold"];
 
@@ -590,9 +590,10 @@ function refresh() {
 
 /*Sort the data alphabetically*/
 var alphabetForwards = false;
+
 function sortAlphabet(tableName, index) {
-  if(alphabetForwards){
-    sortAlphabetReverse(tableName,index);
+  if (alphabetForwards) {
+    sortAlphabetReverse(tableName, index);
     alphabetForwards = false;
     return;
   }
@@ -637,7 +638,8 @@ function sortAlphabet(tableName, index) {
 function sortAlphabetReverse(tableName, index) {
   var table, rows, switching, i, x, y, shouldSwitch;
   tableName = $(tableName).closest('table').attr('id');
-  table = document.getElementById(tableName);  switching = true;
+  table = document.getElementById(tableName);
+  switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {
@@ -681,16 +683,17 @@ function sortStartDate() {
 
 /*Sort the data by Category*/
 var categoryForwards = false;
+
 function sortCategory(tableName) {
-  if(categoryForwards)
-  {
+  if (categoryForwards) {
     sortCategoryReverse(tableName);
     categoryForwards = false;
     return;
   }
   var table, rows, switching, i, x, y, shouldSwitch;
   tableName = $(tableName).closest('table').attr('id');
-  table = document.getElementById(tableName);  switching = true;
+  table = document.getElementById(tableName);
+  switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {
@@ -726,7 +729,8 @@ function sortCategory(tableName) {
 function sortCategoryReverse(tableName) {
   var table, rows, switching, i, x, y, shouldSwitch;
   tableName = $(tableName).closest('table').attr('id');
-  table = document.getElementById(tableName);  switching = true;
+  table = document.getElementById(tableName);
+  switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {
@@ -760,9 +764,9 @@ function sortCategoryReverse(tableName) {
 
 /*Sort by the latest modified first*/
 var lastModifiedForwards = false;
+
 function sortLastModified(tableName) {
-  if(lastModifiedForwards)
-  {
+  if (lastModifiedForwards) {
     sortlastModifiedReversed(tableName);
     lastModifiedForwards = false;
     return;
@@ -772,7 +776,8 @@ function sortLastModified(tableName) {
     "Oct", "Nov", "Dec"
   ];
   tableName = $(tableName).closest('table').attr('id');
-  table = document.getElementById(tableName);  switching = true;
+  table = document.getElementById(tableName);
+  switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {
@@ -820,7 +825,8 @@ function sortlastModifiedReversed(tableName) {
     "Oct", "Nov", "Dec"
   ];
   tableName = $(tableName).closest('table').attr('id');
-  table = document.getElementById(tableName);  switching = true;
+  table = document.getElementById(tableName);
+  switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {
@@ -907,6 +913,7 @@ function changeColor() {
   var ticketBarHead = document.getElementById("info-header").style;
   var ticketHeads = document.getElementsByClassName("panel-heading");
   var tickets = document.getElementsByClassName("panel-body");
+  var tableHeads = document.getElementsByTagName("thead");
 
   if (alternate == 1) {
     body.backgroundColor = "#1E1E1E";
@@ -916,6 +923,9 @@ function changeColor() {
       tickets[i].style.backgroundColor = "#7E7E7E";
       ticketHeads[i].style.backgroundColor = "#6E6E6E";
     }
+    for (var i = 0; i < tableHeads.length; i++) {
+      tableHeads[i].style.color = "white";
+    }
   } else {
     body.backgroundColor = "#FFF";
     body.color = "#333";
@@ -923,6 +933,9 @@ function changeColor() {
     for (var i = 0; i < tickets.length; i++) {
       tickets[i].style.backgroundColor = "#FFF";
       ticketHeads[i].style.backgroundColor = "#F5F5F5";
+    }
+    for (var i = 0; i < tableHeads.length; i++) {
+      tableHeads[i].style.color = "#333";
     }
   }
   alternate = alternate % 2 + 1; //Increment/decrement alternate.
@@ -953,8 +966,7 @@ $(".main").on("click", "table > tbody > tr", function(e) {
     '<div class="panel-heading">' +
     '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
     '</h3></div>' +
-    '<div class="panel-body">' + cardDesc
-    '</div></div>';
+    '<div class="panel-body">' + cardDesc + '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
   newCard.scrollIntoView();
@@ -1072,20 +1084,20 @@ function search() {
   var tables = document.getElementsByTagName("table");
   var rows;
   var currentRow, items, i, j, td;
-  for(j = 0; j < tables.length; j++) {
+  for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    items = currentRow.getElementsByTagName("TD");
-    for (td = 0; td < items.length; td++) {
-      if (items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase())) {
-        currentRow.style.display = "table-row";
-        break;
+    for (i = 1; i < rows.length; i++) {
+      currentRow = rows[i]
+      items = currentRow.getElementsByTagName("TD");
+      for (td = 0; td < items.length; td++) {
+        if (items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase())) {
+          currentRow.style.display = "table-row";
+          break;
+        }
+        if (td == items.length - 1 && currentRow.style.display != "none")
+          $(currentRow).toggle();
       }
-      if (td == items.length - 1 && currentRow.style.display != "none")
-        $(currentRow).toggle();
     }
   }
-}
   return false; //Used to disable submitting.
 }
