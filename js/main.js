@@ -89,6 +89,22 @@ $(document).ready(function() {
     $('.navbar').toggleClass('toggled');
   });
 
+  $.notifyDefaults({
+    allow_dismiss: true,
+    animate: {
+      enter: 'animated fadeInUp',
+      exit: 'animated fadeOutRight'
+    },
+    placement: {
+      from: "top",
+      align: "right"
+    },
+    offset: 20,
+    spacing: 10,
+    z_index: 1031,
+    delay: 500,
+  });
+
   setupPage();
 
   setIDs().then(function() {
@@ -985,12 +1001,26 @@ $(".main").on("click", "table > tbody > tr", function(e) {
   // Check if card id exists in set
   if (cardsCreated.has(this.id))
   {
+    $.notify({
+      icon: 'fa fa-exclamation-triangle',
+      message: "Ticket already queued."
+      },{
+      type: 'warning',
+    });
+
     return;
   }
   else
   {
     cardsCreated.add(this.id);
     createTicketCard(this.id);
+
+    $.notify({
+      icon: 'fa fa-check',
+      message: "Ticket queued."
+      },{
+      type: 'success',
+    });
   }
 });
 
@@ -999,12 +1029,12 @@ $("#openInfo").click(function(e) {
   e.preventDefault();
   $(".info-panel").toggleClass("toggled");
 
-  if ($(this).text() === "Open Ticket Panel") {
-    $(this).text("Close Ticket Panel");
-  } else {
-    $(this).text("Open Ticket Panel");
-  }
-});
+    if ($(this).text() === "Open Ticket Panel") {
+      $(this).text("Close Ticket Panel");
+    } else {
+      $(this).text("Open Ticket Panel");
+    }
+  });
 
 /* Clears all ticket cards inside ticket panel */
 $("#clearBtn").click(function() {
