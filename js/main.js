@@ -111,11 +111,11 @@ $(document).ready(function() {
               if (document.getElementById(cat) == null) {
                 createTable(cat);
               }
-              populateTable(user.tasks[j], cat, j);  
+              populateTable(user.tasks[j], cat, j);
               /* Checking id of rows/tasks
               var table = document.getElementById(user.tasks[j].category);
               console.log(table.rows[table.rows.length-1].id);
-              console.log(user.tasks[j]);  */       
+              console.log(user.tasks[j]);  */
             }
           }
         }
@@ -142,6 +142,24 @@ function createTable(tableName) {
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
+  // Create the sorting buttons
+  var titleSort = document.createElement("button");
+  var descriptionSort = document.createElement("button");
+  var modifiedSort = document.createElement("button");
+  var categorySort = document.createElement("button");
+
+  //Assign classes to the sorting buttons
+  titleSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  descriptionSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  modifiedSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  categorySort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+
+  titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0, false)");
+  descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");
+  modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
+  categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
+
+
   table.appendChild(head);
   table.appendChild(body);
   mainDiv.appendChild(table);
@@ -164,6 +182,8 @@ function createTable(tableName) {
   modCell.setAttribute("id", "modCell");
   catCell.setAttribute("id", "catCell");
 
+
+
   // text for cell
   textNode1 = document.createTextNode("Title");
   textNode2 = document.createTextNode("Description");
@@ -175,6 +195,12 @@ function createTable(tableName) {
   descCell.appendChild(textNode2);
   modCell.appendChild(textNode3);
   catCell.appendChild(textNode4);
+
+  // appent buttons to cell
+  titleCell.appendChild(titleSort);
+  descCell.appendChild(descriptionSort);
+  modCell.appendChild(modifiedSort);
+  catCell.appendChild(categorySort);
 
   // append text to row
   row.appendChild(titleCell);
@@ -273,7 +299,7 @@ function draggableRows(tableName) {
     connectWith: ".body",
     helper: fixHelper
   }).disableSelection();
-  
+
   $('#' + tableName).sortable({
     helper: fixHelper,
     cancel: ".ui-state-disabled",
@@ -563,9 +589,16 @@ function refresh() {
 /* ------------------ SORT FILTERS ------------------ */
 
 /*Sort the data alphabetically*/
-function sortAlphabet() {
+var alphabetForwards = false;
+function sortAlphabet(tableName, index) {
+  if(alphabetForwards){
+    sortAlphabetReverse(tableName,index);
+    alphabetForwards = false;
+    return;
+  }
   var table, rows, switching, i, x, y, shouldSwitch;
-  table = document.getElementById("table");
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
@@ -580,8 +613,8 @@ function sortAlphabet() {
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[0];
-      y = rows[i + 1].getElementsByTagName("TD")[0];
+      x = rows[i].getElementsByTagName("TD")[index];
+      y = rows[i + 1].getElementsByTagName("TD")[index];
       //check if the two rows should switch place:
       if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
@@ -596,14 +629,15 @@ function sortAlphabet() {
       switching = true;
     }
   }
+  alphabetForwards = true;
 }
 
 
 /*Sort the data alphabetically reversed*/
-function sortAlphabetReverse() {
+function sortAlphabetReverse(tableName, index) {
   var table, rows, switching, i, x, y, shouldSwitch;
-  table = document.getElementById("table");
-  switching = true;
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);  switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {
@@ -617,8 +651,8 @@ function sortAlphabetReverse() {
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[0];
-      y = rows[i + 1].getElementsByTagName("TD")[0];
+      x = rows[i].getElementsByTagName("TD")[index];
+      y = rows[i + 1].getElementsByTagName("TD")[index];
       //check if the two rows should switch place:
       if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
@@ -646,10 +680,17 @@ function sortStartDate() {
 }
 
 /*Sort the data by Category*/
-function sortCategory() {
+var categoryForwards = false;
+function sortCategory(tableName) {
+  if(categoryForwards)
+  {
+    sortCategoryReverse(tableName);
+    categoryForwards = false;
+    return;
+  }
   var table, rows, switching, i, x, y, shouldSwitch;
-  table = document.getElementById("table");
-  switching = true;
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);  switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {
@@ -679,16 +720,59 @@ function sortCategory() {
       switching = true;
     }
   }
+  categoryForwards = true;
+}
+
+function sortCategoryReverse(tableName) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[3];
+      y = rows[i + 1].getElementsByTagName("TD")[3];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
 }
 
 /*Sort by the latest modified first*/
-function sortLastModified() {
+var lastModifiedForwards = false;
+function sortLastModified(tableName) {
+  if(lastModifiedForwards)
+  {
+    sortlastModifiedReversed(tableName);
+    lastModifiedForwards = false;
+    return;
+  }
   var table, rows, switching, i, x, y, shouldSwitch;
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
     "Oct", "Nov", "Dec"
   ];
-  table = document.getElementById("table");
-  switching = true;
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);  switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {
@@ -726,16 +810,17 @@ function sortLastModified() {
       switching = true;
     }
   }
+  lastModifiedForwards = true;
 }
 
 /*Sort by the latest modified last*/
-function sortlastModifiedReversed() {
+function sortlastModifiedReversed(tableName) {
   var table, rows, switching, i, x, y, shouldSwitch;
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
     "Oct", "Nov", "Dec"
   ];
-  table = document.getElementById("table");
-  switching = true;
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);  switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {
@@ -827,7 +912,6 @@ function changeColor() {
     body.backgroundColor = "#1E1E1E";
     body.color = "lightgrey";
     ticketBarHead.backgroundColor = "#1E1E1E";
-    console.log(tickets);
     for (var i = 0; i < tickets.length; i++) {
       tickets[i].style.backgroundColor = "#7E7E7E";
       ticketHeads[i].style.backgroundColor = "#6E6E6E";
