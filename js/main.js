@@ -100,7 +100,8 @@ $(document).ready(function() {
 
       createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
         console.log(user.tasks);
-        var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review", "Completed", "July_Billing"];
+        var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review",
+          "Completed", "July_Billing"];
         var zendCat = ["open", "pending", "closed", "new", "solved", "hold"];
 
         for (var i = 0; i < trelloCat.length; i++) {
@@ -587,6 +588,8 @@ function refresh() {
 }
 
 /* ------------------ SORT FILTERS ------------------ */
+/*Sorting is done using bubble sort. Hopefully implement a better algorithm in
+  the future.*/
 
 /*Sort the data alphabetically*/
 var alphabetForwards = false;
@@ -798,11 +801,13 @@ function sortLastModified(tableName) {
       var month2 = y.innerHTML.substring(0, 3);
       var date = x.innerHTML.substring(4);
       var date2 = y.innerHTML.substring(4);
-      if (months.indexOf(month) > months.indexOf(month2) && months.indexOf(month) != months.indexOf(month2)) {
+      if (months.indexOf(month) > months.indexOf(month2) &&
+        months.indexOf(month) != months.indexOf(month2)) {
         //if so, mark as a switch and break the loop:
         shouldSwitch = true;
         break;
-      } else if (months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() > date2.toLowerCase()) {
+      } else if (months.indexOf(month) == months.indexOf(month2) &&
+        date.toLowerCase() > date2.toLowerCase()) {
         //if so, mark as a switch and break the loop:
         shouldSwitch = true;
         break;
@@ -847,11 +852,13 @@ function sortlastModifiedReversed(tableName) {
       var month2 = y.innerHTML.substring(0, 3);
       var date = x.innerHTML.substring(4);
       var date2 = y.innerHTML.substring(4);
-      if (months.indexOf(month) < months.indexOf(month2) && months.indexOf(month) != months.indexOf(month2)) {
+      if (months.indexOf(month) < months.indexOf(month2) &&
+        months.indexOf(month) != months.indexOf(month2)) {
         //if so, mark as a switch and break the loop:
         shouldSwitch = true;
         break;
-      } else if (months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() < date2.toLowerCase()) {
+      } else if (months.indexOf(month) == months.indexOf(month2) &&
+        date.toLowerCase() < date2.toLowerCase()) {
         //if so, mark as a switch and break the loop:
         shouldSwitch = true;
         break;
@@ -1062,7 +1069,8 @@ function filterBy(category) {
     rows = tables[j].getElementsByTagName("TR"); // Grab the rows of each table.
     for (i = 1; i < rows.length; i++) { // Manipulate said row.
       currentRow = rows[i]
-      if (currentRow.getElementsByTagName("TD")[3].innerHTML != category && currentRow.style.display != "none") {
+      if (currentRow.getElementsByTagName("TD")[3].innerHTML != category &&
+        currentRow.style.display != "none") {
         $(currentRow).toggle(); // If the row is not whats filtered, hide it.
       }
     }
