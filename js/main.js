@@ -1032,6 +1032,7 @@ function createTicketCard(cardIndex) {
     '<div class="panel-body">' + cardDesc + '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
+  $('#' + cardIndex).addClass('animated fadeInRight');
   newCard.scrollIntoView();
 }
 
@@ -1102,7 +1103,10 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e) {
     cardsCreated.delete(index);
   }
 
-  $(this).closest('.panel-default').remove();
+  card.addClass('animated fadeOutRight');
+  card.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+    $(this).remove();
+  });
 });
 
 /* ------------------ END OF TICKET PANEL ------------------ */
