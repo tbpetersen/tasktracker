@@ -934,18 +934,9 @@ function changeColor() {
 /* Helper method that creates the card div */
 function createTicketCard(cardIndex) {
   var newCard = document.createElement('div');
-  var isClosed = true;
   var task = user.tasks[cardIndex];
   var cardTitle = task.name;
   var cardDesc = task.desc;
-
-  // alert(this.id);
-
-  if (isClosed == true) {
-    isClosed = false;
-    $(".info-panel").addClass("toggled");
-    $("#openInfo").text("Close Ticket Panel");
-  }
 
   newCard.className = 'panel panel-default';
   newCard.id = cardIndex;
@@ -964,6 +955,13 @@ function createTicketCard(cardIndex) {
    and creates a ticket card */
 $(".main").on("click", "table > tbody > tr", function(e) {
   event.preventDefault();
+  var isClosed = true;
+
+  if (isClosed == true) {
+    isClosed = false;
+    $(".info-panel").addClass("toggled");
+    $("#openInfo").text("Close Ticket Panel");
+  }
 
   // Check if card id exists in set
   if (cardsCreated.has(this.id))
