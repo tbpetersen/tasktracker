@@ -259,12 +259,18 @@ function createTable(tableName) {
   draggableRows(tableName);
 }
 
-function deleteTable(tableName){
+function deleteTable(tableName) {
   table = $(tableName).closest('table');
-  if(isEmpty(tableName))
+  if (isEmpty(tableName))
     table.remove();
-  else if(confirm("This table isn't empty!\nAre you sure you want to delete it?"))
+  else if (confirm("This table isn't empty!\nAre you sure you want to delete it?"))
     table.remove();
+  $.notify({
+    icon: 'fa fa-exclamation-triangle',
+    message: "Table deleted."
+  }, {
+    type: 'danger',
+  });
 }
 
 function isEmpty(tableName){
