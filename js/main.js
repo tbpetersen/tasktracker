@@ -1152,14 +1152,17 @@ function filterBy(buttonID) {
   }
   filterAll(false);
   var table, currentRow, i, j;
-  tables = document.getElementsByTagName("table");
-  for (j = 0; j < tables.length; j++) { // Grab each table.
-    rows = tables[j].getElementsByTagName("TR"); // Grab the rows of each table.
+  table = document.getElementsByTagName("table");
+  for (j = 0; j < table.length; j++) { // Grab each table.
+    rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
     for (i = 1; i < rows.length; i++) { // Manipulate said row.
       currentRow = rows[i]
       if (currentRow.getElementsByTagName("TD")[3].innerHTML != category &&
         currentRow.style.display != "none" && button.style.backgroundColor != "lightgrey") {
-        $(currentRow).toggle(); // If the row is not whats filtered, hide it.
+          if(document.getElementById("filter " + currentRow.getElementsByTagName("TD")[3].innerHTML).style.backgroundColor == "lightgrey"){
+            continue;
+          }
+          $(currentRow).toggle(); // If the row is not whats filtered, hide it.
       }
     }
   }
@@ -1174,8 +1177,6 @@ function filterAll(fromFilterAll) {
   var table, i, j, currentRow, filterBar;
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
-  console.log(filterBar);
-  console.log(buttons);
   for(i = 0; i < buttons.length && fromFilterAll; i++)
     buttons[i].style.backgroundColor = "whitesmoke";
 
