@@ -261,16 +261,15 @@ function createTable(tableName) {
 
 function deleteTable(tableName) {
   table = $(tableName).closest('table');
-  if (isEmpty(tableName))
+  if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")){
     table.remove();
-  else if (confirm("This table isn't empty!\nAre you sure you want to delete it?"))
-    table.remove();
-  $.notify({
-    icon: 'fa fa-exclamation-triangle',
-    message: "Table deleted."
-  }, {
-    type: 'danger',
-  });
+    $.notify({
+      icon: 'fa fa-exclamation-triangle',
+      message: "Table deleted."
+    }, {
+      type: 'danger',
+    });
+  }
 }
 
 function isEmpty(tableName){
