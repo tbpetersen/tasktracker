@@ -1143,9 +1143,15 @@ function sort() {
   }
 }
 
-function filterBy(category) {
+function filterBy(buttonID) {
+  var category = document.getElementById(buttonID).innerHTML;
+  var button = document.getElementById(buttonID);
   //Reset everything, easier to manipulate then.
-  filterAll();
+  if(category == "View All"){
+    filterAll(true);
+    return;
+  }
+  filterAll(false);
   var table, currentRow, i, j;
   tables = document.getElementsByTagName("table");
   for (j = 0; j < tables.length; j++) { // Grab each table.
@@ -1153,35 +1159,27 @@ function filterBy(category) {
     for (i = 1; i < rows.length; i++) { // Manipulate said row.
       currentRow = rows[i]
       if (currentRow.getElementsByTagName("TD")[3].innerHTML != category &&
-        currentRow.style.display != "none") {
+        currentRow.style.display != "none" && button.style.backgroundColor != "lightgrey") {
         $(currentRow).toggle(); // If the row is not whats filtered, hide it.
       }
     }
   }
+  //Change the backgorund color of the buttons when they're selected.
+  if(button.style.backgroundColor == "lightgrey")
+    button.style.backgroundColor = "whitesmoke";
+  else
+    button.style.backgroundColor = "lightgrey";
 }
 
-function filterNotStared() {
-  filterBy("Not Started");
-}
+function filterAll(fromFilterAll) {
+  var table, i, j, currentRow, filterBar;
+  filterBar = document.getElementById("leftSidebar");
+  var buttons = filterBar.getElementsByTagName("BUTTON");
+  console.log(filterBar);
+  console.log(buttons);
+  for(i = 0; i < buttons.length && fromFilterAll; i++)
+    buttons[i].style.backgroundColor = "whitesmoke";
 
-function filterInProgress() {
-  filterBy("In Progress");
-}
-
-function filterToReview() {
-  filterBy("To Review");
-}
-
-function filterCompleted() {
-  filterBy("Completed");
-}
-
-function filterBlocked() {
-  filterBy("Blocked");
-}
-
-function filterAll() {
-  var table, i, j, currentRow;
   tables = document.getElementsByTagName("table");
   for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");

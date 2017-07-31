@@ -122,18 +122,12 @@
 <!-- FILTER SIDEBAR -->
   <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
     <h3 class="w3-bar-item" id="filters">Filters</h3>
-    <button class="w3-bar-item w3-button" onclick="filterAll()">
-      View All</button>
-    <button class="w3-bar-item w3-button" onclick="filterNotStared()">
-      Not Started</button>
-    <button class="w3-bar-item w3-button" onclick="filterInProgress()">
-      In Progress</button>
-    <button class="w3-bar-item w3-button" onclick="filterToReview()">
-      To Review</button>
-    <button class="w3-bar-item w3-button" onclick="filterCompleted()">
-      Completed</button>
-    <button class="w3-bar-item w3-button" onclick="filterBlocked()">
-      Blocked</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id=filterViewAll>View All</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id=filterNotStarted>Not Started</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id=filterInProgress>In Progress</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id=filterToReview>To Review</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id=filterCompleted>Completed</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id=filterBlocked>Blocked</button>
   </div>
   <!-- END FILTER SIDEBAR -->
 
