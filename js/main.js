@@ -1145,6 +1145,9 @@ function sort() {
 function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
   var button = document.getElementById(buttonID);
+  var filterIn = true;
+  if(button.style.backgroundColor == "lightgrey")
+    filterIn = false;
   //Reset everything, easier to manipulate then.
   if(category == "View All"){
     filterAll(true);
@@ -1158,11 +1161,18 @@ function filterBy(buttonID) {
     for (i = 1; i < rows.length; i++) { // Manipulate said row.
       currentRow = rows[i]
       if (currentRow.getElementsByTagName("TD")[3].innerHTML != category &&
-        currentRow.style.display != "none" && button.style.backgroundColor != "lightgrey") {
-          if(document.getElementById("filter " + currentRow.getElementsByTagName("TD")[3].innerHTML).style.backgroundColor == "lightgrey"){
+        currentRow.style.display != "none" &&
+        button.style.backgroundColor != "lightgrey" && filterIn) {
+          if(document.getElementById("filter " +
+            currentRow.getElementsByTagName("TD")[3].innerHTML).style.backgroundColor
+            == "lightgrey"){
             continue;
           }
           $(currentRow).toggle(); // If the row is not whats filtered, hide it.
+      }else if (currentRow.getElementsByTagName("TD")[3].innerHTML == category &&
+        currentRow.style.display != "none" &&
+        button.style.backgroundColor != "lightgrey") {
+          console.log(currentRow.getElementsByTagName("TD")[3].innerHTML);
       }
     }
   }
@@ -1171,12 +1181,26 @@ function filterBy(buttonID) {
     button.style.backgroundColor = "whitesmoke";
   else
     button.style.backgroundColor = "lightgrey";
+  checkFilterAll();
+}
+
+function checkFilterAll(){
+  var table, i, j, filterBar;
+  filterBar = document.getElementById("leftSidebar");
+  var buttons = filterBar.getElementsByTagName("BUTTON");
+  for(i = 0; i < buttons.length; i++){
+    if(buttons[i].style.backgroundColor == "lightgrey")
+      return false;
+  }
+  filterAll(true);
+  return true;
 }
 
 function filterAll(fromFilterAll) {
   var table, i, j, currentRow, filterBar;
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
+  //If the Filter All button was pressed, change the button colors to default.
   for(i = 0; i < buttons.length && fromFilterAll; i++)
     buttons[i].style.backgroundColor = "whitesmoke";
 
