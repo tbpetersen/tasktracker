@@ -1,6 +1,10 @@
-# tasktracker
+# tasktracker (Zello)
 
------ Database Structure -----
+A web tool integrating Trello and Zendesk APIs to view all inquiries with various viewing interactions with the task cards.
+
+## Database
+
+```
 mysql> show tables;
 +--------------------------+
 | Tables_in_tasktracker_db |
@@ -39,3 +43,4 @@ mysql> describe group_items;
 | itemType | int(10) unsigned | YES  |     | NULL    |       |
 | position | int(10) unsigned | YES  |     | NULL    |       |
 +----------+------------------+------+-----+---------+-------+
+

@@ -11,6 +11,7 @@ var trelloToken = "";
 var user;
 var isClosed = false;
 
+var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
 class Task {
   /*
@@ -85,6 +86,22 @@ $(document).ready(function() {
 
   $('[data-toggle="offcanvas"]').click(function() {
     $('body').toggleClass('toggled');
+    $('.navbar').toggleClass('toggled');
+  });
+
+  $.notifyDefaults({
+    allow_dismiss: true,
+    animate: {
+      enter: 'animated fadeInUp',
+      exit: 'animated fadeOutRight'
+    },
+    placement: {
+      from: "top",
+      align: "right"
+    },
+    offset: 20,
+    spacing: 10,
+    delay: 500,
   });
 
   setupPage();
@@ -96,9 +113,11 @@ $(document).ready(function() {
       user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
 
-      createTasksFromCardsAndTickets(cardsAndTickets).then(function(){
-      console.log(user.tasks);
-        var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review", "Completed", "July_Billing"];
+      createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
+        console.log(user.tasks);
+        var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review",
+          "Completed", "July_Billing"
+        ];
         var zendCat = ["open", "pending", "closed", "new", "solved", "hold"];
 
         for (var i = 0; i < trelloCat.length; i++) {
@@ -130,14 +149,82 @@ $(document).ready(function() {
   });
 });
 
+/*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+  Generates and returns a random string ID.*/
+function makeID() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+  for (var i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
+/*Creates a new table with a random ID, as it cannot be coded to have it
+  dynamically created if it isn't random.*/
+function createNewTable() {
+  $.notify({
+    icon: 'glyphicon glyphicon-info-sign',
+    message: "Table created."
+  }, {
+    type: 'info',
+  });
+  createTable(makeID()); // Create a table with a random ID;
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function deleteTable(tableName) {
+  table = $(tableName).closest('table');
+  if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
+    table.remove();
+    $.notify({
+      icon: 'fa fa-exclamation-triangle',
+      message: "Table deleted."
+    }, {
+      type: 'danger',
+    });
+  }
+}
+
+function isEmpty(tableName) {
+  var tableLength = $(tableName).closest('table').find("td").length
+  if (tableLength < 1)
+    return true;
+  return false;
+}
+
+
 function createTable(tableName) {
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
+
   table.setAttribute("id", tableName);
   //table.setAttribute("class", "sortable");
+
+  // Create the sorting buttons
+  var titleSort = document.createElement("button");
+  var descriptionSort = document.createElement("button");
+  var modifiedSort = document.createElement("button");
+  var categorySort = document.createElement("button");
+  var deleteTable = document.createElement("button");
+
+  //Assign classes to the sorting buttons
+  titleSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  descriptionSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  modifiedSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  categorySort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  deleteTable.setAttribute("class", "deleteButton glyphicon glyphicon-remove");
+
+  titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0, false)");
+  descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");
+  modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
+  categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
+  deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
+
 
   table.appendChild(head);
   table.appendChild(body);
@@ -170,6 +257,13 @@ function createTable(tableName) {
   descCell.appendChild(textNode2);
   modCell.appendChild(textNode3);
   catCell.appendChild(textNode4);
+
+  // append buttons to cell
+  titleCell.appendChild(titleSort);
+  descCell.appendChild(descriptionSort);
+  modCell.appendChild(modifiedSort);
+  catCell.appendChild(categorySort);
+  catCell.appendChild(deleteTable);
 
   // append text to row
   row.appendChild(titleCell);
@@ -556,11 +650,21 @@ function refresh() {
 }
 
 /* ------------------ SORT FILTERS ------------------ */
+/*Sorting is done using bubble sort. Hopefully implement a better algorithm in
+  the future.*/
 
 /*Sort the data alphabetically*/
-function sortAlphabet() {
+var alphabetForwards = false;
+
+function sortAlphabet(tableName, index) {
+  if (alphabetForwards) {
+    sortAlphabetReverse(tableName, index);
+    alphabetForwards = false;
+    return;
+  }
   var table, rows, switching, i, x, y, shouldSwitch;
-  table = document.getElementById("table");
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
@@ -575,8 +679,8 @@ function sortAlphabet() {
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[0];
-      y = rows[i + 1].getElementsByTagName("TD")[0];
+      x = rows[i].getElementsByTagName("TD")[index];
+      y = rows[i + 1].getElementsByTagName("TD")[index];
       //check if the two rows should switch place:
       if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
@@ -591,13 +695,15 @@ function sortAlphabet() {
       switching = true;
     }
   }
+  alphabetForwards = true;
 }
 
 
 /*Sort the data alphabetically reversed*/
-function sortAlphabetReverse() {
+function sortAlphabetReverse(tableName, index) {
   var table, rows, switching, i, x, y, shouldSwitch;
-  table = document.getElementById("table");
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
@@ -612,8 +718,8 @@ function sortAlphabetReverse() {
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[0];
-      y = rows[i + 1].getElementsByTagName("TD")[0];
+      x = rows[i].getElementsByTagName("TD")[index];
+      y = rows[i + 1].getElementsByTagName("TD")[index];
       //check if the two rows should switch place:
       if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
@@ -641,9 +747,17 @@ function sortStartDate() {
 }
 
 /*Sort the data by Category*/
-function sortCategory() {
+var categoryForwards = false;
+
+function sortCategory(tableName) {
+  if (categoryForwards) {
+    sortCategoryReverse(tableName);
+    categoryForwards = false;
+    return;
+  }
   var table, rows, switching, i, x, y, shouldSwitch;
-  table = document.getElementById("table");
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
@@ -674,15 +788,13 @@ function sortCategory() {
       switching = true;
     }
   }
+  categoryForwards = true;
 }
 
-/*Sort by the latest modified first*/
-function sortLastModified() {
+function sortCategoryReverse(tableName) {
   var table, rows, switching, i, x, y, shouldSwitch;
-  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
-    "Oct", "Nov", "Dec"
-  ];
-  table = document.getElementById("table");
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
@@ -697,18 +809,10 @@ function sortLastModified() {
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[2];
-      y = rows[i + 1].getElementsByTagName("TD")[2];
+      x = rows[i].getElementsByTagName("TD")[3];
+      y = rows[i + 1].getElementsByTagName("TD")[3];
       //check if the two rows should switch place:
-      var month = x.innerHTML.substring(0, 3);
-      var month2 = y.innerHTML.substring(0, 3);
-      var date = x.innerHTML.substring(4);
-      var date2 = y.innerHTML.substring(4);
-      if (months.indexOf(month) > months.indexOf(month2) && months.indexOf(month) != months.indexOf(month2)) {
-        //if so, mark as a switch and break the loop:
-        shouldSwitch = true;
-        break;
-      } else if (months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() > date2.toLowerCase()) {
+      if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
         shouldSwitch = true;
         break;
@@ -723,13 +827,21 @@ function sortLastModified() {
   }
 }
 
-/*Sort by the latest modified last*/
-function sortlastModifiedReversed() {
+/*Sort by the latest modified first*/
+var lastModifiedForwards = false;
+
+function sortLastModified(tableName) {
+  if (lastModifiedForwards) {
+    sortlastModifiedReversed(tableName);
+    lastModifiedForwards = false;
+    return;
+  }
   var table, rows, switching, i, x, y, shouldSwitch;
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
     "Oct", "Nov", "Dec"
   ];
-  table = document.getElementById("table");
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
   no switching has been done:*/
@@ -751,11 +863,64 @@ function sortlastModifiedReversed() {
       var month2 = y.innerHTML.substring(0, 3);
       var date = x.innerHTML.substring(4);
       var date2 = y.innerHTML.substring(4);
-      if (months.indexOf(month) < months.indexOf(month2) && months.indexOf(month) != months.indexOf(month2)) {
+      if (months.indexOf(month) > months.indexOf(month2) &&
+        months.indexOf(month) != months.indexOf(month2)) {
         //if so, mark as a switch and break the loop:
         shouldSwitch = true;
         break;
-      } else if (months.indexOf(month) == months.indexOf(month2) && date.toLowerCase() < date2.toLowerCase()) {
+      } else if (months.indexOf(month) == months.indexOf(month2) &&
+        date.toLowerCase() > date2.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+  lastModifiedForwards = true;
+}
+
+/*Sort by the latest modified last*/
+function sortlastModifiedReversed(tableName) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
+    "Oct", "Nov", "Dec"
+  ];
+  tableName = $(tableName).closest('table').attr('id');
+  table = document.getElementById(tableName);
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[2];
+      y = rows[i + 1].getElementsByTagName("TD")[2];
+      //check if the two rows should switch place:
+      var month = x.innerHTML.substring(0, 3);
+      var month2 = y.innerHTML.substring(0, 3);
+      var date = x.innerHTML.substring(4);
+      var date2 = y.innerHTML.substring(4);
+      if (months.indexOf(month) < months.indexOf(month2) &&
+        months.indexOf(month) != months.indexOf(month2)) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      } else if (months.indexOf(month) == months.indexOf(month2) &&
+        date.toLowerCase() < date2.toLowerCase()) {
         //if so, mark as a switch and break the loop:
         shouldSwitch = true;
         break;
@@ -817,15 +982,18 @@ function changeColor() {
   var ticketBarHead = document.getElementById("info-header").style;
   var ticketHeads = document.getElementsByClassName("panel-heading");
   var tickets = document.getElementsByClassName("panel-body");
+  var tableHeads = document.getElementsByTagName("thead");
 
   if (alternate == 1) {
     body.backgroundColor = "#1E1E1E";
     body.color = "lightgrey";
     ticketBarHead.backgroundColor = "#1E1E1E";
-    console.log(tickets);
     for (var i = 0; i < tickets.length; i++) {
       tickets[i].style.backgroundColor = "#7E7E7E";
       ticketHeads[i].style.backgroundColor = "#6E6E6E";
+    }
+    for (var i = 0; i < tableHeads.length; i++) {
+      tableHeads[i].style.color = "white";
     }
   } else {
     body.backgroundColor = "#FFF";
@@ -835,6 +1003,9 @@ function changeColor() {
       tickets[i].style.backgroundColor = "#FFF";
       ticketHeads[i].style.backgroundColor = "#F5F5F5";
     }
+    for (var i = 0; i < tableHeads.length; i++) {
+      tableHeads[i].style.color = "#333";
+    }
   }
   alternate = alternate % 2 + 1; //Increment/decrement alternate.
 }
@@ -842,15 +1013,31 @@ function changeColor() {
 
 /* ------------------ TICKET PANEL ------------------ */
 
+/* Helper method that creates the card div */
+function createTicketCard(cardIndex) {
+  var newCard = document.createElement('div');
+  var task = user.tasks[cardIndex];
+  var cardTitle = task.name;
+  var cardDesc = task.desc;
+
+  newCard.className = 'panel panel-default';
+  newCard.id = cardIndex;
+
+  newCard.innerHTML = '<div class="panel-heading">' +
+    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
+    '</h3></div>' +
+    '<div class="panel-body">' + cardDesc + '</div></div>';
+
+  document.getElementById("card-list").appendChild(newCard);
+  $('#' + cardIndex).addClass('animated fadeInRight');
+  newCard.scrollIntoView();
+}
+
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
 $(".main").on("click", "table > tbody > tr", function(e) {
   event.preventDefault();
-  var newCard = document.createElement('div');
   var isClosed = true;
-  var task = user.tasks[this.id];
-  var cardTitle = task.name;
-  var cardDesc = task.desc;
 
   if (isClosed == true) {
     isClosed = false;
@@ -858,14 +1045,27 @@ $(".main").on("click", "table > tbody > tr", function(e) {
     $("#openInfo").text("Close Ticket Panel");
   }
 
-  newCard.innerHTML = '<div class="panel panel-default">' +
-    '<div class="panel-heading">' +
-    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
-    '</h3></div>' +
-    '<div class="panel-body">' + cardDesc +
-    '</div></div>';
+  // Check if card id exists in set
+  if (cardsCreated.has(this.id)) {
+    $.notify({
+      icon: 'fa fa-exclamation-triangle',
+      message: "Ticket already queued."
+    }, {
+      type: 'warning',
+    });
 
-  document.getElementById("card-list").appendChild(newCard);
+    return;
+  } else {
+    cardsCreated.add(this.id);
+    createTicketCard(this.id);
+
+    $.notify({
+      icon: 'fa fa-check',
+      message: "Ticket queued."
+    }, {
+      type: 'success',
+    });
+  }
 });
 
 /* Click event listener for openInfo to toggle the ticket panel view */
@@ -883,12 +1083,23 @@ $("#openInfo").click(function(e) {
 /* Clears all ticket cards inside ticket panel */
 $("#clearBtn").click(function() {
   $('#card-list').empty();
+  cardsCreated.clear();
 });
 
 /* Method that will delegate which ticket card is clicked and delete that
    particular card */
 $(".info-panel").on("click", ".glyphicon-remove-sign", function(e) {
-  $(this).closest('.panel-default').remove();
+  var card = $(this).closest('.panel-default');
+  var index = card.attr('id');
+
+  if (cardsCreated.has(index)) {
+    cardsCreated.delete(index);
+  }
+
+  card.addClass('animated fadeOutRight');
+  card.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+    $(this).remove();
+  });
 });
 
 /* ------------------ END OF TICKET PANEL ------------------ */
@@ -924,55 +1135,117 @@ function sort() {
       break;
   }
 }
+/*--------------------------------Filters-------------------------------------*/
+function filterBy(buttonID) {
+  var category = document.getElementById(buttonID).innerHTML;
+  var button = document.getElementById(buttonID);
+  var filter = true;
+  if (button.style.backgroundColor == "lightgrey")
+    filter = false;
+  //If View All is slected, reset everything to the defualt.
+  if (category == "View All") {
+    filterAll();
+    return;
+  }
+  if (filter)
+    filterIn(button, buttonID);
+  else
+    filterOut(button, buttonID);
+  checkFilterAll();
+}
 
-function filterBy(category) {
-  //Reset everything, easier to manipulate then.
-  filterAll();
+function filterIn(button, buttonID) {
   var table, currentRow, i, j;
-  tables = document.getElementsByTagName("table");
-  for (j = 0; j < tables.length; j++) { // Grab each table.
-    rows = tables[j].getElementsByTagName("TR"); // Grab the rows of each table.
+  var whitesmoke = "#f1f1f1";
+  var category = document.getElementById(buttonID).innerHTML;
+  var currentRowHTML;
+  table = document.getElementsByTagName("table");
+  for (j = 0; j < table.length; j++) { // Grab each table.
+    rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
     for (i = 1; i < rows.length; i++) { // Manipulate said row.
       currentRow = rows[i]
-      if (currentRow.getElementsByTagName("TD")[3].innerHTML != category && currentRow.style.display != "none") {
-        $(currentRow).toggle(); // If the row is not whats filtered, hide it.
+      currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
+      if (currentRowHTML != category &&
+        currentRow.style.display != "none" &&
+        button.style.backgroundColor != "lightgrey" && filterIn) {
+        if (document.getElementById("filter " +
+            currentRowHTML).style.backgroundColor ==
+          "lightgrey") {
+          continue;
+        }
+        $(currentRow).hide(); // If the row is not whats filtered, hide it.
+      } else if (currentRowHTML == category &&
+        currentRow.style.display == "none" &&
+        button.style.backgroundColor != "lightgrey")
+        $(currentRow).show();
+    }
+  }
+  //Change the backgorund color of the buttons when they're selected.
+  if (button.style.backgroundColor == "lightgrey")
+    button.style.backgroundColor = whitesmoke;
+  else
+    button.style.backgroundColor = "lightgrey";
+}
+
+function filterOut(button, buttonID) {
+  var table, currentRow, i, j;
+  var whitesmoke = "#f1f1f1";
+  var category = document.getElementById(buttonID).innerHTML;
+  table = document.getElementsByTagName("table");
+  for (j = 0; j < table.length; j++) { // Grab each table.
+    rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
+    for (i = 1; i < rows.length; i++) { // Manipulate said row.
+      currentRow = rows[i]
+      currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
+      //If the current row needs to be filtered out, hide it.
+      if (currentRowHTML == category &&
+        currentRow.style.display != "none" &&
+        button.style.backgroundColor == "lightgrey") {
+        $(currentRow).hide();
       }
     }
   }
+  //Change the background color of the buttons when they're selected.
+  if (button.style.backgroundColor == "lightgrey")
+    button.style.backgroundColor = whitesmoke;
+  else
+    button.style.backgroundColor = "lightgrey";
 }
 
-function filterNotStared() {
-  filterBy("Not Started");
-}
-
-function filterInProgress() {
-  filterBy("In Progress");
-}
-
-function filterToReview() {
-  filterBy("To Review");
-}
-
-function filterCompleted() {
-  filterBy("Completed");
-}
-
-function filterBlocked() {
-  filterBy("Blocked");
+function checkFilterAll() {
+  var table, i, j, filterBar;
+  filterBar = document.getElementById("leftSidebar");
+  var buttons = filterBar.getElementsByTagName("BUTTON");
+  for (i = 0; i < buttons.length; i++) {
+    //Check if any of the filter buttons are selected.
+    if (buttons[i].style.backgroundColor == "lightgrey")
+      return false;
+  }
+  filterAll();
+  return true;
 }
 
 function filterAll() {
-  var table, i, j, currentRow;
+  var table, i, j, currentRow, filterBar;
+  var whitesmoke = "#f1f1f1";
+  filterBar = document.getElementById("leftSidebar");
+  var buttons = filterBar.getElementsByTagName("BUTTON");
+  //If the Filter All button was pressed, change the button colors to default.
+  for (i = 0; i < buttons.length; i++)
+    buttons[i].style.backgroundColor = whitesmoke;
+
   tables = document.getElementsByTagName("table");
+  //Get the TR tags from the table.
   for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
+    //Manipulate each TR by changing the display of it to be shown.
     for (i = 1; i < rows.length; i++) {
       currentRow = rows[i]
       currentRow.style.display = "table-row";
     }
   }
 }
-
+/*-----------------------------End of Filtering-------------------------------*/
 /*---------------------------------Search-------------------------------------*/
 
 function search() {
@@ -980,20 +1253,20 @@ function search() {
   var tables = document.getElementsByTagName("table");
   var rows;
   var currentRow, items, i, j, td;
-  for(j = 0; j < tables.length; j++) {
+  for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
-  for (i = 1; i < rows.length; i++) {
-    currentRow = rows[i]
-    items = currentRow.getElementsByTagName("TD");
-    for (td = 0; td < items.length; td++) {
-      if (items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase())) {
-        currentRow.style.display = "table-row";
-        break;
+    for (i = 1; i < rows.length; i++) {
+      currentRow = rows[i]
+      items = currentRow.getElementsByTagName("TD");
+      for (td = 0; td < items.length; td++) {
+        if (items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase())) {
+          currentRow.style.display = "table-row";
+          break;
+        }
+        if (td == items.length - 1 && currentRow.style.display != "none")
+          $(currentRow).toggle();
       }
-      if (td == items.length - 1 && currentRow.style.display != "none")
-        $(currentRow).toggle();
     }
   }
-}
   return false; //Used to disable submitting.
 }

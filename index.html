@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/animate.css">
 
   <!-- Additiona Font Pack -->
   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -32,7 +33,7 @@
 
 
 <body>
-  <nav class="navbar navbar-default">
+  <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
       <!-- Filter sidebar button -->
       <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
@@ -53,6 +54,7 @@
       <div class="collapse navbar-collapse" id="navbar-links">
         <ul class="nav navbar-nav">
           <li><a href="#" class="btn" onclick="changeColor()"><span class="glyphicon glyphicon-adjust"></span></a></li>
+          <li><a class="btn" id=addTable onclick="createNewTable()"><span class="glyphicon glyphicon-plus"></span></a></li>
           <li><a class="btn" id="openInfo">Open Ticket Panel</a></li>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -91,26 +93,6 @@
     <h2 id="info-header">Ticket Information</h2>
 
     <div class="info-cards" id="card-list">
-<!--       <div class="panel panel-default" id="card1">
-        <div class="panel-heading">
-          <h3 class="panel-title">Ticket #1234
-            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>
-          </h3>
-        </div>
-        <div class="panel-body">
-          Ticket info
-        </div>
-      </div>
-      <div class="panel panel-default" id="card2">
-        <div class="panel-heading">
-          <h3 class="panel-title">Ticket #5678
-            <i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>
-          </h3>
-        </div>
-        <div class="panel-body">
-          Ticket info
-        </div>
-      </div> -->
     </div>
 
     <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
@@ -120,43 +102,28 @@
 <!-- FILTER SIDEBAR -->
   <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
     <h3 class="w3-bar-item" id="filters">Filters</h3>
-    <button class="w3-bar-item w3-button" onclick="filterAll()">
-      View All</button>
-    <button class="w3-bar-item w3-button" onclick="filterNotStared()">
-      Not Started</button>
-    <button class="w3-bar-item w3-button" onclick="filterInProgress()">
-      In Progress</button>
-    <button class="w3-bar-item w3-button" onclick="filterToReview()">
-      To Review</button>
-    <button class="w3-bar-item w3-button" onclick="filterCompleted()">
-      Completed</button>
-    <button class="w3-bar-item w3-button" onclick="filterBlocked()">
-      Blocked</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter View All">View All</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Not Started">Not Started</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter In Progress">In Progress</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter To Review">To Review</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Completed">Completed</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Blocked">Blocked</button>
   </div>
   <!-- END FILTER SIDEBAR -->
 
   <div class="main" id="main">
     <div class="container-fluid" id="main-container">
-      <div id=sort>
-        Sort by
-        <select name="sortBy" onclick="sort()" id=sortList>
-          <option value=""></option>
-          <option value="a-z">A-Z</option>
-          <option value="z-a">Z-A</option>
-          <option value="category">Category</option>
-          <option value="lastModified">Last Modified</option>
-          <option value="lastModifiedReversed">Last Modified Reversed</option>
-          <option value="customSort">Custom</option>
-        </select>
-      </div>
   </div>
 </div>
 
-<!-- jQuery & JavaScript -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
-<script type="text/javascript" src="js/main.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <!-- jQuery & JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  <!-- Custom JavaScript/jQuery Plugins -->
+  <script src="js/bootstrap-notify.min.js"></script>
 
 </body>
 </html>
