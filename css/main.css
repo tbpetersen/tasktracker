@@ -477,3 +477,28 @@ select#sortList {
     background-image: none;
     opacity: 1;
 }
+
+/* Scroll to top button */
+.scrollTop {
+  width: 50px; 
+  height: 50px;
+  line-height: 50px;
+  margin: 10px; 
+  text-align: center; 
+  background-color: rgba(204, 204, 204, 0.7);
+  font-weight: bold;
+  font-size: 50px;
+  position: fixed;
+  top: 92%;
+  right: 0;
+  display: none;
+  transition: right 0.5s ease;
+}
+
+.scrollTop.toggled {
+  right: 20%;
+}
+
+.scrollTop:hover {
+  background-color: rgba(204, 204, 204, 1);
+}

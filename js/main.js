@@ -10,7 +10,7 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 var isClosed = false;
-var ID = 0;
+var scrollTopVisible = false;
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
 class Task {
@@ -89,6 +89,7 @@ $(document).ready(function() {
     $('.navbar').toggleClass('toggled');
   });
 
+  // Default toast notifications settings
   $.notifyDefaults({
     allow_dismiss: true,
     animate: {
@@ -104,6 +105,24 @@ $(document).ready(function() {
     delay: 500,
   });
 
+  // Scroll to top button 
+  $(window).scroll(function(){
+    if ($(this).scrollTop() > 100) {
+      $('.scrollTop').fadeIn();
+      scrollTopVisible = true;
+    }
+    else {
+      $('.scrollTop').fadeOut();
+      scrollTopVisible = false;
+    }
+  });
+  
+  $('.scrollTop').click(function() {
+    $('html, body').animate({scrollTop : 0},800);
+    return false;
+  });
+
+  // Allocate tables for Zendesk and Trello
   setupPage();
 
   setIDs().then(function() {
@@ -1018,7 +1037,8 @@ function changeColor() {
 /* ------------------ TICKET PANEL ------------------ */
 
 /* Helper method that creates the card div */
-function createTicketCard(cardIndex) {
+function createTicketCard(cardIndex)
+{
   var newCard = document.createElement('div');
   var task = user.tasks[cardIndex];
   var cardTitle = task.name;
@@ -1039,14 +1059,17 @@ function createTicketCard(cardIndex) {
 
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
-$(".main").on("click", "table > tbody > tr", function(e) {
+$(".main").on("click", "table > tbody > tr", function(e)
+{
   event.preventDefault();
   var isClosed = true;
 
-  if (isClosed == true) {
+  if (isClosed == true)
+  {
     isClosed = false;
     $(".info-panel").addClass("toggled");
     $("#openInfo").text("Close Ticket Panel");
+    $(".scrollTop").addClass("toggled");
   }
 
   // Check if card id exists in set
@@ -1076,26 +1099,33 @@ $(".main").on("click", "table > tbody > tr", function(e) {
 });
 
 /* Click event listener for openInfo to toggle the ticket panel view */
-$("#openInfo").click(function(e) {
+$("#openInfo").click(function(e)
+{
   e.preventDefault();
   $(".info-panel").toggleClass("toggled");
+  $(".scrollTop").toggleClass("toggled");
 
-    if ($(this).text() === "Open Ticket Panel") {
+    if ($(this).text() === "Open Ticket Panel")
+    {
       $(this).text("Close Ticket Panel");
-    } else {
+    }
+    else
+    {
       $(this).text("Open Ticket Panel");
     }
   });
 
 /* Clears all ticket cards inside ticket panel */
-$("#clearBtn").click(function() {
+$("#clearBtn").click(function()
+{
   $('#card-list').empty();
   cardsCreated.clear();
 });
 
 /* Method that will delegate which ticket card is clicked and delete that
    particular card */
-$(".info-panel").on("click", ".glyphicon-remove-sign", function(e) {
+$(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
+{
   var card = $(this).closest('.panel-default');
   var index = card.attr('id');
 
