@@ -342,7 +342,7 @@ function addRow(task, tableName, index) {
   row.appendChild(catCell);
 
   row.setAttribute("id", index);
-
+  console.log(row);
   // append row to table/body
   body.appendChild(row);
 
@@ -661,6 +661,10 @@ function refresh() {
 var alphabetForwards = false;
 
 function sortAlphabet(tableName, index) {
+  console.log("JQuery: " + $(this));
+  console.log($(this));
+  console.log("Non-JQuery" + this);
+  console.log(this);
   if (alphabetForwards) {
     sortAlphabetReverse(tableName, index);
     alphabetForwards = false;
@@ -1108,37 +1112,6 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e) {
 
 /* ------------------ END OF TICKET PANEL ------------------ */
 
-function sort() {
-  switch (document.getElementsByName("sortBy")[0].value) {
-    case "a-z":
-      sortAlphabet();
-      break;
-
-    case "z-a":
-      sortAlphabetReverse();
-      break;
-
-    case "dueDate":
-      sortDueDate();
-      break;
-
-    case "startDate":
-      sortStartDate();
-      break;
-
-    case "category":
-      sortCategory();
-      break;
-
-    case "lastModified":
-      sortLastModified();
-      break;
-
-    case "lastModifiedReversed":
-      sortlastModifiedReversed();
-      break;
-  }
-}
 /*--------------------------------Filters-------------------------------------*/
 function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
@@ -1172,8 +1145,7 @@ function filterIn(button, buttonID) {
       if (currentRowHTML != category &&
         currentRow.style.display != "none" &&
         button.style.backgroundColor != "lightgrey" && filterIn) {
-        if (document.getElementById("filter " +
-            currentRowHTML).style.backgroundColor ==
+        if (document.getElementById(currentRowHTML).style.backgroundColor ==
           "lightgrey") {
           continue;
         }
