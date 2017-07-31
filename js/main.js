@@ -10,7 +10,6 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 var isClosed = false;
-var ID = 0;
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
 class Task {
@@ -89,6 +88,7 @@ $(document).ready(function() {
     $('.navbar').toggleClass('toggled');
   });
 
+  // Default toast notifications settings
   $.notifyDefaults({
     allow_dismiss: true,
     animate: {
@@ -104,6 +104,22 @@ $(document).ready(function() {
     delay: 500,
   });
 
+  // Scroll to top button 
+  $(window).scroll(function(){
+    if ($(this).scrollTop() > 100) {
+      $('.scrollTop').fadeIn();
+    }
+    else {
+      $('.scrollTop').fadeOut();
+    }
+  });
+  
+  $('.scrollTop').click(function() {
+    $('html, body').animate({scrollTop : 0},800);
+    return false;
+  });
+
+  // Allocate tables for Zendesk and Trello
   setupPage();
 
   setIDs().then(function() {
@@ -288,6 +304,14 @@ function populateTable(task, tableName, index) {
   //console.log(document.getElementById("table").rows[2].cells.item(3).innerHTML);
 }
 
+function formatDate(date) {
+  var date = new Date(date);
+  date = date.toDateString();
+  date = date.substring(4);
+
+  return date;
+}
+
 function addRow(task, tableName, index) {
 
   // Get title of task
@@ -301,9 +325,7 @@ function addRow(task, tableName, index) {
   }
 
   // Get last modified date from timestamp
-  var date = new Date(task.lastModified);
-  date = date.toDateString();
-  date = date.substring(4);
+  date = formatDate(task.lastModified);
 
   // Get category of task
   var cat = task.category;
@@ -1022,11 +1044,14 @@ function changeColor() {
 /* ------------------ TICKET PANEL ------------------ */
 
 /* Helper method that creates the card div */
-function createTicketCard(cardIndex) {
+function createTicketCard(cardIndex)
+{
   var newCard = document.createElement('div');
   var task = user.tasks[cardIndex];
   var cardTitle = task.name;
   var cardDesc = task.desc;
+  var status = task.category;
+  var date = formatDate(task.lastModified);
 
   newCard.className = 'panel panel-default';
   newCard.id = cardIndex;
@@ -1034,23 +1059,33 @@ function createTicketCard(cardIndex) {
   newCard.innerHTML = '<div class="panel-heading">' +
     '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
     '</h3></div>' +
-    '<div class="panel-body">' + cardDesc + '</div></div>';
+    '<div class="panel-body">' +
+    '<strong>Status: </strong> ' + status + ' <br>' +
+    '<strong>Last Modified: </strong> ' + date + ' <br><br>' + 
+    '<strong>Description</strong> <hr><p>' + cardDesc + '</p>' +
+    '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
   $('#' + cardIndex).addClass('animated fadeInRight');
+  $('.panel-body p').readmore({
+    speed: 200,
+  });
   newCard.scrollIntoView();
 }
 
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
-$(".main").on("click", "table > tbody > tr", function(e) {
+$(".main").on("click", "table > tbody > tr", function(e)
+{
   event.preventDefault();
   var isClosed = true;
 
-  if (isClosed == true) {
+  if (isClosed == true)
+  {
     isClosed = false;
     $(".info-panel").addClass("toggled");
     $("#openInfo").text("Close Ticket Panel");
+    $(".scrollTop").addClass("toggled");
   }
 
   // Check if card id exists in set
@@ -1077,26 +1112,33 @@ $(".main").on("click", "table > tbody > tr", function(e) {
 });
 
 /* Click event listener for openInfo to toggle the ticket panel view */
-$("#openInfo").click(function(e) {
+$("#openInfo").click(function(e)
+{
   e.preventDefault();
   $(".info-panel").toggleClass("toggled");
+  $(".scrollTop").toggleClass("toggled");
 
-  if ($(this).text() === "Open Ticket Panel") {
-    $(this).text("Close Ticket Panel");
-  } else {
-    $(this).text("Open Ticket Panel");
-  }
+    if ($(this).text() === "Open Ticket Panel")
+    {
+      $(this).text("Close Ticket Panel");
+    }
+    else
+    {
+      $(this).text("Open Ticket Panel");
+    }
 });
 
 /* Clears all ticket cards inside ticket panel */
-$("#clearBtn").click(function() {
+$("#clearBtn").click(function()
+{
   $('#card-list').empty();
   cardsCreated.clear();
 });
 
 /* Method that will delegate which ticket card is clicked and delete that
    particular card */
-$(".info-panel").on("click", ".glyphicon-remove-sign", function(e) {
+$(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
+{
   var card = $(this).closest('.panel-default');
   var index = card.attr('id');
 
