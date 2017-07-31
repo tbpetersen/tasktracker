@@ -171,7 +171,7 @@ select#sortList {
   height: 100%;
   width: 20%;
   position: fixed;
-  z-index: 1;
+  z-index: 100;
   top: 0;
   padding-top: 55px;
   right: -20%;
@@ -286,7 +286,6 @@ select#sortList {
   max-height: 100%;
   padding: 0;
   margin: 0;
-  z-index: 1;
 }
 
 #navbar-links {
@@ -467,7 +466,14 @@ select#sortList {
 }
 
 .deleteButton{
-  background-color: red;
+  background-color: #dd6367;
   color: black;
   float: right;
+}
+
+/* Class override - Fix opacity overlay over table headers */
+/* Bad implementation in the event this class is used elsewhere */
+.ui-state-disabled {
+    background-image: none;
+    opacity: 1;
 }
