@@ -363,13 +363,14 @@ function draggableRows(tableName) {
   $("tbody.body").sortable();
   $("tbody.body").sortable({
     connectWith: ".body",
-    helper: fixHelper
+    helper: fixHelper,
+    zIndex: 99
   }).disableSelection();
 
   $('#' + tableName).sortable({
     helper: fixHelper,
     cancel: ".ui-state-disabled",
-    items: "tr:not(.ui-state-disabled)"
+    items: "tr:not(.ui-state-disabled)",
   }).disableSelection();
 
   $(".fixed").addClass("ui-state-disabled");
