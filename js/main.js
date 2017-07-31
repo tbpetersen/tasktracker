@@ -10,7 +10,6 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 var isClosed = false;
-var ID = 0;
 
 
 class Task {
@@ -110,11 +109,7 @@ $(document).ready(function() {
               if (document.getElementById(cat) == null) {
                 createTable(cat);
               }
-              populateTable(user.tasks[j], cat, j);  
-              /* Checking id of rows/tasks
-              var table = document.getElementById(user.tasks[j].category);
-              console.log(table.rows[table.rows.length-1].id);
-              console.log(user.tasks[j]);  */       
+              populateTable(user.tasks[j], cat, j);      
             }
           }
         }
@@ -129,7 +124,7 @@ $(document).ready(function() {
             }
           }
         }
-
+        draggableRows();
       });
     });
   });
@@ -141,10 +136,12 @@ function createTable(tableName) {
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
+  table.setAttribute("id", tableName);
+  //table.setAttribute("class", "sortable");
+
   table.appendChild(head);
   table.appendChild(body);
   mainDiv.appendChild(table);
-  table.setAttribute("id", tableName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -155,8 +152,7 @@ function createTable(tableName) {
 
   row.setAttribute("id", "firstRow");
   row.setAttribute("class", "fixed");
-  body.setAttribute("class", "body");
-
+  body.setAttribute("class", "sortable");
 
   titleCell.setAttribute("id", "titleCell");
   descCell.setAttribute("id", "descCell");
@@ -183,16 +179,12 @@ function createTable(tableName) {
 
   // append row to table/body
   head.appendChild(row);
-
-  draggableRows(tableName);
+  table.appendChild(head);
 }
 
 function populateTable(task, tableName, index) {
   var table = document.getElementById(tableName);
   addRow(task, tableName, index);
-
-  // THIS IS HOW YOU ACCESS AN INDIVIDUAL CELL IN THE TABLE
-  //console.log(document.getElementById("table").rows[2].cells.item(3).innerHTML);
 }
 
 function addRow(task, tableName, index) {
@@ -249,17 +241,15 @@ function addRow(task, tableName, index) {
   row.appendChild(catCell);
 
   row.setAttribute("id", index);
+  row.setAttribute("class", "notFirst");
 
   // append row to table/body
   body.appendChild(row);
-
 }
 
-function draggableRows(tableName) {
-  // Drag rows
-  //$('#' + tableName).sortable();
+function draggableRows() {
 
-  // Prevent rows from shrinking while dragging
+  // Prevent rows from shrinking while dragged
   var fixHelper = function(e, ui) {
     ui.children().each(function() {
       $(this).width($(this).width());
@@ -267,19 +257,25 @@ function draggableRows(tableName) {
     return ui;
   };
 
-  $("tbody.body").sortable();
-  $("tbody.body").sortable({
-    connectWith: ".body",
-    helper: fixHelper
-  }).disableSelection();
-  
-  $('#' + tableName).sortable({
+  $(".sortable").sortable({
     helper: fixHelper,
-    cancel: ".ui-state-disabled",
-    items: "tr:not(.ui-state-disabled)"
-  }).disableSelection();
+    connectWith: ".sortable",
+    //placeholder: "ui-state-highlight",
+    stop: function(e,t) {
+      if ($(this).children().length == 0) {
+          $(this).addClass('place');
+      }
+      if ($(t.item).closest('tbody').children().length > 0) {
+          $(t.item).closest('tbody').removeClass('place');
+      }
+    },
 
-  $(".fixed").addClass("ui-state-disabled");
+    receive: function() {
+      console.log($(this).closest('table'));
+    },
+
+  });
+  $("#sortable").disableSelection(); 
 }
 
 function setupPage() {
