@@ -260,6 +260,17 @@ select#sortList {
   word-wrap: break-word;
 }
 
+.panel-body hr 
+{
+  margin: 5px;
+}
+
+.panel-body a
+{
+  font-weight: bold;
+  color: #dd6367;
+}
+
 
 /* Navbar */
 .navbar {
