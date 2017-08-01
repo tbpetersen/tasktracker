@@ -145,11 +145,7 @@ $(document).ready(function() {
               if (document.getElementById(cat) == null) {
                 createTable(cat);
               }
-<<<<<<< HEAD
               populateTable(user.tasks[j], cat, j);
-=======
-              populateTable(user.tasks[j], cat, j);      
->>>>>>> 8bad33fd5c2dd61764a2e2c5a8f6a10e3e0701f4
             }
           }
         }
@@ -261,6 +257,7 @@ function createTable(tableName) {
   row.setAttribute("id", "firstRow");
   //row.setAttribute("class", "fixed");
   body.setAttribute("class", "sortable");
+  body.setAttribute("id", "tbody");
 
   titleCell.setAttribute("id", "titleCell");
   descCell.setAttribute("id", "descCell");
@@ -329,6 +326,7 @@ function addRow(task, tableName, index) {
   var cat = task.category;
 
   // table = document.getElementById(tableName);
+  console.log(document.getElementById(tableName));
   var body = document.getElementById(tableName).getElementsByTagName('tbody')[0];
 
   //create row and cell element
@@ -381,7 +379,7 @@ function draggableRows() {
   $(".sortable").sortable({
     helper: fixHelper,
     connectWith: ".sortable",
-    placeholder: "ui-state-highlight",
+    //placeholder: "ui-state-highlight",
     stop: function(e,t) {
       if ($(this).children().length == 0) {
           $(this).addClass('place');
@@ -396,11 +394,7 @@ function draggableRows() {
     },
 
   });
-<<<<<<< HEAD
   $("#sortable").disableSelection();
-=======
-  $("#sortable").disableSelection(); 
->>>>>>> 8bad33fd5c2dd61764a2e2c5a8f6a10e3e0701f4
 }
 
 function setupPage() {
