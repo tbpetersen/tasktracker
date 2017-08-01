@@ -118,29 +118,6 @@ select#sortList {
   color: black;
 }
 
-/*#leftCloseButton {
-  border: none;
-  background-color: transparent;
-  width: 20%;
-  height: 3%;
-  position: absolute;
-  padding: 0px;
-  text-align: center;
-  margin: 0px;
-  right: 0%;
-  top: 0%;
-  -webkit-transition-duration: 0.4s;
-  transition-duration: 0.4s;
-}
-
-#leftCloseButton:hover {
-  background-color: #C83C3C;
-}
-
-#closeIcon {
-  font-size: 70%;
-}*/
-
 #filters {
   height: 5%;
   text-align: center;
@@ -318,13 +295,15 @@ select#sortList {
   float: right;
 }
 
-#navbar-links a.btn {
+#navbar-links li > .btn {
   border-radius: 0;
+  height: 55px;
+  background-color: transparent;
 }
 
-#navbar-links a.btn:active {
+
+#navbar-links li > .btn:active {
   background: #ccc;
-  border-radius: 0%;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
@@ -496,13 +475,6 @@ select#sortList {
   color: black;
   float: right;
 }
-
-/* Class override - Fix opacity overlay over table headers */
-/* Bad implementation in the event this class is used elsewhere */
-/*.ui-state-disabled {
-    background-image: none;
-    opacity: 1;
-}*/
 
 /* Scroll to top button */
 .scrollTop {
