@@ -132,23 +132,7 @@ $(document).ready(function() {
 
       createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
         console.log(user.tasks);
-        var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review",
-          "Completed", "July_Billing"
-        ];
-        var zendCat = ["open", "pending", "closed", "new", "solved", "hold"];
 
-        for (var i = 0; i < trelloCat.length; i++) {
-          for (var j = 0; j < user.tasks.length; j++) {
-            var str = user.tasks[j].category;
-            var cat = str.split(' ').join('_');
-            if (cat === trelloCat[i]) {
-              if (document.getElementById(cat) == null) {
-                createTable(cat);
-              }
-              populateTable(user.tasks[j], cat, j);
-            }
-          }
-        }
         populateTrello();
         populateZend();
         draggableRows();
