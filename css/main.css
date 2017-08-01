@@ -59,10 +59,19 @@ body.toggled #leftSidebar {
 /* Tables */
 table, th {
   width: 100%;
-  margin-bottom: 5%;
+  margin-bottom: 5%;  
+  border-collapse: separate;
 }
 
-th{
+.place{
+    display:table;
+    height:30px;
+    width:260px;
+    position:absolute;
+    /*z-index:-1;*/
+}
+
+th {
   white-space: nowrap;
 }
 
@@ -80,15 +89,16 @@ td {
   height: 69px;
   border-style: solid;
   word-wrap: break-word;
-  border-width: 1px;
+  border-width: thin;
   border-color: #d3d3d3;
   padding: .75%;
   cursor: pointer;
 }
 
-tbody tr:hover {
+.notFirst:hover {
     background-color: #dd6367;
 }
+/* End table CSS*/
 
 #logo {
   max-height: 100%;

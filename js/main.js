@@ -145,7 +145,11 @@ $(document).ready(function() {
               if (document.getElementById(cat) == null) {
                 createTable(cat);
               }
+<<<<<<< HEAD
               populateTable(user.tasks[j], cat, j);
+=======
+              populateTable(user.tasks[j], cat, j);      
+>>>>>>> 8bad33fd5c2dd61764a2e2c5a8f6a10e3e0701f4
             }
           }
         }
@@ -392,7 +396,11 @@ function draggableRows() {
     },
 
   });
+<<<<<<< HEAD
   $("#sortable").disableSelection();
+=======
+  $("#sortable").disableSelection(); 
+>>>>>>> 8bad33fd5c2dd61764a2e2c5a8f6a10e3e0701f4
 }
 
 function setupPage() {
