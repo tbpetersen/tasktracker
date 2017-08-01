@@ -378,6 +378,7 @@ function draggableRows() {
     helper: fixHelper,
     connectWith: ".sortable",
     placeholder: "ui-state-highlight",
+    zIndex: 99,
     stop: function(e,t) {
       if ($(this).children().length == 0) {
           $(this).addClass('place');
