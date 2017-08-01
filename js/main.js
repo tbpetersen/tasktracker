@@ -132,34 +132,9 @@ $(document).ready(function() {
 
       createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
         console.log(user.tasks);
-        var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review",
-          "Completed", "July_Billing"
-        ];
-        var zendCat = ["open", "pending", "closed", "new", "solved", "hold"];
 
-        for (var i = 0; i < trelloCat.length; i++) {
-          for (var j = 0; j < user.tasks.length; j++) {
-            var str = user.tasks[j].category;
-            var cat = str.split(' ').join('_');
-            if (cat === trelloCat[i]) {
-              if (document.getElementById(cat) == null) {
-                createTable(cat);
-              }
-              populateTable(user.tasks[j], cat, j);      
-            }
-          }
-        }
-
-        for (var i = 0; i < zendCat.length; i++) {
-          for (var j = 0; j < user.tasks.length; j++) {
-            if (user.tasks[j].category == zendCat[i]) {
-              if (document.getElementById(user.tasks[j].category) == null) {
-                createTable(user.tasks[j].category);
-              }
-              populateTable(user.tasks[j], user.tasks[j].category, j);
-            }
-          }
-        }
+        populateTrello();
+        populateZend();
         draggableRows();
       });
     });
@@ -212,6 +187,42 @@ function isEmpty(tableName) {
 }
 
 
+/* Populating/setting up tables */
+function populateTrello() {
+
+  var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review",
+  "Completed", "July_Billing"];
+
+  for (var i = 0; i < trelloCat.length; i++) {
+    for (var j = 0; j < user.tasks.length; j++) {
+      var str = user.tasks[j].category;
+      var cat = str.split(' ').join('_');
+      if (cat === trelloCat[i]) {
+        if (document.getElementById(cat) == null) {
+          createTable(cat);
+        }
+        populateTable(user.tasks[j], cat, j);      
+      }
+    }
+  }
+}
+
+function populateZend() {
+
+  var zendCat = ["open", "pending", "closed", "new", "solved", "hold"];
+
+  for (var i = 0; i < zendCat.length; i++) {
+    for (var j = 0; j < user.tasks.length; j++) {
+      if (user.tasks[j].category == zendCat[i]) {
+        if (document.getElementById(user.tasks[j].category) == null) {
+          createTable(user.tasks[j].category);
+        }
+        populateTable(user.tasks[j], user.tasks[j].category, j);
+      }
+    }
+  }
+}
+
 function createTable(tableName) {
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
@@ -220,7 +231,6 @@ function createTable(tableName) {
 
 
   table.setAttribute("id", tableName);
-  //table.setAttribute("class", "sortable");
 
   // Create the sorting buttons
   var titleSort = document.createElement("button");
@@ -255,7 +265,6 @@ function createTable(tableName) {
   catCell = document.createElement("th");
 
   row.setAttribute("id", "firstRow");
-  //row.setAttribute("class", "fixed");
   body.setAttribute("class", "sortable");
 
   titleCell.setAttribute("id", "titleCell");
@@ -290,6 +299,7 @@ function createTable(tableName) {
 
   // append row to table/body
   head.appendChild(row);
+  //head.appendChild(body);
   table.appendChild(head);
 }
 
@@ -323,6 +333,7 @@ function addRow(task, tableName, index) {
 
   // Get category of task
   var cat = task.category;
+  var capCat = cat.charAt(0).toUpperCase() + cat.substring(1);
 
   // table = document.getElementById(tableName);
   var body = document.getElementById(tableName).getElementsByTagName('tbody')[0];
@@ -343,7 +354,7 @@ function addRow(task, tableName, index) {
   textNode1 = document.createTextNode(title);
   textNode2 = document.createTextNode(shortDesc);
   textNode3 = document.createTextNode(date);
-  textNode4 = document.createTextNode(cat);
+  textNode4 = document.createTextNode(capCat);
 
   // append text to cell
   titleCell.appendChild(textNode1);
@@ -389,12 +400,13 @@ function draggableRows() {
     },
 
     receive: function() {
-      console.log($(this).closest('table'));
+      //console.log($(this).closest('table'));
     },
 
   });
   $("#sortable").disableSelection(); 
 }
+/* End populating/setting up tables */
 
 function setupPage() {
   if (!redirectToHTTPS()) {
