@@ -1194,18 +1194,19 @@ function filterBy(buttonID) {
     filterIn(button, buttonID);
   else
     filterOut(button, buttonID);
-  checkFilterAll();
+    checkFilterAll();
 }
 
 function filterIn(button, buttonID) {
   var table, currentRow, i, j;
   var whitesmoke = "#f1f1f1";
   var category = document.getElementById(buttonID).innerHTML;
+  console.log(category);
   var currentRowHTML;
   table = document.getElementsByTagName("table");
   for (j = 0; j < table.length; j++) { // Grab each table.
     rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 1; i < rows.length; i++) { // Manipulate said row.
+    for (i = 0; i < rows.length-1; i++) { // Manipulate said row.
       currentRow = rows[i]
       currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
       if (currentRowHTML != category &&
@@ -1237,7 +1238,7 @@ function filterOut(button, buttonID) {
   table = document.getElementsByTagName("table");
   for (j = 0; j < table.length; j++) { // Grab each table.
     rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 1; i < rows.length; i++) { // Manipulate said row.
+    for (i = 0; i < rows.length-1; i++) { // Manipulate said row.
       currentRow = rows[i]
       currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
       //If the current row needs to be filtered out, hide it.
@@ -1282,7 +1283,7 @@ function filterAll() {
   for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
     //Manipulate each TR by changing the display of it to be shown.
-    for (i = 1; i < rows.length; i++) {
+    for (i = 0; i < rows.length; i++) {
       currentRow = rows[i]
       currentRow.style.display = "table-row";
     }
