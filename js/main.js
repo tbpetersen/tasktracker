@@ -10,6 +10,7 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 var isClosed = false;
+
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
 class Task {
@@ -104,7 +105,7 @@ $(document).ready(function() {
     delay: 500,
   });
 
-  // Scroll to top button 
+  // Scroll to top button
   $(window).scroll(function(){
     if ($(this).scrollTop() > 100) {
       $('.scrollTop').fadeIn();
@@ -113,7 +114,7 @@ $(document).ready(function() {
       $('.scrollTop').fadeOut();
     }
   });
-  
+
   $('.scrollTop').click(function() {
     $('html, body').animate({scrollTop : 0},800);
     return false;
@@ -145,10 +146,6 @@ $(document).ready(function() {
                 createTable(cat);
               }
               populateTable(user.tasks[j], cat, j);
-              /* Checking id of rows/tasks
-              var table = document.getElementById(user.tasks[j].category);
-              console.log(table.rows[table.rows.length-1].id);
-              console.log(user.tasks[j]);  */
             }
           }
         }
@@ -163,7 +160,7 @@ $(document).ready(function() {
             }
           }
         }
-
+        draggableRows();
       });
     });
   });
@@ -194,11 +191,36 @@ function createNewTable() {
   window.scrollTo(0, document.body.scrollHeight);
 }
 
+function deleteTable(tableName) {
+  table = $(tableName).closest('table');
+  if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
+    table.remove();
+    $.notify({
+      icon: 'fa fa-exclamation-triangle',
+      message: "Table deleted."
+    }, {
+      type: 'danger',
+    });
+  }
+}
+
+function isEmpty(tableName) {
+  var tableLength = $(tableName).closest('table').find("td").length
+  if (tableLength < 1)
+    return true;
+  return false;
+}
+
+
 function createTable(tableName) {
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
+
+
+  table.setAttribute("id", tableName);
+  //table.setAttribute("class", "sortable");
 
   // Create the sorting buttons
   var titleSort = document.createElement("button");
@@ -224,7 +246,6 @@ function createTable(tableName) {
   table.appendChild(head);
   table.appendChild(body);
   mainDiv.appendChild(table);
-  table.setAttribute("id", tableName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -234,16 +255,13 @@ function createTable(tableName) {
   catCell = document.createElement("th");
 
   row.setAttribute("id", "firstRow");
-  row.setAttribute("class", "fixed");
-  body.setAttribute("class", "body");
-
+  //row.setAttribute("class", "fixed");
+  body.setAttribute("class", "sortable");
 
   titleCell.setAttribute("id", "titleCell");
   descCell.setAttribute("id", "descCell");
   modCell.setAttribute("id", "modCell");
   catCell.setAttribute("id", "catCell");
-
-
 
   // text for cell
   textNode1 = document.createTextNode("Title");
@@ -257,7 +275,7 @@ function createTable(tableName) {
   modCell.appendChild(textNode3);
   catCell.appendChild(textNode4);
 
-  // appent buttons to cell
+  // append buttons to cell
   titleCell.appendChild(titleSort);
   descCell.appendChild(descriptionSort);
   modCell.appendChild(modifiedSort);
@@ -272,36 +290,12 @@ function createTable(tableName) {
 
   // append row to table/body
   head.appendChild(row);
-
-  draggableRows(tableName);
-}
-
-function deleteTable(tableName) {
-  table = $(tableName).closest('table');
-  if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
-    table.remove();
-    $.notify({
-      icon: 'fa fa-exclamation-triangle',
-      message: "Table deleted."
-    }, {
-      type: 'danger',
-    });
-  }
-}
-
-function isEmpty(tableName) {
-  var tableLength = $(tableName).closest('table').find("td").length
-  if (tableLength < 1)
-    return true;
-  return false;
+  table.appendChild(head);
 }
 
 function populateTable(task, tableName, index) {
   var table = document.getElementById(tableName);
   addRow(task, tableName, index);
-
-  // THIS IS HOW YOU ACCESS AN INDIVIDUAL CELL IN THE TABLE
-  //console.log(document.getElementById("table").rows[2].cells.item(3).innerHTML);
 }
 
 function formatDate(date) {
@@ -364,17 +358,15 @@ function addRow(task, tableName, index) {
   row.appendChild(catCell);
 
   row.setAttribute("id", index);
-  console.log(row);
+  row.setAttribute("class", "notFirst");
+
   // append row to table/body
   body.appendChild(row);
-
 }
 
-function draggableRows(tableName) {
-  // Drag rows
-  //$('#' + tableName).sortable();
+function draggableRows() {
 
-  // Prevent rows from shrinking while dragging
+  // Prevent rows from shrinking while dragged
   var fixHelper = function(e, ui) {
     ui.children().each(function() {
       $(this).width($(this).width());
@@ -382,20 +374,25 @@ function draggableRows(tableName) {
     return ui;
   };
 
-  $("tbody.body").sortable();
-  $("tbody.body").sortable({
-    connectWith: ".body",
+  $(".sortable").sortable({
     helper: fixHelper,
-    zIndex: 99
-  }).disableSelection();
+    connectWith: ".sortable",
+    //placeholder: "ui-state-highlight",
+    stop: function(e,t) {
+      if ($(this).children().length == 0) {
+          $(this).addClass('place');
+      }
+      if ($(t.item).closest('tbody').children().length > 0) {
+          $(t.item).closest('tbody').removeClass('place');
+      }
+    },
 
-  $('#' + tableName).sortable({
-    helper: fixHelper,
-    cancel: ".ui-state-disabled",
-    items: "tr:not(.ui-state-disabled)",
-  }).disableSelection();
+    receive: function() {
+      console.log($(this).closest('table'));
+    },
 
-  $(".fixed").addClass("ui-state-disabled");
+  });
+  $("#sortable").disableSelection();
 }
 
 function setupPage() {
@@ -683,10 +680,6 @@ function refresh() {
 var alphabetForwards = false;
 
 function sortAlphabet(tableName, index) {
-  console.log("JQuery: " + $(this));
-  console.log($(this));
-  console.log("Non-JQuery" + this);
-  console.log(this);
   if (alphabetForwards) {
     sortAlphabetReverse(tableName, index);
     alphabetForwards = false;
@@ -1061,7 +1054,7 @@ function createTicketCard(cardIndex)
     '</h3></div>' +
     '<div class="panel-body">' +
     '<strong>Status: </strong> ' + status + ' <br>' +
-    '<strong>Last Modified: </strong> ' + date + ' <br><br>' + 
+    '<strong>Last Modified: </strong> ' + date + ' <br><br>' +
     '<strong>Description</strong> <hr><p>' + cardDesc + '</p>' +
     '</div></div>';
 
@@ -1154,6 +1147,37 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 
 /* ------------------ END OF TICKET PANEL ------------------ */
 
+function sort() {
+  switch (document.getElementsByName("sortBy")[0].value) {
+    case "a-z":
+      sortAlphabet();
+      break;
+
+    case "z-a":
+      sortAlphabetReverse();
+      break;
+
+    case "dueDate":
+      sortDueDate();
+      break;
+
+    case "startDate":
+      sortStartDate();
+      break;
+
+    case "category":
+      sortCategory();
+      break;
+
+    case "lastModified":
+      sortLastModified();
+      break;
+
+    case "lastModifiedReversed":
+      sortlastModifiedReversed();
+      break;
+  }
+}
 /*--------------------------------Filters-------------------------------------*/
 function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
@@ -1187,7 +1211,8 @@ function filterIn(button, buttonID) {
       if (currentRowHTML != category &&
         currentRow.style.display != "none" &&
         button.style.backgroundColor != "lightgrey" && filterIn) {
-        if (document.getElementById(currentRowHTML).style.backgroundColor ==
+        if (document.getElementById("filter " +
+            currentRowHTML).style.backgroundColor ==
           "lightgrey") {
           continue;
         }
