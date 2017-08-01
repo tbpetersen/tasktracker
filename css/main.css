@@ -64,11 +64,15 @@ table, th {
 }
 
 .place{
-    display:table;
-    height:30px;
-    width:260px;
-    position:absolute;
-    /*z-index:-1;*/
+  display:table;
+  height:69px;
+  width:100%;
+  position:absolute;
+  /*z-index:-1;*/
+}
+
+.ui-state-highlight {
+  background: #d3d3d3;
 }
 
 th {
@@ -90,7 +94,7 @@ td {
   border-style: solid;
   word-wrap: break-word;
   border-width: thin;
-  border-color: #d3d3d3;
+  border-color: #ededed; /* vs #d3d3d3 */
   padding: .75%;
   cursor: pointer;
 }
@@ -494,10 +498,10 @@ select#sortList {
 
 /* Class override - Fix opacity overlay over table headers */
 /* Bad implementation in the event this class is used elsewhere */
-.ui-state-disabled {
+/*.ui-state-disabled {
     background-image: none;
     opacity: 1;
-}
+}*/
 
 /* Scroll to top button */
 .scrollTop {
