@@ -388,7 +388,7 @@ function draggableRows() {
     },
 
     receive: function() {
-      //console.log($(this).closest('table'));
+      console.log($(this).closest('table'));
     },
 
   });
