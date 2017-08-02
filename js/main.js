@@ -706,7 +706,7 @@ function sortAlphabet(tableName, index) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 0; i < (rows.length-2); i++) {
+    for (i = 1; i < (rows.length-1); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -745,7 +745,7 @@ function sortAlphabetReverse(tableName, index) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 0; i < (rows.length-2); i++) {
+    for (i = 1; i < (rows.length-1); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -799,7 +799,7 @@ function sortCategory(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 0; i < (rows.length - 2); i++) {
+    for (i = 1; i < (rows.length - 1); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -836,7 +836,7 @@ function sortCategoryReverse(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 0; i < (rows.length - 2); i++) {
+    for (i = 1; i < (rows.length - 1); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -883,7 +883,7 @@ function sortLastModified(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 0; i < (rows.length - 2); i++) {
+    for (i = 1; i < (rows.length - 1); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -934,7 +934,7 @@ function sortlastModifiedReversed(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 0; i < (rows.length - 2); i++) {
+    for (i = 1; i < (rows.length - 1); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
