@@ -43,8 +43,9 @@
       </button>
 
       <div class="navbar-header">
+        <!-- Button for collapsible menu during resize -->
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-links">
-          <span class="navbar-toggler-icon"></span>                        
+          <span class="glyphicon glyphicon-menu-hamburger"></span>
         </button>
 
         <a class="navbar-brand" href="index.html"><img src="images/logo.png"
@@ -56,7 +57,7 @@
 
       <!-- Nav links -->
       <div class="collapse navbar-collapse" id="navbar-links">
-        <ul class="nav navbar-nav navbar-right">
+        <ul class="nav navbar-nav">
           <li><button class="btn" onclick="changeColor()"><span class="glyphicon glyphicon-adjust"></span></button></li>
           <li><button class="btn" id=addTable onclick="createNewTable()"><span class="glyphicon glyphicon-plus"></span> Create Table</button></li>
           <li><button class="btn" id="openInfo">Open Ticket Panel</button></li>
@@ -75,7 +76,7 @@
               <li><a href="#">One more separated link</a></li>
             </ul>
           </li>
-          <li>
+          <li id="searchBar">
             <form onsubmit="return search()" class="navbar-form navbar-right"> 
               <div class="form-group has-feedback">
                 <label class="control-label sr-only">Search</label>
