@@ -1015,14 +1015,12 @@ var alternate = 1;
 
 function changeColor() {
   var body = document.body.style;
-  var navbar = document.getElementById("navbar-links");
   var ticketBarHead = document.getElementById("info-header").style;
   var ticketHeads = document.getElementsByClassName("panel-heading");
   var tickets = document.getElementsByClassName("panel-body");
   var tableHeads = document.getElementsByTagName("thead");
 
   if (alternate == 1) {
-    navbar.style.color = "#333";
     body.backgroundColor = "#1E1E1E";
     body.color = "lightgrey";
     ticketBarHead.backgroundColor = "#1E1E1E";

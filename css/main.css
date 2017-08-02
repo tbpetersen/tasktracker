@@ -1,14 +1,10 @@
+@media only screen and (max-width: 1590px) {
+  #app-title{
+    visibility: hidden;
+  }
+}
+
 @media only screen and (max-width: 1425px) {
-  #navbar-links {
-    position: absolute;
-    top: 0%;
-    left: 87vh;
-    min-width: 600px;
-  }
-  #app-title {
-    min-width: 1425px;
-    top: 0%;
-  }
   #logo {
     min-width: 358px;
   }
@@ -17,8 +13,14 @@
   }
 }
 
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 1185px) {
+  #navbar-links{
+    position: absolute;
+    left: 50.5vh;
+  }
+}
 
+@media only screen and (max-width: 950px) {
 	#table{
 		min-width: 920px;
   }
@@ -59,7 +61,7 @@ body.toggled #leftSidebar {
 /* Tables */
 table, th {
   width: 100%;
-  margin-bottom: 5%;  
+  margin-bottom: 5%;
   border-collapse: separate;
 }
 
@@ -252,7 +254,7 @@ select#sortList {
   word-wrap: break-word;
 }
 
-.panel-body hr 
+.panel-body hr
 {
   margin: 5px;
 }
@@ -293,6 +295,8 @@ select#sortList {
 
 #navbar-links {
   float: right;
+  white-space: nowrap;
+  color: #333
 }
 
 #navbar-links li > .btn {
@@ -478,11 +482,11 @@ select#sortList {
 
 /* Scroll to top button */
 .scrollTop {
-  width: 50px; 
+  width: 50px;
   height: 50px;
   line-height: 50px;
-  margin: 10px; 
-  text-align: center; 
+  margin: 10px;
+  text-align: center;
   background-color: rgba(204, 204, 204, 0.7);
   font-weight: bold;
   font-size: 50px;
