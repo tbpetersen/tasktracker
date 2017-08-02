@@ -43,6 +43,10 @@
       </button>
 
       <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-links">
+          <span class="navbar-toggler-icon"></span>                        
+        </button>
+
         <a class="navbar-brand" href="index.html"><img src="images/logo.png"
           id=logo alt="SDSC">
         </a>
@@ -52,7 +56,7 @@
 
       <!-- Nav links -->
       <div class="collapse navbar-collapse" id="navbar-links">
-        <ul class="nav navbar-nav">
+        <ul class="nav navbar-nav navbar-right">
           <li><button class="btn" onclick="changeColor()"><span class="glyphicon glyphicon-adjust"></span></button></li>
           <li><button class="btn" id=addTable onclick="createNewTable()"><span class="glyphicon glyphicon-plus"></span> Create Table</button></li>
           <li><button class="btn" id="openInfo">Open Ticket Panel</button></li>
@@ -62,8 +66,8 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li><a href="#" onclick="goToTrello()">Trello</a></li>
-              <li><a href="#" onclick="goToZendesk()">Zendesk</a></li>
+              <li><a target="_blank" href="https://www.trello.com">Trello</a></li>
+              <li><a target="_blank" href="https://sdsc.zendesk.com">Zendesk</a></li>
               <li><a href="#">Something else here</a></li>
               <li role="separator" class="divider"></li>
               <li><a href="#">Separated link</a></li>
@@ -72,19 +76,17 @@
             </ul>
           </li>
           <li>
-            <form onsubmit="return search()" class="navbar-form navbar-right">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search">
+            <form onsubmit="return search()" class="navbar-form navbar-right"> 
+              <div class="form-group has-feedback">
+                <label class="control-label sr-only">Search</label>
+                <input type="text" class="form-control" placeholder="Search" />
+                <i class="form-control-feedback glyphicon glyphicon-search"></i>
               </div>
-              <button type="submit" class="btn btn-default" id="searchBtn">
-                <span class="glyphicon glyphicon-search"></span>
-              </button>
             </form>
           </li>
         </ul>
 
       </div>
-      <!-- /.navbar-collapse -->
     </div>
   </nav>
 

@@ -315,7 +315,7 @@ select#sortList {
 #app-title {
   cursor: pointer;
   position: absolute;
-  left: 50%;
+  right: 50%;
   height: 100%;
   margin: 0;
   display: flex;
@@ -328,9 +328,6 @@ select#sortList {
 
 
 /* Search form */
-#searchBtn {
-  background-color: #dd6367;
-}
 
 .form-control:focus {
   border-color: #dd6367;
