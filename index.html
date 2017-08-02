@@ -43,8 +43,9 @@
       </button>
 
       <div class="navbar-header">
+        <!-- Button for collapsible menu during resize -->
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-links">
-          <span class="navbar-toggler-icon"></span>                        
+          <span class="glyphicon glyphicon-menu-hamburger"></span>
         </button>
 
         <a class="navbar-brand" href="index.html"><img src="images/logo.png"
@@ -75,7 +76,7 @@
               <li><a href="#">One more separated link</a></li>
             </ul>
           </li>
-          <li>
+          <li id="searchBar">
             <form onsubmit="return search()" class="navbar-form navbar-right"> 
               <div class="form-group has-feedback">
                 <label class="control-label sr-only">Search</label>
