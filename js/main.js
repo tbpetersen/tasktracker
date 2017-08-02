@@ -1208,13 +1208,13 @@ function filterBy(buttonID) {
   else
     filterOut(button, buttonID);
     checkFilterAll();
+    hideTables();
 }
 
 function filterIn(button, buttonID) {
   var table, currentRow, i, j;
   var whitesmoke = "#f1f1f1";
   var category = document.getElementById(buttonID).innerHTML;
-  console.log(category);
   var currentRowHTML;
   table = document.getElementsByTagName("table");
   for (j = 0; j < table.length; j++) { // Grab each table.
@@ -1325,5 +1325,31 @@ function search() {
       }
     }
   }
+  hideTables();
   return false; //Used to disable submitting.
 }
+/*------------------------------End of Search---------------------------------*/
+/*------------------------------Hiding table----------------------------------*/
+function hideTables(){
+  var i;
+  var tables = document.getElementsByTagName("table");
+  for(i = 0; i < tables.length; i++){
+    if(isTableHidden(tables[i]))
+      $(tables[i]).hide();
+    else
+      $(tables[i]).show();
+    }
+}
+
+function isTableHidden(table){
+  var i;
+  var tableBody = table.getElementsByTagName("TBODY")[0];
+  var bodyRows = tableBody.getElementsByTagName("TR");
+  for(i = 0; i < bodyRows.length; i++)
+  {
+    if(bodyRows[i].style.display == "table-row" || bodyRows[i].style.display == "")
+      return false;
+  }
+  return true;
+}
+/*---------------------------End of Hiding table------------------------------*/
