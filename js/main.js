@@ -105,7 +105,7 @@ $(document).ready(function() {
     delay: 500,
   });
 
-  // Scroll to top button 
+  // Scroll to top button
   $(window).scroll(function(){
     if ($(this).scrollTop() > 100) {
       $('.scrollTop').fadeIn();
@@ -114,7 +114,7 @@ $(document).ready(function() {
       $('.scrollTop').fadeOut();
     }
   });
-  
+
   $('.scrollTop').click(function() {
     $('html, body').animate({scrollTop : 0},800);
     return false;
@@ -201,7 +201,7 @@ function populateTrello() {
         if (document.getElementById(cat) == null) {
           createTable(cat);
         }
-        populateTable(user.tasks[j], cat, j);      
+        populateTable(user.tasks[j], cat, j);
       }
     }
   }
@@ -246,8 +246,8 @@ function createTable(tableName) {
   categorySort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
   deleteTable.setAttribute("class", "deleteButton glyphicon glyphicon-remove");
 
-  titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0, false)");
-  descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");
+  titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0)");
+  descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ", 1)");
   modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
   categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
   deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
@@ -400,7 +400,7 @@ function draggableRows() {
     },
 
   });
-  $("#sortable").disableSelection(); 
+  $("#sortable").disableSelection();
 }
 /* End populating/setting up tables */
 
@@ -706,15 +706,15 @@ function sortAlphabet(tableName, index) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length-2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
       x = rows[i].getElementsByTagName("TD")[index];
       y = rows[i + 1].getElementsByTagName("TD")[index];
-      //check if the two rows should switch place:
-      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+      // check if the two rows should switch place:
+      if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
         //if so, mark as a switch and break the loop:
         shouldSwitch = true;
         break;
@@ -745,15 +745,15 @@ function sortAlphabetReverse(tableName, index) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length-2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
       x = rows[i].getElementsByTagName("TD")[index];
       y = rows[i + 1].getElementsByTagName("TD")[index];
-      //check if the two rows should switch place:
-      if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+      // check if the two rows should switch place:
+      if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
         //if so, mark as a switch and break the loop:
         shouldSwitch = true;
         break;
@@ -799,7 +799,7 @@ function sortCategory(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length - 2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -836,7 +836,7 @@ function sortCategoryReverse(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length - 2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -883,7 +883,7 @@ function sortLastModified(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length - 2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -934,7 +934,7 @@ function sortlastModifiedReversed(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length - 2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -1057,7 +1057,7 @@ function createTicketCard(cardIndex)
     '</h3></div>' +
     '<div class="panel-body">' +
     '<strong>Status: </strong> ' + status + ' <br>' +
-    '<strong>Last Modified: </strong> ' + date + ' <br><br>' + 
+    '<strong>Last Modified: </strong> ' + date + ' <br><br>' +
     '<strong>Description</strong> <hr><p>' + cardDesc + '</p>' +
     '</div></div>';
 
@@ -1198,7 +1198,8 @@ function filterBy(buttonID) {
     filterIn(button, buttonID);
   else
     filterOut(button, buttonID);
-  checkFilterAll();
+    checkFilterAll();
+    hideTables();
 }
 
 function filterIn(button, buttonID) {
@@ -1209,7 +1210,7 @@ function filterIn(button, buttonID) {
   table = document.getElementsByTagName("table");
   for (j = 0; j < table.length; j++) { // Grab each table.
     rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 1; i < rows.length; i++) { // Manipulate said row.
+    for (i = 0; i < rows.length-1; i++) { // Manipulate said row.
       currentRow = rows[i]
       currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
       if (currentRowHTML != category &&
@@ -1241,7 +1242,7 @@ function filterOut(button, buttonID) {
   table = document.getElementsByTagName("table");
   for (j = 0; j < table.length; j++) { // Grab each table.
     rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 1; i < rows.length; i++) { // Manipulate said row.
+    for (i = 0; i < rows.length-1; i++) { // Manipulate said row.
       currentRow = rows[i]
       currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
       //If the current row needs to be filtered out, hide it.
@@ -1286,7 +1287,7 @@ function filterAll() {
   for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
     //Manipulate each TR by changing the display of it to be shown.
-    for (i = 1; i < rows.length; i++) {
+    for (i = 0; i < rows.length; i++) {
       currentRow = rows[i]
       currentRow.style.display = "table-row";
     }
@@ -1296,24 +1297,60 @@ function filterAll() {
 /*---------------------------------Search-------------------------------------*/
 
 function search() {
+  //Text typed in search.
   var searchFor = document.getElementsByClassName("form-control")[0].value;
+  //Tables of tasks.
   var tables = document.getElementsByTagName("table");
   var rows;
   var currentRow, items, i, j, td;
+  //Go through the rows of each table.
   for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
-    for (i = 1; i < rows.length; i++) {
+    //Go through each individual section of each row.
+    for (i = 0; i < rows.length; i++) {
       currentRow = rows[i]
       items = currentRow.getElementsByTagName("TD");
+      //Check if the section contains the search.
       for (td = 0; td < items.length; td++) {
+        //If found, ignore current row.
         if (items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase())) {
           currentRow.style.display = "table-row";
           break;
         }
+        //If not found, hide said row.
         if (td == items.length - 1 && currentRow.style.display != "none")
           $(currentRow).toggle();
       }
     }
   }
+  hideTables();
   return false; //Used to disable submitting.
 }
+/*------------------------------End of Search---------------------------------*/
+/*------------------------------Hiding table----------------------------------*/
+function hideTables(){
+  var tables = document.getElementsByTagName("table");
+  //Go through each table, if it's elements are hidden, hide it. If not, show.
+  for(var i = 0; i < tables.length; i++){
+    if(isTableHidden(tables[i]))
+      $(tables[i]).hide();
+    else
+      $(tables[i]).show();
+    }
+}
+
+function isTableHidden(table){
+  //Body of the table passed in.
+  var tableBody = table.getElementsByTagName("TBODY")[0];
+  //Rows of the body.
+  var bodyRows = tableBody.getElementsByTagName("TR");
+  /*Go through the rows, checking if they are shown. Return whether all the
+    table's rows are hidden.*/
+  for(var i = 0; i < bodyRows.length; i++)
+  {
+    if(bodyRows[i].style.display == "table-row" || bodyRows[i].style.display == "")
+      return false;
+  }
+  return true;
+}
+/*---------------------------End of Hiding table------------------------------*/
