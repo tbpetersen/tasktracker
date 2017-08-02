@@ -1312,7 +1312,7 @@ function search() {
   var currentRow, items, i, j, td;
   for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
-    for (i = 1; i < rows.length; i++) {
+    for (i = 0; i < rows.length; i++) {
       currentRow = rows[i]
       items = currentRow.getElementsByTagName("TD");
       for (td = 0; td < items.length; td++) {
