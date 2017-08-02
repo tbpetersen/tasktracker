@@ -252,11 +252,6 @@ function createTable(tableName) {
   categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
   deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
 
-
-  table.appendChild(head);
-  table.appendChild(body);
-  mainDiv.appendChild(table);
-
   //create row and cell element
   row = document.createElement("tr");
   titleCell = document.createElement("th");
@@ -299,8 +294,9 @@ function createTable(tableName) {
 
   // append row to table/body
   head.appendChild(row);
-  //head.appendChild(body);
   table.appendChild(head);
+  table.appendChild(body);
+  mainDiv.appendChild(table);
 }
 
 function populateTable(task, tableName, index) {
@@ -1001,14 +997,6 @@ function closeLeft() {
 
 /* ------------------ END OF FILTER PANEL ------------------ */
 
-function goToZendesk() {
-  window.open("https://www.zendesk.com");
-}
-
-function goToTrello() {
-  window.open("https://www.trello.com");
-}
-
 /*-------------------- THEME CHANGE ------------------*/
 
 var alternate = 1;
@@ -1056,14 +1044,16 @@ function createTicketCard(cardIndex)
   var task = user.tasks[cardIndex];
   var cardTitle = task.name;
   var cardDesc = task.desc;
-  var status = task.category;
+  var status = task.category.charAt(0).toUpperCase() + task.category.substring(1);
   var date = formatDate(task.lastModified);
+  var url = task.url;
 
   newCard.className = 'panel panel-default';
   newCard.id = cardIndex;
 
   newCard.innerHTML = '<div class="panel-heading">' +
-    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
+    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + 
+    '<a target="_blank" href="' + url + '">' + cardTitle + '</a>' +
     '</h3></div>' +
     '<div class="panel-body">' +
     '<strong>Status: </strong> ' + status + ' <br>' +
@@ -1104,7 +1094,8 @@ $(".main").on("click", "table > tbody > tr", function(e)
     });
 
     return;
-  } else {
+  }
+  else {
     cardsCreated.add(this.id);
     createTicketCard(this.id);
 
