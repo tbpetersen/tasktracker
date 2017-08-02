@@ -1052,7 +1052,7 @@ function createTicketCard(cardIndex)
   newCard.id = cardIndex;
 
   newCard.innerHTML = '<div class="panel-heading">' +
-    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + 
+    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
     '<a target="_blank" href="' + url + '">' + cardTitle + '</a>' +
     '</h3></div>' +
     '<div class="panel-body">' +
@@ -1192,14 +1192,15 @@ function filterBy(buttonID) {
   //If View All is slected, reset everything to the defualt.
   if (category == "View All") {
     filterAll();
+    hideTables();
     return;
   }
   if (filter)
     filterIn(button, buttonID);
   else
     filterOut(button, buttonID);
-    checkFilterAll();
-    hideTables();
+  checkFilterAll();
+  hideTables();
 }
 
 function filterIn(button, buttonID) {
@@ -1210,7 +1211,7 @@ function filterIn(button, buttonID) {
   table = document.getElementsByTagName("table");
   for (j = 0; j < table.length; j++) { // Grab each table.
     rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 0; i < rows.length-1; i++) { // Manipulate said row.
+    for (i = 1; i < rows.length; i++) { // Manipulate said row.
       currentRow = rows[i]
       currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
       if (currentRowHTML != category &&
@@ -1242,7 +1243,7 @@ function filterOut(button, buttonID) {
   table = document.getElementsByTagName("table");
   for (j = 0; j < table.length; j++) { // Grab each table.
     rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 0; i < rows.length-1; i++) { // Manipulate said row.
+    for (i = 1; i < rows.length; i++) { // Manipulate said row.
       currentRow = rows[i]
       currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
       //If the current row needs to be filtered out, hide it.
@@ -1274,7 +1275,7 @@ function checkFilterAll() {
 }
 
 function filterAll() {
-  var table, i, j, currentRow, filterBar;
+  var tables, i, j, currentRow, filterBar;
   var whitesmoke = "#f1f1f1";
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
@@ -1307,7 +1308,7 @@ function search() {
   for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
     //Go through each individual section of each row.
-    for (i = 0; i < rows.length; i++) {
+    for (i = 1; i < rows.length; i++) {
       currentRow = rows[i]
       items = currentRow.getElementsByTagName("TD");
       //Check if the section contains the search.
