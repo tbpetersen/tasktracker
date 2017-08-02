@@ -1306,20 +1306,27 @@ function filterAll() {
 /*---------------------------------Search-------------------------------------*/
 
 function search() {
+  //Text typed in search.
   var searchFor = document.getElementsByClassName("form-control")[0].value;
+  //Tables of tasks.
   var tables = document.getElementsByTagName("table");
   var rows;
   var currentRow, items, i, j, td;
+  //Go through the rows of each table.
   for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
+    //Go through each individual section of each row.
     for (i = 0; i < rows.length; i++) {
       currentRow = rows[i]
       items = currentRow.getElementsByTagName("TD");
+      //Check if the section contains the search.
       for (td = 0; td < items.length; td++) {
+        //If found, ignore current row.
         if (items[td].innerHTML.toLowerCase().includes(searchFor.toLowerCase())) {
           currentRow.style.display = "table-row";
           break;
         }
+        //If not found, hide said row.
         if (td == items.length - 1 && currentRow.style.display != "none")
           $(currentRow).toggle();
       }
@@ -1331,9 +1338,9 @@ function search() {
 /*------------------------------End of Search---------------------------------*/
 /*------------------------------Hiding table----------------------------------*/
 function hideTables(){
-  var i;
   var tables = document.getElementsByTagName("table");
-  for(i = 0; i < tables.length; i++){
+  //Go through each table, if it's elements are hidden, hide it. If not, show.
+  for(var i = 0; i < tables.length; i++){
     if(isTableHidden(tables[i]))
       $(tables[i]).hide();
     else
@@ -1342,10 +1349,13 @@ function hideTables(){
 }
 
 function isTableHidden(table){
-  var i;
+  //Body of the table passed in.
   var tableBody = table.getElementsByTagName("TBODY")[0];
+  //Rows of the body.
   var bodyRows = tableBody.getElementsByTagName("TR");
-  for(i = 0; i < bodyRows.length; i++)
+  /*Go through the rows, checking if they are shown. Return whether all the
+    table's rows are hidden.*/
+  for(var i = 0; i < bodyRows.length; i++)
   {
     if(bodyRows[i].style.display == "table-row" || bodyRows[i].style.display == "")
       return false;
