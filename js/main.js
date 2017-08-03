@@ -137,7 +137,7 @@ $(document).ready(function() {
         populateTrello();
         populateZend();
         draggableRows();
-        makeButtons();
+        // makeButtons();
       });
     });
   });
@@ -171,7 +171,7 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 function deleteTablePrompt(tableName) {
   $("#delTableNotif").modal("show");
   $("#delTableConfirm").unbind('click');
-  
+
   $("#delTableConfirm").click(function() {
     $("#delTableNotif").modal("hide");
     deleteTable(tableName);
@@ -187,6 +187,7 @@ function createNewTable() {
   }, {
     type: "info",
   });
+  
   createTable(makeID()); // Create a table with a random ID;
   window.scrollTo(0, document.body.scrollHeight);
 }
@@ -296,6 +297,8 @@ function createTable(tableName) {
   table.appendChild(head);
   table.appendChild(body)
   mainDiv.appendChild(table);
+
+  makeButtons(tableName);
 }
 
 function populateTable(task, tableName, index) {
@@ -396,17 +399,22 @@ function draggableRows() {
   $("#sortable").disableSelection();
 }
 
-function makeButtons() {
+function makeButtons(tableName) {
 
-  var tables = document.getElementsByClassName("tables");
+  // var tables = document.getElementsByClassName("tables");
+  var table = document.getElementById(tableName);
 
-  for(var i = 0; i < tables.length; i++) {
-    var titleCell = tables[i].rows[0].cells[0];
-    var descCell = tables[i].rows[0].cells[1];
-    var modCell = tables[i].rows[0].cells[2];
-    var catCell = tables[i].rows[0].cells[3];
+  // for(var i = 0; i < tables.length; i++) {
+    // var titleCell = tables[i].rows[0].cells[0];
+    // var descCell = tables[i].rows[0].cells[1];
+    // var modCell = tables[i].rows[0].cells[2];
+    // var catCell = tables[i].rows[0].cells[3];
+    var titleCell = table.rows[0].cells[0];
+    var descCell = table.rows[0].cells[1];
+    var modCell = table.rows[0].cells[2];
+    var catCell = table.rows[0].cells[3];
 
-    var tableName = tables[i].id;
+    // var tableName = tables[i].id;
 
     var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
     var button2 = "glyphicon glyphicon-remove";
@@ -438,7 +446,7 @@ function makeButtons() {
     modCell.appendChild(modifiedSort);
     catCell.appendChild(categorySort);
     catCell.appendChild(deleteTable);
-  }
+  // }
 }
 /* End populating/setting up tables */
 
