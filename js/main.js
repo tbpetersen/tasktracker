@@ -155,6 +155,13 @@ function makeID() {
   return text;
 }
 
+$(".main").on("click", "#deleteTableBtn", function(e)
+{
+  var table = $(this).closest('table');
+  
+  deleteTable(table);
+});
+
 /*Creates a new table with a random ID, as it cannot be coded to have it
   dynamically created if it isn"t random.*/
 function createNewTable() {
@@ -169,9 +176,8 @@ function createNewTable() {
 }
 
 function deleteTable(tableName) {
-  table = $(tableName).closest("table");
   if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
-    table.remove();
+    tableName.remove();
     $.notify({
       icon: "fa fa-exclamation-triangle",
       message: "Table deleted."
@@ -182,7 +188,7 @@ function deleteTable(tableName) {
 }
 
 function isEmpty(tableName) {
-  var tableLength = $(tableName).closest("table").find("td").length
+  var tableLength = tableName.find("tbody > tr").length;
   if (tableLength < 1)
     return true;
   return false;
@@ -387,7 +393,7 @@ function makeButtons() {
     var tableName = tables[i].id;
 
     var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
-    var button2 = "deleteButton glyphicon glyphicon-remove";
+    var button2 = "glyphicon glyphicon-remove";
 
     // Create the sorting buttons
     var titleSort = document.createElement("button");
@@ -402,6 +408,7 @@ function makeButtons() {
     modifiedSort.setAttribute("class", button1);
     categorySort.setAttribute("class", button1);
     deleteTable.setAttribute("class", button2);
+    deleteTable.setAttribute("id", "deleteTableBtn");
 
     titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0, false)");
     descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");

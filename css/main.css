@@ -489,7 +489,7 @@ select#sortList {
   opacity: 1;
 }
 
-.sortButton, .deleteButton{
+.sortButton, #deleteTableBtn{
   border: none;
   height: 2vh;
   width: 3vh;
@@ -499,7 +499,7 @@ select#sortList {
   background-color: transparent;
 }
 
-.deleteButton{
+#deleteTableBtn{
   background-color: #dd6367;
   color: black;
   float: right;
