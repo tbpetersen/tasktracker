@@ -63,19 +63,6 @@ table, th {
   border-collapse: separate;
 }
 
-
-.place{
-  display:table;
-  height:69px;
-  width:100%;
-  position:absolute;
-  /*z-index:-1;*/
-}
-
-.ui-state-highlight {
-  background: #d3d3d3;
-}
-
 th {
   white-space: nowrap;
 }
@@ -98,6 +85,17 @@ td {
   border-color: #ededed; /* vs #d3d3d3 */
   padding: .75%;
   cursor: pointer;
+}
+
+.place{
+  display:table;
+  height:69px;
+  width:100%;
+  position:absolute;
+}
+
+.ui-state-highlight {
+  background: #d3d3d3;
 }
 
 .notFirst:hover {

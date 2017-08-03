@@ -66,7 +66,7 @@ Task.prom = new Array();
 
 $(document).ready(function() {
   // Hamburger menu toggle
-  var trigger = $('.hamburger');
+  var trigger = $(".hamburger");
 
   trigger.click(function() {
     hamburger_cross();
@@ -74,27 +74,27 @@ $(document).ready(function() {
 
   function hamburger_cross() {
     if (isClosed == true) {
-      trigger.removeClass('is-open');
-      trigger.addClass('is-closed');
+      trigger.removeClass("is-open");
+      trigger.addClass("is-closed");
       isClosed = false;
     } else {
-      trigger.removeClass('is-closed');
-      trigger.addClass('is-open');
+      trigger.removeClass("is-closed");
+      trigger.addClass("is-open");
       isClosed = true;
     }
   }
 
-  $('[data-toggle="offcanvas"]').click(function() {
-    $('body').toggleClass('toggled');
-    $('.navbar').toggleClass('toggled');
+  $("[data-toggle='offcanvas']").click(function() {
+    $("body").toggleClass("toggled");
+    $(".navbar").toggleClass("toggled");
   });
 
   // Default toast notifications settings
   $.notifyDefaults({
     allow_dismiss: true,
     animate: {
-      enter: 'animated fadeInUp',
-      exit: 'animated fadeOutRight'
+      enter: "animated fadeInUp",
+      exit: "animated fadeOutRight"
     },
     placement: {
       from: "top",
@@ -102,21 +102,21 @@ $(document).ready(function() {
     },
     offset: 20,
     spacing: 10,
-    delay: 500,
+    delay: 500
   });
 
-  // Scroll to top button 
+  // Scroll to top button
   $(window).scroll(function(){
     if ($(this).scrollTop() > 100) {
-      $('.scrollTop').fadeIn();
+      $(".scrollTop").fadeIn();
     }
     else {
-      $('.scrollTop').fadeOut();
+      $(".scrollTop").fadeOut();
     }
   });
-  
-  $('.scrollTop').click(function() {
-    $('html, body').animate({scrollTop : 0},800);
+
+  $(".scrollTop").click(function() {
+    $("html, body").animate({scrollTop : 0},800);
     return false;
   });
 
@@ -136,6 +136,7 @@ $(document).ready(function() {
         populateTrello();
         populateZend();
         draggableRows();
+        makeButtons();
       });
     });
   });
@@ -154,33 +155,33 @@ function makeID() {
 }
 
 /*Creates a new table with a random ID, as it cannot be coded to have it
-  dynamically created if it isn't random.*/
+  dynamically created if it isn"t random.*/
 function createNewTable() {
   $.notify({
-    icon: 'glyphicon glyphicon-info-sign',
+    icon: "glyphicon glyphicon-info-sign",
     message: "Table created."
   }, {
-    type: 'info',
+    type: "info",
   });
   createTable(makeID()); // Create a table with a random ID;
   window.scrollTo(0, document.body.scrollHeight);
 }
 
 function deleteTable(tableName) {
-  table = $(tableName).closest('table');
+  table = $(tableName).closest("table");
   if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
     table.remove();
     $.notify({
-      icon: 'fa fa-exclamation-triangle',
+      icon: "fa fa-exclamation-triangle",
       message: "Table deleted."
     }, {
-      type: 'danger',
+      type: "danger",
     });
   }
 }
 
 function isEmpty(tableName) {
-  var tableLength = $(tableName).closest('table').find("td").length
+  var tableLength = $(tableName).closest("table").find("td").length
   if (tableLength < 1)
     return true;
   return false;
@@ -196,12 +197,12 @@ function populateTrello() {
   for (var i = 0; i < trelloCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       var str = user.tasks[j].category;
-      var cat = str.split(' ').join('_');
+      var cat = str.split(" ").join("_");
       if (cat === trelloCat[i]) {
         if (document.getElementById(cat) == null) {
           createTable(cat);
         }
-        populateTable(user.tasks[j], cat, j);      
+        populateTable(user.tasks[j], cat, j);
       }
     }
   }
@@ -224,38 +225,12 @@ function populateZend() {
 }
 
 function createTable(tableName) {
+
+  // Create table structure
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
-
-
-  table.setAttribute("id", tableName);
-
-  // Create the sorting buttons
-  var titleSort = document.createElement("button");
-  var descriptionSort = document.createElement("button");
-  var modifiedSort = document.createElement("button");
-  var categorySort = document.createElement("button");
-  var deleteTable = document.createElement("button");
-
-  //Assign classes to the sorting buttons
-  titleSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
-  descriptionSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
-  modifiedSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
-  categorySort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
-  deleteTable.setAttribute("class", "deleteButton glyphicon glyphicon-remove");
-
-  titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0, false)");
-  descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");
-  modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
-  categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
-  deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
-
-
-  table.appendChild(head);
-  table.appendChild(body);
-  mainDiv.appendChild(table);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -263,14 +238,6 @@ function createTable(tableName) {
   descCell = document.createElement("th");
   modCell = document.createElement("th");
   catCell = document.createElement("th");
-
-  row.setAttribute("id", "firstRow");
-  body.setAttribute("class", "sortable");
-
-  titleCell.setAttribute("id", "titleCell");
-  descCell.setAttribute("id", "descCell");
-  modCell.setAttribute("id", "modCell");
-  catCell.setAttribute("id", "catCell");
 
   // text for cell
   textNode1 = document.createTextNode("Title");
@@ -284,23 +251,28 @@ function createTable(tableName) {
   modCell.appendChild(textNode3);
   catCell.appendChild(textNode4);
 
-  // append buttons to cell
-  titleCell.appendChild(titleSort);
-  descCell.appendChild(descriptionSort);
-  modCell.appendChild(modifiedSort);
-  catCell.appendChild(categorySort);
-  catCell.appendChild(deleteTable);
-
   // append text to row
   row.appendChild(titleCell);
   row.appendChild(descCell);
   row.appendChild(modCell);
   row.appendChild(catCell);
 
+  // Name elements
+  table.setAttribute("id", tableName);
+  table.setAttribute("class", "tables");
+  body.setAttribute("class", "sortable");
+  row.setAttribute("id", "firstRow");
+
+  titleCell.setAttribute("id", "titleCell");
+  descCell.setAttribute("id", "descCell");
+  modCell.setAttribute("id", "modCell");
+  catCell.setAttribute("id", "catCell");
+
   // append row to table/body
   head.appendChild(row);
-  //head.appendChild(body);
   table.appendChild(head);
+  table.appendChild(body)
+  mainDiv.appendChild(table);
 }
 
 function populateTable(task, tableName, index) {
@@ -335,8 +307,7 @@ function addRow(task, tableName, index) {
   var cat = task.category;
   var capCat = cat.charAt(0).toUpperCase() + cat.substring(1);
 
-  // table = document.getElementById(tableName);
-  var body = document.getElementById(tableName).getElementsByTagName('tbody')[0];
+  var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
 
   //create row and cell element
   row = document.createElement("tr");
@@ -345,6 +316,9 @@ function addRow(task, tableName, index) {
   modCell = document.createElement("td");
   catCell = document.createElement("td");
 
+  // Name elements
+  row.setAttribute("id", index);
+  row.setAttribute("class", "notFirst");
   titleCell.setAttribute("id", "title");
   descCell.setAttribute("id", "desc");
   modCell.setAttribute("id", "mod");
@@ -368,9 +342,6 @@ function addRow(task, tableName, index) {
   row.appendChild(modCell);
   row.appendChild(catCell);
 
-  row.setAttribute("id", index);
-  row.setAttribute("class", "notFirst");
-
   // append row to table/body
   body.appendChild(row);
 }
@@ -392,19 +363,58 @@ function draggableRows() {
     zIndex: 99,
     stop: function(e,t) {
       if ($(this).children().length == 0) {
-          $(this).addClass('place');
+          $(this).addClass("place");
       }
-      if ($(t.item).closest('tbody').children().length > 0) {
-          $(t.item).closest('tbody').removeClass('place');
+      if ($(t.item).closest("tbody").children().length > 0) {
+          $(t.item).closest("tbody").removeClass("place");
       }
-    },
-
-    receive: function() {
-      //console.log($(this).closest('table'));
-    },
-
+    }
   });
-  $("#sortable").disableSelection(); 
+  $("#sortable").disableSelection();
+}
+
+function makeButtons() {
+
+  var tables = document.getElementsByClassName("tables");
+
+  for(var i = 0; i < tables.length; i++) {
+    var titleCell = tables[i].rows[0].cells[0];
+    var descCell = tables[i].rows[0].cells[1];
+    var modCell = tables[i].rows[0].cells[2];
+    var catCell = tables[i].rows[0].cells[3];
+
+    var tableName = tables[i].id;
+
+    var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
+    var button2 = "deleteButton glyphicon glyphicon-remove";
+
+    // Create the sorting buttons
+    var titleSort = document.createElement("button");
+    var descriptionSort = document.createElement("button");
+    var modifiedSort = document.createElement("button");
+    var categorySort = document.createElement("button");
+    var deleteTable = document.createElement("button");
+
+    //Assign classes to the sorting buttons
+    titleSort.setAttribute("class", button1);
+    descriptionSort.setAttribute("class", button1);
+    modifiedSort.setAttribute("class", button1);
+    categorySort.setAttribute("class", button1);
+    deleteTable.setAttribute("class", button2);
+
+    titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0, false)");
+    descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");
+    modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
+    categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
+    deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
+
+    // append buttons to cell
+    titleCell.appendChild(titleSort);
+    descCell.appendChild(descriptionSort);
+    modCell.appendChild(modifiedSort);
+    catCell.appendChild(categorySort);
+    catCell.appendChild(deleteTable);
+  }
 }
 /* End populating/setting up tables */
 
@@ -671,11 +681,11 @@ function trelloGet(url) {
 window.addEventListener("resize", function() {
   var openButton = document.getElementById("leftOpenButton");
   if (window.innerWidth < 1200) {
-    if ($('body.toggled').css("padding") != null) {
+    if ($("body.toggled").css("padding") != null) {
       isClosed = false;
-      $('body').toggleClass('toggled');
-      $('.hamburger').removeClass('is-open');
-      $('.hamburger').addClass('is-closed');
+      $("body").toggleClass("toggled");
+      $(".hamburger").removeClass("is-open");
+      $(".hamburger").addClass("is-closed");
     }
   }
 });
@@ -699,7 +709,7 @@ function sortAlphabet(tableName, index) {
     return;
   }
   var table, rows, switching, i, x, y, shouldSwitch;
-  tableName = $(tableName).closest('table').attr('id');
+  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -738,7 +748,7 @@ function sortAlphabet(tableName, index) {
 /*Sort the data alphabetically reversed*/
 function sortAlphabetReverse(tableName, index) {
   var table, rows, switching, i, x, y, shouldSwitch;
-  tableName = $(tableName).closest('table').attr('id');
+  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -792,7 +802,7 @@ function sortCategory(tableName) {
     return;
   }
   var table, rows, switching, i, x, y, shouldSwitch;
-  tableName = $(tableName).closest('table').attr('id');
+  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -829,7 +839,7 @@ function sortCategory(tableName) {
 
 function sortCategoryReverse(tableName) {
   var table, rows, switching, i, x, y, shouldSwitch;
-  tableName = $(tableName).closest('table').attr('id');
+  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -876,7 +886,7 @@ function sortLastModified(tableName) {
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
     "Oct", "Nov", "Dec"
   ];
-  tableName = $(tableName).closest('table').attr('id');
+  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -927,7 +937,7 @@ function sortlastModifiedReversed(tableName) {
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
     "Oct", "Nov", "Dec"
   ];
-  tableName = $(tableName).closest('table').attr('id');
+  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -1052,28 +1062,28 @@ function changeColor() {
 /* Helper method that creates the card div */
 function createTicketCard(cardIndex)
 {
-  var newCard = document.createElement('div');
+  var newCard = document.createElement("div");
   var task = user.tasks[cardIndex];
   var cardTitle = task.name;
   var cardDesc = task.desc;
   var status = task.category;
   var date = formatDate(task.lastModified);
 
-  newCard.className = 'panel panel-default';
+  newCard.className = "panel panel-default";
   newCard.id = cardIndex;
 
-  newCard.innerHTML = '<div class="panel-heading">' +
-    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + cardTitle +
-    '</h3></div>' +
-    '<div class="panel-body">' +
-    '<strong>Status: </strong> ' + status + ' <br>' +
-    '<strong>Last Modified: </strong> ' + date + ' <br><br>' + 
-    '<strong>Description</strong> <hr><p>' + cardDesc + '</p>' +
-    '</div></div>';
+  newCard.innerHTML = "<div class='panel-heading'>" +
+    "<h3 class='panel-title'><i class='glyphicon glyphicon-remove-sign' aria-hidden='true'></i>" + cardTitle +
+    "</h3></div>" +
+    "<div class='panel-body'>" +
+    "<strong>Status: </strong> " + status + " <br>" +
+    "<strong>Last Modified: </strong> " + date + " <br><br>" +
+    "<strong>Description</strong> <hr><p>" + cardDesc + "</p>" +
+    "</div></div>";
 
   document.getElementById("card-list").appendChild(newCard);
-  $('#' + cardIndex).addClass('animated fadeInRight');
-  $('.panel-body p').readmore({
+  $("#" + cardIndex).addClass("animated fadeInRight");
+  $(".panel-body p").readmore({
     speed: 200,
   });
   newCard.scrollIntoView();
@@ -1097,10 +1107,10 @@ $(".main").on("click", "table > tbody > tr", function(e)
   // Check if card id exists in set
   if (cardsCreated.has(this.id)) {
     $.notify({
-      icon: 'fa fa-exclamation-triangle',
+      icon: "fa fa-exclamation-triangle",
       message: "Ticket already queued."
     }, {
-      type: 'warning',
+      type: "warning",
     });
 
     return;
@@ -1109,10 +1119,10 @@ $(".main").on("click", "table > tbody > tr", function(e)
     createTicketCard(this.id);
 
     $.notify({
-      icon: 'fa fa-check',
+      icon: "fa fa-check",
       message: "Ticket queued."
     }, {
-      type: 'success',
+      type: "success",
     });
   }
 });
@@ -1137,7 +1147,7 @@ $("#openInfo").click(function(e)
 /* Clears all ticket cards inside ticket panel */
 $("#clearBtn").click(function()
 {
-  $('#card-list').empty();
+  $("#card-list").empty();
   cardsCreated.clear();
 });
 
@@ -1145,15 +1155,15 @@ $("#clearBtn").click(function()
    particular card */
 $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 {
-  var card = $(this).closest('.panel-default');
-  var index = card.attr('id');
+  var card = $(this).closest(".panel-default");
+  var index = card.attr("id");
 
   if (cardsCreated.has(index)) {
     cardsCreated.delete(index);
   }
 
-  card.addClass('animated fadeOutRight');
-  card.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+  card.addClass("animated fadeOutRight");
+  card.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function() {
     $(this).remove();
   });
 });
