@@ -159,8 +159,24 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 {
   var table = $(this).closest('table');
   
-  deleteTable(table);
+  if (isEmpty(table))
+  {
+    deleteTable(table);
+    return;
+  }
+
+  deleteTablePrompt(table);
 });
+
+function deleteTablePrompt(tableName) {
+  $("#delTableNotif").modal("show");
+  $("#delTableConfirm").unbind('click');
+  
+  $("#delTableConfirm").click(function() {
+    $("#delTableNotif").modal("hide");
+    deleteTable(tableName);
+  });
+}
 
 /*Creates a new table with a random ID, as it cannot be coded to have it
   dynamically created if it isn"t random.*/
@@ -176,15 +192,15 @@ function createNewTable() {
 }
 
 function deleteTable(tableName) {
-  if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
+  // if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
     tableName.remove();
     $.notify({
-      icon: "fa fa-exclamation-triangle",
+      icon: "fa fa-trash",
       message: "Table deleted."
     }, {
       type: "danger",
     });
-  }
+  // }
 }
 
 function isEmpty(tableName) {
@@ -414,7 +430,7 @@ function makeButtons() {
     descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");
     modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
     categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
-    deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
+    // deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
 
     // append buttons to cell
     titleCell.appendChild(titleSort);
@@ -697,11 +713,6 @@ window.addEventListener("resize", function() {
     }
   }
 });
-
-/*Refresh the page*/
-function refresh() {
-  location.reload();
-}
 
 /* ------------------ SORT FILTERS ------------------ */
 /*Sorting is done using bubble sort. Hopefully implement a better algorithm in
