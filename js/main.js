@@ -158,7 +158,7 @@ function makeID() {
 $(".main").on("click", "#deleteTableBtn", function(e)
 {
   var table = $(this).closest('table');
-  
+
   if (isEmpty(table))
   {
     deleteTable(table);
@@ -187,7 +187,7 @@ function createNewTable() {
   }, {
     type: "info",
   });
-  
+
   createTable(makeID()); // Create a table with a random ID;
   window.scrollTo(0, document.body.scrollHeight);
 }
@@ -434,10 +434,19 @@ function makeButtons(tableName) {
     deleteTable.setAttribute("class", button2);
     deleteTable.setAttribute("id", "deleteTableBtn");
 
-    titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0, false)");
-    descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");
-    modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
-    categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
+    //titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0)");
+    titleSort.onclick = function(titleSort){
+      sortAlphabet(tableName, 0);
+    }
+    descriptionSort.onclick = function(descriptionSort){
+      sortAlphabet(tableName, 0);
+    }
+    modifiedSort.onclick = function(modifiedSort){
+      sortLastModified(tableName);
+    }
+    categorySort.onclick = function(categorySort){
+      sortCategory(tableName);
+    }
     // deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
 
     // append buttons to cell
@@ -736,7 +745,6 @@ function sortAlphabet(tableName, index) {
     return;
   }
   var table, rows, switching, i, x, y, shouldSwitch;
-  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -775,7 +783,6 @@ function sortAlphabet(tableName, index) {
 /*Sort the data alphabetically reversed*/
 function sortAlphabetReverse(tableName, index) {
   var table, rows, switching, i, x, y, shouldSwitch;
-  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -829,7 +836,6 @@ function sortCategory(tableName) {
     return;
   }
   var table, rows, switching, i, x, y, shouldSwitch;
-  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -866,7 +872,6 @@ function sortCategory(tableName) {
 
 function sortCategoryReverse(tableName) {
   var table, rows, switching, i, x, y, shouldSwitch;
-  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -913,7 +918,6 @@ function sortLastModified(tableName) {
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
     "Oct", "Nov", "Dec"
   ];
-  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -964,7 +968,6 @@ function sortlastModifiedReversed(tableName) {
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
     "Oct", "Nov", "Dec"
   ];
-  tableName = $(tableName).closest("table").attr("id");
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
