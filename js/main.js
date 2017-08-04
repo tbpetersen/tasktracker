@@ -137,7 +137,7 @@ $(document).ready(function() {
         populateTrello();
         populateZend();
         draggableRows();
-        makeButtons();
+        //makeButtons();
       });
     });
   });
@@ -158,9 +158,26 @@ function makeID() {
 $(".main").on("click", "#deleteTableBtn", function(e)
 {
   var table = $(this).closest('table');
-  
-  deleteTable(table);
+  if (isEmpty(table))
+  {
+    deleteTable(table);
+    return;
+
+  }
+  deleteTablePrompt(table);
 });
+
+
+function deleteTablePrompt(tableName) {
+
+  $("#delTableNotif").modal("show");
+  $("#delTableConfirm").unbind('click');
+
+  $("#delTableConfirm").click(function() {
+    $("#delTableNotif").modal("hide");
+    deleteTable(tableName);
+  });
+}
 
 /*Creates a new table with a random ID, as it cannot be coded to have it
   dynamically created if it isn"t random.*/
@@ -176,15 +193,41 @@ function createNewTable() {
 }
 
 function deleteTable(tableName) {
-  if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
-    tableName.remove();
-    $.notify({
-      icon: "fa fa-exclamation-triangle",
-      message: "Table deleted."
-    }, {
-      type: "danger",
-    });
+
+  if(!isEmpty(tableName)) {
+
+    // If unsorted table doesn't already exist, create it
+    if(document.getElementById("unsorted") == null) {
+      createTable("unsorted");
+    }
+
+    // For each row, make a new Task and create a row for it in the unsorted table
+    var info = tableName[0].tBodies[0].rows;
+    for(var i = 0; i < info.length; i++) {
+      var task = {
+        name: info[i].cells[0].innerHTML,
+        desc: info[i].cells[1].innerHTML,
+        lastModified: info[i].cells[2].innerHTML, 
+        category: info[i].cells[3].innerHTML, 
+        id: info[i].id
+      }
+
+      // Make row
+      var unsortedTable = document.getElementById("unsorted");
+      addRow(task, unsortedTable, task.id);
+    }
+    draggableRows();
   }
+
+  tableName.remove();
+
+  $.notify({
+    icon: "fa fa-trash",
+    message: "Table deleted."
+  }, {
+    type: "danger",
+
+  });
 }
 
 function isEmpty(tableName) {
@@ -280,6 +323,10 @@ function createTable(tableName) {
   table.appendChild(head);
   table.appendChild(body)
   mainDiv.appendChild(table);
+
+  if(tableName !== "unsorted") {
+    makeButtons(tableName);
+  }
 }
 
 function populateTable(task, tableName, index) {
@@ -314,7 +361,12 @@ function addRow(task, tableName, index) {
   var cat = task.category;
   var capCat = cat.charAt(0).toUpperCase() + cat.substring(1);
 
-  var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
+  if(tableName.id != "unsorted") {
+    var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
+  }
+  else{
+    var body = tableName.tBodies[0];
+  }
 
   //create row and cell element
   row = document.createElement("tr");
@@ -380,17 +432,17 @@ function draggableRows() {
   $("#sortable").disableSelection();
 }
 
-function makeButtons() {
+function makeButtons(tableName) {
 
-  var tables = document.getElementsByClassName("tables");
+  var tables = document.getElementById(tableName);
 
-  for(var i = 0; i < tables.length; i++) {
-    var titleCell = tables[i].rows[0].cells[0];
-    var descCell = tables[i].rows[0].cells[1];
-    var modCell = tables[i].rows[0].cells[2];
-    var catCell = tables[i].rows[0].cells[3];
+  //for(var i = 0; i < tables.length; i++) {
+    var titleCell = tables.rows[0].cells[0];
+    var descCell = tables.rows[0].cells[1];
+    var modCell = tables.rows[0].cells[2];
+    var catCell = tables.rows[0].cells[3];
 
-    var tableName = tables[i].id;
+    //var tableName = tables[i].id;
 
     var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
     var button2 = "glyphicon glyphicon-remove";
@@ -414,7 +466,6 @@ function makeButtons() {
     descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",1)");
     modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
     categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
-    deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
 
     // append buttons to cell
     titleCell.appendChild(titleSort);
@@ -422,7 +473,7 @@ function makeButtons() {
     modCell.appendChild(modifiedSort);
     catCell.appendChild(categorySort);
     catCell.appendChild(deleteTable);
-  }
+  //}
 }
 /* End populating/setting up tables */
 

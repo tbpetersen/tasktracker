@@ -529,3 +529,31 @@ select#sortList {
 .scrollTop:hover {
   background-color: rgba(164, 164, 164, 1);
 }
+
+/* Delete Table Notification */
+.modal-open {
+  padding-right: 0 !important;
+}
+
+.modal-header {
+  white-space: nowrap;
+  font-size: 30px;
+  color: #dd6367;
+}
+
+#warningLabel {
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+  display: inline-block;
+}
+
+.btn-primary {
+  background-color: #dd6367;
+  border: none;
+}
+
+.btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
+  background-color: #c6595c !important;
+  border: none;
+}
