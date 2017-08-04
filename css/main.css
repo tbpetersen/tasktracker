@@ -88,7 +88,7 @@ body.toggled #leftSidebar {
 /* Tables */
 table, th {
   width: 100%;
-  margin-bottom: 5%;
+  /*margin-bottom: 5%;*/
   border-collapse: separate;
 }
 
@@ -507,10 +507,12 @@ select#sortList {
   background-color: transparent;
 }
 
-#deleteTableBtn{
+#deleteTableBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
   background-color: #dd6367;
   color: black;
-  float: right;
 }
 
 /* Scroll to top button */
@@ -564,4 +566,19 @@ select#sortList {
 .btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
   background-color: #c6595c !important;
   border: none;
+}
+
+/* Table wrappers */
+.table-wrapper {
+  border: solid #000;
+  border-width: 4px;
+  margin-bottom: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+}
+
+.wrapper-header {
+  position: relative;
+  margin-bottom: 5px;
 }

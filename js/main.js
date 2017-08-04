@@ -10,6 +10,7 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 var isClosed = false;
+const wrapperSuffix = "_table";
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
@@ -157,7 +158,9 @@ function makeID() {
 
 $(".main").on("click", "#deleteTableBtn", function(e)
 {
-  var table = $(this).closest('table');
+  // Find the parent, table-wrapper, and get table
+  var table = $(this).parent().next();
+  console.log(table);
 
   if (isEmpty(table))
   {
@@ -194,7 +197,9 @@ function createNewTable() {
 
 function deleteTable(tableName) {
   // if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
-    tableName.remove();
+    var table = tableName.parent();
+    table.remove();
+    
     $.notify({
       icon: "fa fa-trash",
       message: "Table deleted."
@@ -255,6 +260,7 @@ function createTable(tableName) {
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
+  var tableWrapper = createTableWrapper(tableName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -296,9 +302,30 @@ function createTable(tableName) {
   head.appendChild(row);
   table.appendChild(head);
   table.appendChild(body)
-  mainDiv.appendChild(table);
+  tableWrapper.appendChild(table);
+  // mainDiv.appendChild(table);
+  mainDiv.appendChild(tableWrapper);
 
   makeButtons(tableName);
+}
+
+/* Helper function for createTable to create div wrappers to encapsulate tables */
+function createTableWrapper(tableName) {
+  var tableWrapper = document.createElement("div");
+  var title = document.createElement("h3");
+  var header = document.createElement("div");
+  var wrapperName = tableName + wrapperSuffix;
+  
+  tableWrapper.setAttribute("id", wrapperName);
+  tableWrapper.setAttribute("class", "table-wrapper");
+  header.setAttribute("class", "wrapper-header");
+
+  var tableTitle = document.createTextNode(tableName);
+  title.appendChild(tableTitle);
+  header.appendChild(title);
+  tableWrapper.appendChild(header);
+
+  return tableWrapper;
 }
 
 function populateTable(task, tableName, index) {
@@ -403,6 +430,7 @@ function makeButtons(tableName) {
 
   // var tables = document.getElementsByClassName("tables");
   var table = document.getElementById(tableName);
+  var wrapperHeader = $("#" + tableName).siblings('div');
 
   // for(var i = 0; i < tables.length; i++) {
     // var titleCell = tables[i].rows[0].cells[0];
@@ -454,7 +482,8 @@ function makeButtons(tableName) {
     descCell.appendChild(descriptionSort);
     modCell.appendChild(modifiedSort);
     catCell.appendChild(categorySort);
-    catCell.appendChild(deleteTable);
+    // catCell.appendChild(deleteTable);
+    wrapperHeader.append(deleteTable);
   // }
 }
 /* End populating/setting up tables */
@@ -1346,13 +1375,19 @@ function search() {
 /*------------------------------Hiding table----------------------------------*/
 function hideTables(){
   var tables = document.getElementsByTagName("table");
+  var wrapper;
+
   //Go through each table, if it's elements are hidden, hide it. If not, show.
   for(var i = 0; i < tables.length; i++){
-    if(isTableHidden(tables[i]))
-      $(tables[i]).hide();
-    else
-      $(tables[i]).show();
+    wrapperID ="#" + $(tables[i]).attr("id") + wrapperSuffix;
+
+    if(isTableHidden(tables[i])) {
+      $(wrapperID).hide();
     }
+    else { 
+      $(wrapperID).show();
+    }
+  }
 }
 
 function isTableHidden(table){
