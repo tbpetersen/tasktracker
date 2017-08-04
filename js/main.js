@@ -434,12 +434,12 @@ function makeButtons(tableName) {
     deleteTable.setAttribute("class", button2);
     deleteTable.setAttribute("id", "deleteTableBtn");
 
-    //titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0)");
+    //titleSort.setAttribute(" ", "sortAlphabet(" + tableName + ",0)");
     titleSort.onclick = function(titleSort){
       sortAlphabet(tableName, 0);
     }
     descriptionSort.onclick = function(descriptionSort){
-      sortAlphabet(tableName, 0);
+      sortAlphabet(tableName, 1);
     }
     modifiedSort.onclick = function(modifiedSort){
       sortLastModified(tableName);
