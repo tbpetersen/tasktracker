@@ -1312,6 +1312,9 @@ function filterAll() {
 function search() {
   //Text typed in search.
   var searchFor = document.getElementsByClassName("form-control")[0].value;
+  if(searchFor === ""){
+    return filterAll();
+  }
   //Tables of tasks.
   var tables = document.getElementsByTagName("table");
   var rows;
