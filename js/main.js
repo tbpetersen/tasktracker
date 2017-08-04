@@ -1191,38 +1191,6 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 });
 
 /* ------------------ END OF TICKET PANEL ------------------ */
-
-function sort() {
-  switch (document.getElementsByName("sortBy")[0].value) {
-    case "a-z":
-      sortAlphabet();
-      break;
-
-    case "z-a":
-      sortAlphabetReverse();
-      break;
-
-    case "dueDate":
-      sortDueDate();
-      break;
-
-    case "startDate":
-      sortStartDate();
-      break;
-
-    case "category":
-      sortCategory();
-      break;
-
-    case "lastModified":
-      sortLastModified();
-      break;
-
-    case "lastModifiedReversed":
-      sortlastModifiedReversed();
-      break;
-  }
-}
 /*--------------------------------Filters-------------------------------------*/
 function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
