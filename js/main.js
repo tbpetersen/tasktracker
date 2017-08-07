@@ -316,6 +316,7 @@ function createTable(tableName) {
 function createTableWrapper(tableName) {
   var tableWrapper = document.createElement("div");
   var title = document.createElement("h3");
+  var divider = document.createElement("hr");
   var header = document.createElement("div");
   var wrapperName = tableName + wrapperSuffix;
 
@@ -326,6 +327,7 @@ function createTableWrapper(tableName) {
   var tableTitle = document.createTextNode(tableName);
   title.appendChild(tableTitle);
   header.appendChild(title);
+  header.appendChild(divider);
   tableWrapper.appendChild(header);
 
   return tableWrapper;
