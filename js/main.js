@@ -134,6 +134,7 @@ $(document).ready(function() {
 
       createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
         console.log(user.tasks);
+        createFilters();
 
         populateTrello();
         populateZend();
@@ -142,6 +143,8 @@ $(document).ready(function() {
       });
     });
   });
+  //Create the filters from the tasks created.
+
 });
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -199,7 +202,7 @@ function deleteTable(tableName) {
   // if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
     var table = tableName.parent();
     table.remove();
-    
+
     $.notify({
       icon: "fa fa-trash",
       message: "Table deleted."
@@ -315,7 +318,7 @@ function createTableWrapper(tableName) {
   var title = document.createElement("h3");
   var header = document.createElement("div");
   var wrapperName = tableName + wrapperSuffix;
-  
+
   tableWrapper.setAttribute("id", wrapperName);
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
@@ -1224,6 +1227,39 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 
 /* ------------------ END OF TICKET PANEL ------------------ */
 /*--------------------------------Filters-------------------------------------*/
+function createFilters(){
+  var filters = getFilters();
+  var i;
+  for(i = 0; i < filters.length; i++){
+    createFilterButton(filters[i]);
+  }
+}
+
+function createFilterButton(filter){
+  var leftSidebar = document.getElementById("leftSidebar");
+  var newFilter = document.createElement("button");
+  filter = filter.charAt(0).toUpperCase() + filter.slice(1);
+  newFilter.setAttribute("id", "filter " + filter);
+  newFilter.setAttribute("class", "w3-bar-item w3-button");
+  newFilter.setAttribute("onclick", "filterBy(this.id)");
+  newFilter.innerText = filter;
+  leftSidebar.appendChild(newFilter);
+}
+
+function getFilters(){
+  var tasks = user.tasks;
+  var categories = [];
+  var i;
+  categories.push("View All");
+  for(i = 0; i < tasks.length; i++)
+  {
+    if(!categories.includes(tasks[i].category))
+      categories.push(tasks[i].category);
+  }
+  categories.push("Unsorted");
+  return categories;
+}
+
 function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
   var button = document.getElementById(buttonID);
@@ -1384,7 +1420,7 @@ function hideTables(){
     if(isTableHidden(tables[i])) {
       $(wrapperID).hide();
     }
-    else { 
+    else {
       $(wrapperID).show();
     }
   }
