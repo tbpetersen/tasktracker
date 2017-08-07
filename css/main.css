@@ -309,6 +309,7 @@ select#sortList {
   margin: 0;
 }
 
+
 #navbar-links {
   background-color: whitesmoke;
   overflow-x: hidden;
@@ -343,17 +344,20 @@ select#sortList {
 #app-title {
   cursor: pointer;
   position: absolute;
-  right: 50%;
+  left: 50%;
   height: 100%;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #dd6367;
   font-weight: bold;
   font-family: 'Roboto', sans-serif;
 }
 
+#app-title a, a:hover {
+  color: #dd6367;
+  text-decoration: none;
+}
 
 /* Search form */
 
@@ -557,3 +561,4 @@ select#sortList {
   background-color: #c6595c !important;
   border: none;
 }
+

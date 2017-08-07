@@ -53,7 +53,7 @@
         </a>
       </div>
 
-      <h1 id="app-title"><span onclick="refresh()">Zello</span></h1>
+      <h1 id="app-title"><a href="index.html">Zello</a></h1>
 
       <!-- Nav links -->
       <div class="collapse navbar-collapse" id="navbar-links">
@@ -77,7 +77,7 @@
             </ul>
           </li>
           <li id="searchBar">
-            <form onsubmit="return search()" class="navbar-form navbar-right"> 
+            <form onsubmit="return search()" class="navbar-form navbar-right">
               <div class="form-group has-feedback">
                 <label class="control-label sr-only">Search</label>
                 <input type="text" class="form-control" placeholder="Search" />
@@ -130,15 +130,17 @@
     <h3 class="w3-bar-item" id="filters">Filters</h3>
     <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter View All">View All</button>
     <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Not Started">Not Started</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Blocked">Blocked</button>
     <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter In Progress">In Progress</button>
     <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter To Review">To Review</button>
-    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Completed">Completed</button>
-    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Blocked">Blocked</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Completed">Completed</button>    
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter July Billing">July Billing</button>
     <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Open">Open</button>
     <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Pending">Pending</button>
     <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Closed">Closed</button>
     <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter New">New</button>
     <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Hold">Hold</button>
+    <button class="w3-bar-item w3-button" onclick="filterBy(this.id)" id="filter Unsorted">Unsorted</button>
   </div>
   <!-- END FILTER SIDEBAR -->
 
@@ -149,9 +151,7 @@
     <a href="#" class="scrollTop"><span class="fa fa-angle-up"></span></a>
   </div>
 
-
   <!-- Modal -->
-
   <div class="modal fade" id="delTableNotif" tabindex="-1" role="dialog" aria-labelledby="delTableNotif" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
