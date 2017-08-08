@@ -194,7 +194,7 @@ function createNewTable() {
     type: "info",
   });
 
-  createTable(makeID()); // Create a table with a random ID;
+  createTable(makeID(), true); // Create a table with a random ID;
   window.scrollTo(0, document.body.scrollHeight);
 }
 
@@ -232,7 +232,7 @@ function populateTrello() {
       var cat = str.split(" ").join("_");
       if (cat === trelloCat[i]) {
         if (document.getElementById(cat) == null) {
-          createTable(cat);
+          createTable(cat, false);
         }
         populateTable(user.tasks[j], cat, j);
       }
@@ -248,7 +248,7 @@ function populateZend() {
     for (var j = 0; j < user.tasks.length; j++) {
       if (user.tasks[j].category == zendCat[i]) {
         if (document.getElementById(user.tasks[j].category) == null) {
-          createTable(user.tasks[j].category);
+          createTable(user.tasks[j].category, false);
         }
         populateTable(user.tasks[j], user.tasks[j].category, j);
       }
@@ -256,14 +256,14 @@ function populateZend() {
   }
 }
 
-function createTable(tableName) {
+function createTable(tableName, randomName) {
 
   // Create table structure
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
-  var tableWrapper = createTableWrapper(tableName);
+  var tableWrapper = createTableWrapper(tableName, randomName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -312,10 +312,20 @@ function createTable(tableName) {
   makeButtons(tableName);
 }
 
+
+//Replaces the targets in the string passed in with the replacement.
+function findAndReplace(string, target, replacement) {
+ var i = 0, length = string.length;
+ for (i; i < length; i++) {
+   string = string.replace(target, replacement)
+ }
+ return string;
+}
+
 /* Helper function for createTable to create div wrappers to encapsulate tables */
-function createTableWrapper(tableName) {
+function createTableWrapper(tableName, randomName) {
   var tableWrapper = document.createElement("div");
-  var title = document.createElement("h3");
+  var title = document.createElement("input");
   var divider = document.createElement("hr");
   var header = document.createElement("div");
   var wrapperName = tableName + wrapperSuffix;
@@ -324,8 +334,16 @@ function createTableWrapper(tableName) {
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
+  //Create the Table Title and adjust the display of it so it is correct.
   var tableTitle = document.createTextNode(tableName);
-  title.appendChild(tableTitle);
+  if(randomName)
+    title.value = "";
+  else{
+    title.value = tableTitle.textContent;
+    title.value = findAndReplace(title.value, "_", " ");
+    title.value = title.value.charAt(0).toUpperCase() + title.value.substring(1);
+  }
+
   header.appendChild(title);
   header.appendChild(divider);
   tableWrapper.appendChild(header);
@@ -1081,33 +1099,40 @@ function closeLeft() {
 var alternate = 1;
 
 function changeColor() {
+  var nightGrey = "#1E1E1E"
+
   var body = document.body.style;
   var ticketBarHead = document.getElementById("info-header").style;
   var ticketHeads = document.getElementsByClassName("panel-heading");
   var tickets = document.getElementsByClassName("panel-body");
   var tableHeads = document.getElementsByTagName("thead");
+  var inputs = $("input");
 
   if (alternate == 1) {
-    body.backgroundColor = "#1E1E1E";
+    body.backgroundColor = nightGrey;
     body.color = "lightgrey";
-    ticketBarHead.backgroundColor = "#1E1E1E";
+    ticketBarHead.backgroundColor = nightGrey;
     for (var i = 0; i < tickets.length; i++) {
       tickets[i].style.backgroundColor = "#7E7E7E";
       ticketHeads[i].style.backgroundColor = "#6E6E6E";
     }
     for (var i = 0; i < tableHeads.length; i++) {
       tableHeads[i].style.color = "white";
+      if(inputs[i].placeholder !== "Search")
+        inputs[i].style.backgroundColor = nightGrey;
     }
   } else {
-    body.backgroundColor = "#FFF";
+    body.backgroundColor = "white";
     body.color = "#333";
     ticketBarHead.backgroundColor = "#CCC";
     for (var i = 0; i < tickets.length; i++) {
-      tickets[i].style.backgroundColor = "#FFF";
+      tickets[i].style.backgroundColor = "white";
       ticketHeads[i].style.backgroundColor = "#F5F5F5";
     }
     for (var i = 0; i < tableHeads.length; i++) {
       tableHeads[i].style.color = "#333";
+      if(inputs[i].placeholder !== "Search")
+        inputs[i].style.backgroundColor = "white";
     }
   }
   alternate = alternate % 2 + 1; //Increment/decrement alternate.
@@ -1379,12 +1404,12 @@ function filterAll() {
 
 function search() {
   //Text typed in search.
-  var searchFor = document.getElementsByClassName("form-control")[0].value;
+  var searchFor = $(".form-control")[0].value;
   if(searchFor === ""){
     return filterAll();
   }
   //Tables of tasks.
-  var tables = document.getElementsByTagName("table");
+  var tables = $("table");
   var rows;
   var currentRow, items, i, j, td;
   //Go through the rows of each table.
@@ -1413,7 +1438,7 @@ function search() {
 /*------------------------------End of Search---------------------------------*/
 /*------------------------------Hiding table----------------------------------*/
 function hideTables(){
-  var tables = document.getElementsByTagName("table");
+  var tables = $("table");
   var wrapper;
 
   //Go through each table, if it's elements are hidden, hide it. If not, show.
