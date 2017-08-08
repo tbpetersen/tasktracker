@@ -778,6 +778,7 @@ window.addEventListener("resize", function() {
   var openButton = document.getElementById("leftOpenButton");
   if (window.innerWidth < 1200) {
     if ($("body.toggled").css("padding") != null) {
+      //TODO Issue when resizing smaller and filter panel is out.
       isClosed = false;
       $("body").toggleClass("toggled");
       $(".hamburger").removeClass("is-open");
