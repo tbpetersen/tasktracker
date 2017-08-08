@@ -88,7 +88,7 @@ body.toggled #leftSidebar {
 /* Tables */
 table, th {
   width: 100%;
-  /*margin-bottom: 5%;*/
+  margin-bottom: 5%;
   border-collapse: separate;
 }
 
@@ -126,7 +126,8 @@ input {
 .place{
   display:table;
   height:69px;
-  width:100%;
+  /*width:100%;*/
+  width:1442px; /*hard coding for wrappers*/
   position:absolute;
 }
 
@@ -574,6 +575,7 @@ select#sortList {
   background-color: #c6595c !important;
   border: none;
 }
+
 
 /* Table wrappers */
 .table-wrapper {

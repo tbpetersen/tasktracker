@@ -139,7 +139,6 @@ $(document).ready(function() {
         populateTrello();
         populateZend();
         draggableRows();
-        // makeButtons();
       });
     });
   });
@@ -170,7 +169,6 @@ $(".main").on("click", "#deleteTableBtn", function(e)
     deleteTable(table);
     return;
   }
-
   deleteTablePrompt(table);
 });
 
@@ -199,17 +197,44 @@ function createNewTable() {
 }
 
 function deleteTable(tableName) {
-  // if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
-    var table = tableName.parent();
-    table.remove();
 
-    $.notify({
-      icon: "fa fa-trash",
-      message: "Table deleted."
-    }, {
-      type: "danger",
-    });
-  // }
+  if(!isEmpty(tableName)) {
+
+    // If unsorted table doesn't already exist, create it
+    if(document.getElementById("Unsorted") == null) {
+      createTable("Unsorted");
+    }
+
+    // For each row, make a new Task and create a row for it in the unsorted table
+    var info = tableName[0].tBodies[0].rows;
+    for(var i = 0; i < info.length; i++) {
+      var task = {
+        name: info[i].cells[0].innerHTML,
+        desc: info[i].cells[1].innerHTML,
+        lastModified: info[i].cells[2].innerHTML,
+        category: info[i].cells[3].innerHTML,
+        id: info[i].id
+      }
+
+      // Make row
+      var unsortedTable = document.getElementById("Unsorted");
+      addRow(task, unsortedTable, task.id);
+    }
+    draggableRows();
+  }
+
+  // Delete wrapper and table
+  var wrapperName = tableName[0].id + wrapperSuffix;
+  var wrapper = document.getElementById(wrapperName);
+  wrapper.remove();
+
+  tableName.remove();
+  $.notify({
+    icon: "fa fa-trash",
+    message: "Table deleted."
+  }, {
+    type: "danger",
+  });
 }
 
 function isEmpty(tableName) {
@@ -247,10 +272,11 @@ function populateZend() {
   for (var i = 0; i < zendCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       if (user.tasks[j].category == zendCat[i]) {
-        if (document.getElementById(user.tasks[j].category) == null) {
-          createTable(user.tasks[j].category, false);
+        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() + (user.tasks[j].category).substring(1);
+        if (document.getElementById(capCat) == null) {
+          createTable(capCat, false);
         }
-        populateTable(user.tasks[j], user.tasks[j].category, j);
+        populateTable(user.tasks[j], capCat, j);
       }
     }
   }
@@ -309,7 +335,9 @@ function createTable(tableName, randomName) {
   // mainDiv.appendChild(table);
   mainDiv.appendChild(tableWrapper);
 
-  makeButtons(tableName);
+  if(tableName !== "Unsorted") {
+    makeButtons(tableName);
+  }
 }
 
 
@@ -383,7 +411,12 @@ function addRow(task, tableName, index) {
   var cat = task.category;
   var capCat = cat.charAt(0).toUpperCase() + cat.substring(1);
 
-  var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
+  if(tableName.id != "Unsorted") {
+    var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
+  }
+  else{
+    var body = tableName.tBodies[0];
+  }
 
   //create row and cell element
   row = document.createElement("tr");
@@ -451,63 +484,54 @@ function draggableRows() {
 
 function makeButtons(tableName) {
 
-  // var tables = document.getElementsByClassName("tables");
   var table = document.getElementById(tableName);
   var wrapperHeader = $("#" + tableName).siblings('div');
 
-  // for(var i = 0; i < tables.length; i++) {
-    // var titleCell = tables[i].rows[0].cells[0];
-    // var descCell = tables[i].rows[0].cells[1];
-    // var modCell = tables[i].rows[0].cells[2];
-    // var catCell = tables[i].rows[0].cells[3];
-    var titleCell = table.rows[0].cells[0];
-    var descCell = table.rows[0].cells[1];
-    var modCell = table.rows[0].cells[2];
-    var catCell = table.rows[0].cells[3];
+  var titleCell = table.rows[0].cells[0];
+  var descCell = table.rows[0].cells[1];
+  var modCell = table.rows[0].cells[2];
+  var catCell = table.rows[0].cells[3];
 
-    // var tableName = tables[i].id;
+  var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
+  var button2 = "glyphicon glyphicon-remove";
 
-    var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
-    var button2 = "glyphicon glyphicon-remove";
+  // Create the sorting buttons
+  var titleSort = document.createElement("button");
+  var descriptionSort = document.createElement("button");
+  var modifiedSort = document.createElement("button");
+  var categorySort = document.createElement("button");
+  var deleteTable = document.createElement("button");
 
-    // Create the sorting buttons
-    var titleSort = document.createElement("button");
-    var descriptionSort = document.createElement("button");
-    var modifiedSort = document.createElement("button");
-    var categorySort = document.createElement("button");
-    var deleteTable = document.createElement("button");
+  //Assign classes to the sorting buttons
+  titleSort.setAttribute("class", button1);
+  descriptionSort.setAttribute("class", button1);
+  modifiedSort.setAttribute("class", button1);
+  categorySort.setAttribute("class", button1);
+  deleteTable.setAttribute("class", button2);
+  deleteTable.setAttribute("id", "deleteTableBtn");
 
-    //Assign classes to the sorting buttons
-    titleSort.setAttribute("class", button1);
-    descriptionSort.setAttribute("class", button1);
-    modifiedSort.setAttribute("class", button1);
-    categorySort.setAttribute("class", button1);
-    deleteTable.setAttribute("class", button2);
-    deleteTable.setAttribute("id", "deleteTableBtn");
+  //titleSort.setAttribute(" ", "sortAlphabet(" + tableName + ",0)");
+  titleSort.onclick = function(titleSort){
+    sortAlphabet(tableName, 0);
+  }
+  descriptionSort.onclick = function(descriptionSort){
+    sortAlphabet(tableName, 1);
+  }
+  modifiedSort.onclick = function(modifiedSort){
+    sortLastModified(tableName);
+  }
+  categorySort.onclick = function(categorySort){
+    sortCategory(tableName);
+  }
 
-    //titleSort.setAttribute(" ", "sortAlphabet(" + tableName + ",0)");
-    titleSort.onclick = function(titleSort){
-      sortAlphabet(tableName, 0);
-    }
-    descriptionSort.onclick = function(descriptionSort){
-      sortAlphabet(tableName, 1);
-    }
-    modifiedSort.onclick = function(modifiedSort){
-      sortLastModified(tableName);
-    }
-    categorySort.onclick = function(categorySort){
-      sortCategory(tableName);
-    }
-    // deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
+  // append buttons to cell
+  titleCell.appendChild(titleSort);
+  descCell.appendChild(descriptionSort);
+  modCell.appendChild(modifiedSort);
+  catCell.appendChild(categorySort);
 
-    // append buttons to cell
-    titleCell.appendChild(titleSort);
-    descCell.appendChild(descriptionSort);
-    modCell.appendChild(modifiedSort);
-    catCell.appendChild(categorySort);
-    // catCell.appendChild(deleteTable);
-    wrapperHeader.append(deleteTable);
-  // }
+  // catCell.appendChild(deleteTable);
+  wrapperHeader.append(deleteTable);
 }
 /* End populating/setting up tables */
 
