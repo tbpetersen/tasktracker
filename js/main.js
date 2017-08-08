@@ -10,6 +10,7 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 var isClosed = false;
+const wrapperSuffix = "_table";
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
@@ -133,6 +134,7 @@ $(document).ready(function() {
 
       createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
         console.log(user.tasks);
+        createFilters();
 
         populateTrello();
         populateZend();
@@ -140,6 +142,8 @@ $(document).ready(function() {
       });
     });
   });
+  //Create the filters from the tasks created.
+
 });
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -156,7 +160,9 @@ function makeID() {
 
 $(".main").on("click", "#deleteTableBtn", function(e)
 {
-  var table = $(this).closest('table');
+  // Find the parent, table-wrapper, and get table
+  var table = $(this).parent().next();
+  console.log(table);
 
   if (isEmpty(table))
   {
@@ -195,8 +201,8 @@ function deleteTable(tableName) {
   if(!isEmpty(tableName)) {
 
     // If unsorted table doesn't already exist, create it
-    if(document.getElementById("unsorted") == null) {
-      createTable("unsorted");
+    if(document.getElementById("Unsorted") == null) {
+      createTable("Unsorted");
     }
 
     // For each row, make a new Task and create a row for it in the unsorted table
@@ -211,12 +217,13 @@ function deleteTable(tableName) {
       }
 
       // Make row
-      var unsortedTable = document.getElementById("unsorted");
+      var unsortedTable = document.getElementById("Unsorted");
       addRow(task, unsortedTable, task.id);
     }
     draggableRows();
   }
 
+  // Delete table
   tableName.remove();
   $.notify({
     icon: "fa fa-trash",
@@ -237,18 +244,17 @@ function isEmpty(tableName) {
 /* Populating/setting up tables */
 function populateTrello() {
 
-  var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review",
-  "Completed", "July_Billing"];
+  var trelloCat = ["Not Started", "Blocked", "In Progress", "To Review",
+  "Completed", "July Billing"];
 
   for (var i = 0; i < trelloCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       var str = user.tasks[j].category;
-      var cat = str.split(" ").join("_");
-      if (cat === trelloCat[i]) {
-        if (document.getElementById(cat) == null) {
-          createTable(cat);
+      if (str === trelloCat[i]) {
+        if (document.getElementById(str) == null) {
+          createTable(str);
         }
-        populateTable(user.tasks[j], cat, j);
+        populateTable(user.tasks[j], str, j);
       }
     }
   }
@@ -261,10 +267,11 @@ function populateZend() {
   for (var i = 0; i < zendCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       if (user.tasks[j].category == zendCat[i]) {
-        if (document.getElementById(user.tasks[j].category) == null) {
-          createTable(user.tasks[j].category);
+        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() + (user.tasks[j].category).substring(1);
+        if (document.getElementById(capCat) == null) {
+          createTable(capCat);
         }
-        populateTable(user.tasks[j], user.tasks[j].category, j);
+        populateTable(user.tasks[j], capCat, j);
       }
     }
   }
@@ -277,6 +284,8 @@ function createTable(tableName) {
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
+
+  var tableWrapper = createTableWrapper(tableName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -318,11 +327,35 @@ function createTable(tableName) {
   head.appendChild(row);
   table.appendChild(head);
   table.appendChild(body)
-  mainDiv.appendChild(table);
+  tableWrapper.appendChild(table);
+  // mainDiv.appendChild(table);
+  mainDiv.appendChild(tableWrapper);
 
-  if(tableName !== "unsorted") {
+  if(tableName !== "Unsorted") {
     makeButtons(tableName);
   }
+}
+
+/* Helper function for createTable to create div wrappers to encapsulate tables */
+function createTableWrapper(tableName) {
+  //console.log(tableName)
+  var tableWrapper = document.createElement("div");
+  var title = document.createElement("h3");
+  var divider = document.createElement("hr");
+  var header = document.createElement("div");
+  var wrapperName = tableName + wrapperSuffix;
+
+  tableWrapper.setAttribute("id", wrapperName);
+  tableWrapper.setAttribute("class", "table-wrapper");
+  header.setAttribute("class", "wrapper-header");
+
+  var tableTitle = document.createTextNode(tableName);
+  title.appendChild(tableTitle);
+  header.appendChild(title);
+  header.appendChild(divider);
+  tableWrapper.appendChild(header);
+
+  return tableWrapper;
 }
 
 function populateTable(task, tableName, index) {
@@ -357,7 +390,7 @@ function addRow(task, tableName, index) {
   var cat = task.category;
   var capCat = cat.charAt(0).toUpperCase() + cat.substring(1);
 
-  if(tableName.id != "unsorted") {
+  if(tableName.id != "Unsorted") {
     var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
   }
   else{
@@ -430,51 +463,54 @@ function draggableRows() {
 
 function makeButtons(tableName) {
 
-  var tables = document.getElementById(tableName);
+  var table = document.getElementById(tableName);
+  var wrapperHeader = $("#" + tableName).siblings('div');
 
-    var titleCell = tables.rows[0].cells[0];
-    var descCell = tables.rows[0].cells[1];
-    var modCell = tables.rows[0].cells[2];
-    var catCell = tables.rows[0].cells[3];
+  var titleCell = table.rows[0].cells[0];
+  var descCell = table.rows[0].cells[1];
+  var modCell = table.rows[0].cells[2];
+  var catCell = table.rows[0].cells[3];
 
-    var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
-    var button2 = "glyphicon glyphicon-remove";
+  var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
+  var button2 = "glyphicon glyphicon-remove";
 
-    // Create the sorting buttons
-    var titleSort = document.createElement("button");
-    var descriptionSort = document.createElement("button");
-    var modifiedSort = document.createElement("button");
-    var categorySort = document.createElement("button");
-    var deleteTable = document.createElement("button");
+  // Create the sorting buttons
+  var titleSort = document.createElement("button");
+  var descriptionSort = document.createElement("button");
+  var modifiedSort = document.createElement("button");
+  var categorySort = document.createElement("button");
+  var deleteTable = document.createElement("button");
 
-    //Assign classes to the sorting buttons
-    titleSort.setAttribute("class", button1);
-    descriptionSort.setAttribute("class", button1);
-    modifiedSort.setAttribute("class", button1);
-    categorySort.setAttribute("class", button1);
-    deleteTable.setAttribute("class", button2);
-    deleteTable.setAttribute("id", "deleteTableBtn");
+  //Assign classes to the sorting buttons
+  titleSort.setAttribute("class", button1);
+  descriptionSort.setAttribute("class", button1);
+  modifiedSort.setAttribute("class", button1);
+  categorySort.setAttribute("class", button1);
+  deleteTable.setAttribute("class", button2);
+  deleteTable.setAttribute("id", "deleteTableBtn");
 
-    //titleSort.setAttribute(" ", "sortAlphabet(" + tableName + ",0)");
-    titleSort.onclick = function(titleSort){
-      sortAlphabet(tableName, 0);
-    }
-    descriptionSort.onclick = function(descriptionSort){
-      sortAlphabet(tableName, 1);
-    }
-    modifiedSort.onclick = function(modifiedSort){
-      sortLastModified(tableName);
-    }
-    categorySort.onclick = function(categorySort){
-      sortCategory(tableName);
-    }
+  //titleSort.setAttribute(" ", "sortAlphabet(" + tableName + ",0)");
+  titleSort.onclick = function(titleSort){
+    sortAlphabet(tableName, 0);
+  }
+  descriptionSort.onclick = function(descriptionSort){
+    sortAlphabet(tableName, 1);
+  }
+  modifiedSort.onclick = function(modifiedSort){
+    sortLastModified(tableName);
+  }
+  categorySort.onclick = function(categorySort){
+    sortCategory(tableName);
+  }
 
-    // append buttons to cell
-    titleCell.appendChild(titleSort);
-    descCell.appendChild(descriptionSort);
-    modCell.appendChild(modifiedSort);
-    catCell.appendChild(categorySort);
-    catCell.appendChild(deleteTable);
+  // append buttons to cell
+  titleCell.appendChild(titleSort);
+  descCell.appendChild(descriptionSort);
+  modCell.appendChild(modifiedSort);
+  catCell.appendChild(categorySort);
+
+  // catCell.appendChild(deleteTable);
+  wrapperHeader.append(deleteTable);
 }
 /* End populating/setting up tables */
 
@@ -1214,6 +1250,39 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 
 /* ------------------ END OF TICKET PANEL ------------------ */
 /*--------------------------------Filters-------------------------------------*/
+function createFilters(){
+  var filters = getFilters();
+  var i;
+  for(i = 0; i < filters.length; i++){
+    createFilterButton(filters[i]);
+  }
+}
+
+function createFilterButton(filter){
+  var leftSidebar = document.getElementById("leftSidebar");
+  var newFilter = document.createElement("button");
+  filter = filter.charAt(0).toUpperCase() + filter.slice(1);
+  newFilter.setAttribute("id", "filter " + filter);
+  newFilter.setAttribute("class", "w3-bar-item w3-button");
+  newFilter.setAttribute("onclick", "filterBy(this.id)");
+  newFilter.innerText = filter;
+  leftSidebar.appendChild(newFilter);
+}
+
+function getFilters(){
+  var tasks = user.tasks;
+  var categories = [];
+  var i;
+  categories.push("View All");
+  for(i = 0; i < tasks.length; i++)
+  {
+    if(!categories.includes(tasks[i].category))
+      categories.push(tasks[i].category);
+  }
+  categories.push("Unsorted");
+  return categories;
+}
+
 function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
   var button = document.getElementById(buttonID);
@@ -1331,6 +1400,9 @@ function filterAll() {
 function search() {
   //Text typed in search.
   var searchFor = document.getElementsByClassName("form-control")[0].value;
+  if(searchFor === ""){
+    return filterAll();
+  }
   //Tables of tasks.
   var tables = document.getElementsByTagName("table");
   var rows;
@@ -1362,13 +1434,19 @@ function search() {
 /*------------------------------Hiding table----------------------------------*/
 function hideTables(){
   var tables = document.getElementsByTagName("table");
+  var wrapper;
+
   //Go through each table, if it's elements are hidden, hide it. If not, show.
   for(var i = 0; i < tables.length; i++){
-    if(isTableHidden(tables[i]))
-      $(tables[i]).hide();
-    else
-      $(tables[i]).show();
+    wrapperID ="#" + $(tables[i]).attr("id") + wrapperSuffix;
+
+    if(isTableHidden(tables[i])) {
+      $(wrapperID).hide();
     }
+    else {
+      $(wrapperID).show();
+    }
+  }
 }
 
 function isTableHidden(table){

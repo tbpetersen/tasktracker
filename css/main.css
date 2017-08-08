@@ -1,32 +1,4 @@
 @media only screen and (max-width: 1590px) {
-  #app-title{
-    visibility: hidden;
-  }
-}
-
-@media only screen and (max-width: 1425px) {
-  #logo {
-    min-width: 358px;
-  }
-  .navbar-form {
-    left: 87vh;
-  }
-}
-
-@media only screen and (max-width: 950px) {
-	#table{
-		min-width: 920px;
-  }
-}
-
-@media only screen and (max-width: 306px) {
-  #sort {
-    position: relative;
-    left: 25px;
-  }
-}
-
-@media (max-width: 1590px) {
   .navbar-header {
       float: none;
   }
@@ -60,6 +32,37 @@
   }
   .collapse.in{
       display:block !important;
+  }
+}
+
+@media only screen and (max-width: 1425px) {
+  #logo {
+    min-width: 358px;
+  }
+  .navbar-form {
+    left: 87vh;
+  }
+}
+
+@media only screen and (max-width: 950px) {
+	#table{
+		min-width: 920px;
+  }
+  #app-title{
+    visibility: hidden;
+  }
+}
+@media only screen and (max-width: 540px) {
+  .navbar-toggle{
+    position: absolute;
+    left: 470px;
+  }
+}
+
+@media only screen and (max-width: 306px) {
+  #sort {
+    position: relative;
+    left: 25px;
   }
 }
 
@@ -116,7 +119,8 @@ td {
 .place{
   display:table;
   height:69px;
-  width:100%;
+  /*width:100%;*/
+  width:1442px; /*hard coding for wrappers*/
   position:absolute;
 }
 
@@ -343,9 +347,10 @@ select#sortList {
 
 #app-title {
   cursor: pointer;
-  position: absolute;
+  position: fixed;
+  top: 1%;
   left: 50%;
-  height: 100%;
+  height: auto;
   margin: 0;
   display: flex;
   align-items: center;
@@ -503,10 +508,12 @@ select#sortList {
   background-color: transparent;
 }
 
-#deleteTableBtn{
+#deleteTableBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
   background-color: #dd6367;
   color: black;
-  float: right;
 }
 
 /* Scroll to top button */
@@ -562,3 +569,22 @@ select#sortList {
   border: none;
 }
 
+
+/* Table wrappers */
+.table-wrapper {
+  border: solid #000;
+  border-width: 4px;
+  margin-bottom: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+}
+
+.wrapper-header {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.wrapper-header hr {
+  border-top: 1px solid #8c8b8b;
+}
