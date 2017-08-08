@@ -388,6 +388,14 @@ $(".main").on("click", "#tableTitle", function() {
     $input.replaceWith( $titleStr );
   };
   
+  // Enter key exits form
+  $input.keypress(function(e) {
+    if (e.which == 13) {
+      $input.blur();
+      return;
+    }
+  });
+
   /** Avoid callbacks leftovers taking memory when input disappears
       after clicking away
   */
