@@ -116,19 +116,12 @@ td {
   cursor: pointer;
 }
 
-input {
-    border: none;
-    font-size: 150%;
-    margin-top: 1%;
-    width: 95%;
-}
-
-.place{
-  display:table;
-  height:69px;
-  /*width:100%;*/
-  width:1442px; /*hard coding for wrappers*/
-  position:absolute;
+.wrapper-header input {
+  border: none;
+  font-size: 150%;
+  margin-top: 1%;
+  width: 95%;
+  display: block;
 }
 
 .ui-state-highlight {
