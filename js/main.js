@@ -176,6 +176,14 @@ function deleteTablePrompt(tableName) {
   $("#delTableNotif").modal("show");
   $("#delTableConfirm").unbind('click');
 
+  // Enter keypress for 'Okay'
+  $('#delTableNotif').keypress(function (e) {
+    var key = e.which;
+    if (key == 13) {  // the enter key code
+      $('#delTableConfirm').click();
+    }
+  });   
+
   $("#delTableConfirm").click(function() {
     $("#delTableNotif").modal("hide");
     deleteTable(tableName);
