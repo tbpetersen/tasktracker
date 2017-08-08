@@ -224,6 +224,8 @@ function deleteTable(tableName) {
   }
 
   // Delete table
+  var wrapper = document.getElementById(tableName + wrapperSuffix);
+  //wrapper.remove();
   tableName.remove();
   $.notify({
     icon: "fa fa-trash",
@@ -244,17 +246,18 @@ function isEmpty(tableName) {
 /* Populating/setting up tables */
 function populateTrello() {
 
-  var trelloCat = ["Not Started", "Blocked", "In Progress", "To Review",
-  "Completed", "July Billing"];
+  var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review",
+  "Completed", "July_Billing"];
 
   for (var i = 0; i < trelloCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       var str = user.tasks[j].category;
-      if (str === trelloCat[i]) {
-        if (document.getElementById(str) == null) {
-          createTable(str);
+      var cat = str.split(" ").join("_");
+      if (cat === trelloCat[i]) {
+        if (document.getElementById(cat) == null) {
+          createTable(cat);
         }
-        populateTable(user.tasks[j], str, j);
+        populateTable(user.tasks[j], cat, j);
       }
     }
   }
@@ -285,6 +288,7 @@ function createTable(tableName) {
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
+  console.log(tableName);
   var tableWrapper = createTableWrapper(tableName);
 
   //create row and cell element
@@ -349,7 +353,10 @@ function createTableWrapper(tableName) {
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
-  var tableTitle = document.createTextNode(tableName);
+  var cat = tableName.split("_").join(" ");
+  var tableTitle = document.createTextNode(cat);
+
+  //var tableTitle = document.createTextNode(tableName);
   title.appendChild(tableTitle);
   header.appendChild(title);
   header.appendChild(divider);
