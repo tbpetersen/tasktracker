@@ -223,9 +223,11 @@ function deleteTable(tableName) {
     draggableRows();
   }
 
-  // Delete table
-  var wrapper = document.getElementById(tableName + wrapperSuffix);
-  //wrapper.remove();
+  // Delete wrapper and table
+  var wrapperName = tableName[0].id + wrapperSuffix;
+  var wrapper = document.getElementById(wrapperName);
+  wrapper.remove();
+
   tableName.remove();
   $.notify({
     icon: "fa fa-trash",
@@ -288,7 +290,7 @@ function createTable(tableName) {
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  console.log(tableName);
+  //console.log(tableName);
   var tableWrapper = createTableWrapper(tableName);
 
   //create row and cell element
@@ -353,6 +355,8 @@ function createTableWrapper(tableName) {
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
+  //var wrap = document.getElementById(wrapperName);
+  //console.log(wrapperName);
   var cat = tableName.split("_").join(" ");
   var tableTitle = document.createTextNode(cat);
 
