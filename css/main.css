@@ -116,14 +116,15 @@ td {
   cursor: pointer;
 }
 
-input {
-    border: none;
-    font-size: 150%;
-    margin-top: 1%;
-    width: 95%;
+.wrapper-header input {
+  border: none;
+  font-size: 150%;
+  margin-top: 1%;
+  width: 95%;
+  display: block;
 }
 
-.place{
+.place {
   display:table;
   height:69px;
   /*width:100%;*/

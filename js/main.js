@@ -175,6 +175,14 @@ function deleteTablePrompt(tableName) {
   $("#delTableNotif").modal("show");
   $("#delTableConfirm").unbind('click');
 
+  // Enter keypress for 'Okay'
+  $('#delTableNotif').keypress(function (e) {
+    var key = e.which;
+    if (key == 13) {  // the enter key code
+      $('#delTableConfirm').click();
+    }
+  });
+
   $("#delTableConfirm").click(function() {
     $("#delTableNotif").modal("hide");
     deleteTable(tableName);
@@ -191,7 +199,7 @@ function createNewTable() {
     type: "info",
   });
 
-  createTable(makeID(), true); // Create a table with a random ID;
+  createTable(makeID()); // Create a table with a random ID;
   window.scrollTo(0, document.body.scrollHeight);
 }
 
@@ -256,7 +264,7 @@ function populateTrello() {
       var cat = str.split(" ").join("_");
       if (cat === trelloCat[i]) {
         if (document.getElementById(cat) == null) {
-          createTable(cat, false);
+          createTable(cat);
         }
         populateTable(user.tasks[j], cat, j);
       }
@@ -273,7 +281,7 @@ function populateZend() {
       if (user.tasks[j].category == zendCat[i]) {
         var capCat = (user.tasks[j].category).charAt(0).toUpperCase() + (user.tasks[j].category).substring(1);
         if (document.getElementById(capCat) == null) {
-          createTable(capCat, false);
+          createTable(capCat);
         }
         populateTable(user.tasks[j], capCat, j);
       }
@@ -281,14 +289,15 @@ function populateZend() {
   }
 }
 
-function createTable(tableName, randomName) {
+function createTable(tableName) {
 
   // Create table structure
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
-  var tableWrapper = createTableWrapper(tableName, randomName);
+
+  var tableWrapper = createTableWrapper(tableName);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -339,44 +348,66 @@ function createTable(tableName, randomName) {
   }
 }
 
-
-//Replaces the targets in the string passed in with the replacement.
-function findAndReplace(string, target, replacement) {
- var i = 0, length = string.length;
- for (i; i < length; i++) {
-   string = string.replace(target, replacement)
- }
- return string;
-}
-
 /* Helper function for createTable to create div wrappers to encapsulate tables */
-function createTableWrapper(tableName, randomName) {
+function createTableWrapper(tableName) {
+
   var tableWrapper = document.createElement("div");
-  var title = document.createElement("input");
+  var title = document.createElement("h3");
   var divider = document.createElement("hr");
   var header = document.createElement("div");
   var wrapperName = tableName + wrapperSuffix;
 
   tableWrapper.setAttribute("id", wrapperName);
+  title.setAttribute("id", "tableTitle");
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
-  //Create the Table Title and adjust the display of it so it is correct.
-  var tableTitle = document.createTextNode(tableName);
-  if(randomName)
-    title.value = "";
-  else{
-    title.value = tableTitle.textContent;
-    title.value = findAndReplace(title.value, "_", " ");
-    title.value = title.value.charAt(0).toUpperCase() + title.value.substring(1);
-  }
 
+  var cat = tableName.split("_").join(" ");
+  var tableTitle = document.createTextNode(cat);
+
+  //var tableTitle = document.createTextNode(tableName);
+  title.appendChild(tableTitle);
   header.appendChild(title);
   header.appendChild(divider);
   tableWrapper.appendChild(header);
 
   return tableWrapper;
 }
+
+// Event listener for table titles
+$(".main").on("click", "#tableTitle", function() {
+  var $title = $(this);
+  var $tableWrapper = $title.parent().parent();
+  var $table = $title.parent().next();
+
+  var $input = $('<input/>').val( $title.text() );
+  $input.focus(function() { this.select(); });  // Selects all text
+  $title.replaceWith($input);
+
+  var save = function() {
+    var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
+    var $closedInput = $input.val().split(" ").join("_");
+    var $id = $closedInput + wrapperSuffix;
+
+    $table.attr("id", $closedInput);
+    $tableWrapper.attr("id", $id);
+    $input.replaceWith($titleStr);
+  };
+
+  // Enter key exits form
+  $input.keypress(function(e) {
+    if (e.which == 13) {
+      $input.blur(); // Exits input focus
+      return;
+    }
+  });
+
+  /** Avoid callbacks leftovers taking memory when input disappears
+      after clicking away
+  */
+  $input.one('blur', save).focus();
+});
 
 function populateTable(task, tableName, index) {
   var table = document.getElementById(tableName);
@@ -1122,40 +1153,33 @@ function closeLeft() {
 var alternate = 1;
 
 function changeColor() {
-  var nightGrey = "#1E1E1E"
-
   var body = document.body.style;
   var ticketBarHead = document.getElementById("info-header").style;
   var ticketHeads = document.getElementsByClassName("panel-heading");
   var tickets = document.getElementsByClassName("panel-body");
   var tableHeads = document.getElementsByTagName("thead");
-  var inputs = $("input");
 
   if (alternate == 1) {
-    body.backgroundColor = nightGrey;
+    body.backgroundColor = "#1E1E1E";
     body.color = "lightgrey";
-    ticketBarHead.backgroundColor = nightGrey;
+    ticketBarHead.backgroundColor = "#1E1E1E";
     for (var i = 0; i < tickets.length; i++) {
       tickets[i].style.backgroundColor = "#7E7E7E";
       ticketHeads[i].style.backgroundColor = "#6E6E6E";
     }
     for (var i = 0; i < tableHeads.length; i++) {
       tableHeads[i].style.color = "white";
-      if(inputs[i].placeholder !== "Search")
-        inputs[i].style.backgroundColor = nightGrey;
     }
   } else {
-    body.backgroundColor = "white";
+    body.backgroundColor = "#FFF";
     body.color = "#333";
     ticketBarHead.backgroundColor = "#CCC";
     for (var i = 0; i < tickets.length; i++) {
-      tickets[i].style.backgroundColor = "white";
+      tickets[i].style.backgroundColor = "#FFF";
       ticketHeads[i].style.backgroundColor = "#F5F5F5";
     }
     for (var i = 0; i < tableHeads.length; i++) {
       tableHeads[i].style.color = "#333";
-      if(inputs[i].placeholder !== "Search")
-        inputs[i].style.backgroundColor = "white";
     }
   }
   alternate = alternate % 2 + 1; //Increment/decrement alternate.
@@ -1460,12 +1484,12 @@ function filterUnsorted(){
 
 function search() {
   //Text typed in search.
-  var searchFor = $(".form-control")[0].value;
+  var searchFor = document.getElementsByClassName("form-control")[0].value;
   if(searchFor === ""){
     return filterAll();
   }
   //Tables of tasks.
-  var tables = $("table");
+  var tables = document.getElementsByTagName("table");
   var rows;
   var currentRow, items, i, j, td;
   //Go through the rows of each table.
@@ -1494,7 +1518,7 @@ function search() {
 /*------------------------------End of Search---------------------------------*/
 /*------------------------------Hiding table----------------------------------*/
 function hideTables(){
-  var tables = $("table");
+  var tables = document.getElementsByTagName("table");
   var wrapper;
 
   //Go through each table, if it's elements are hidden, hide it. If not, show.
