@@ -198,8 +198,8 @@ function createNewTable() {
   }, {
     type: "info",
   });
-
-  createTable(makeID(), true); // Create a table with a random ID;
+  var tableID = makeID();
+  createTable(tableID, true); // Create a table with a random ID;
   window.scrollTo(0, document.body.scrollHeight);
 }
 
@@ -340,8 +340,8 @@ function createTable(tableName, isNewTable) {
   table.appendChild(body)
   tableWrapper.appendChild(table);
   mainDiv.appendChild(tableWrapper);
-
-  makeButtons(tableName);
+  if(tableName !== "Unsorted")
+    makeButtons(tableName);
 }
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
@@ -357,7 +357,6 @@ function createTableWrapper(tableName, isNewTable) {
   title.setAttribute("id", "tableTitle");
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
-
 
   var cat = tableName.split("_").join(" ");
   var tableTitle;
@@ -784,8 +783,6 @@ function createTasksFromCardsAndTickets(cardsAndTickets) {
       tasks.push(new Task(cardsAndTickets[i][j], i));
     }
     user.tasks = tasks;
-    //console.log(tasks);
-    //console.log(user.tasks);
   }
   return Promise.all(Task.prom);
 }
@@ -1337,82 +1334,37 @@ function getFilters(){
 function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
   var button = document.getElementById(buttonID);
-  var filter = true;
+  var include = true;
   if (button.style.backgroundColor == "lightgrey")
-    filter = false;
+    include= false;
   //If View All is slected, reset everything to the defualt.
   if (category == "View All") {
     filterAll();
     hideTables();
     return;
   }
-  //If Unsorted is selected, only show the unsorted table.
-  if(category == "Unsorted"){
-    filterUnsorted();
-    hideTables();
-    return;
-  }
-
-  if (filter)
-    filterIn(button, buttonID);
-  else
-    filterOut(button, buttonID);
+  //Filter based on the button and whether it should be included or excluded.
+  filter(button, buttonID, include);
   checkFilterAll();
   hideTables();
 }
 
-function filterIn(button, buttonID) {
-  var table, currentRow, i, j;
+function filter(button, buttonID, include) {
+  var table, tableIDReal, currentRow, i, j;
   var whitesmoke = "#f1f1f1";
   var category = document.getElementById(buttonID).innerHTML;
   var currentRowHTML;
-  table = document.getElementsByTagName("table");
-  for (j = 0; j < table.length; j++) { // Grab each table.
-    rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 1; i < rows.length; i++) { // Manipulate said row.
-      currentRow = rows[i]
-      currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
-      if (currentRowHTML != category &&
-        currentRow.style.display != "none" &&
-        button.style.backgroundColor != "lightgrey" && filterIn) {
-        if (document.getElementById("filter " +
-            currentRowHTML).style.backgroundColor ==
-          "lightgrey") {
-          continue;
-        }
-        $(currentRow).hide(); // If the row is not whats filtered, hide it.
-      } else if (currentRowHTML == category &&
-        currentRow.style.display == "none" &&
-        button.style.backgroundColor != "lightgrey")
-        $(currentRow).show();
-    }
+  tables = document.getElementsByTagName("table");
+  for (i = 0; i < tables.length; i++) { // Grab each table.
+    currentTable = tables[i];
+    tableIDReal = currentTable.id;
+    //Hide unwanted tables.
+    if(include)
+      filterIn(tableIDReal, button)
+    else
+      filterOut(tableIDReal, button)
   }
   //Change the backgorund color of the buttons when they're selected.
-  if (button.style.backgroundColor == "lightgrey")
-    button.style.backgroundColor = whitesmoke;
-  else
-    button.style.backgroundColor = "lightgrey";
-}
-
-function filterOut(button, buttonID) {
-  var table, currentRow, i, j;
-  var whitesmoke = "#f1f1f1";
-  var category = document.getElementById(buttonID).innerHTML;
-  table = document.getElementsByTagName("table");
-  for (j = 0; j < table.length; j++) { // Grab each table.
-    rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 1; i < rows.length; i++) { // Manipulate said row.
-      currentRow = rows[i]
-      currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
-      //If the current row needs to be filtered out, hide it.
-      if (currentRowHTML == category &&
-        currentRow.style.display != "none" &&
-        button.style.backgroundColor == "lightgrey") {
-        $(currentRow).hide();
-      }
-    }
-  }
-  //Change the background color of the buttons when they're selected.
   if (button.style.backgroundColor == "lightgrey")
     button.style.backgroundColor = whitesmoke;
   else
@@ -1453,30 +1405,54 @@ function filterAll() {
   }
 }
 
-function filterUnsorted(){
-  /*var tables, i, j, currentRow, filterBar;
-  var whitesmoke = "#f1f1f1";
-  filterBar = document.getElementById("leftSidebar");
-  var unsortedButton = document.getElementById("filter Unsorted");
-  tables = document.getElementsByTagName("table");
-  //Get the TR tags from the table.
-  for (j = 0; j < tables.length; j++) {
-    rows = tables[j].getElementsByTagName("TR");
-    //Manipulate each TR by changing the display of it to be shown.
-    if(tables[j].id != "Unsorted"){
-      for (i = 0; i < rows.length; i++) {
-        currentRow = rows[i];
-        $(currentRow).hide();
-      }
+function filterIn(tableIDReal, button){
+  //Remove underscores
+  var tableID = tableIDReal.split("_").join(" ");
+  //Hide unwanted tables.
+  if(!isGrey(tableID) && tableID !== button.innerHTML){
+      filterOutTable(tableIDReal);
     }
+  //Show wanted tables.
+  else {
+    filterInTable(tableIDReal);
   }
-  //Change the backgorund color of the buttons when they're selected.
-  if (unsortedButton.style.backgroundColor == "lightgrey"){
-    unsortedButton.style.backgroundColor = whitesmoke;
-    checkFilterAll();
+}
+
+function filterOut(tableIDReal, button){
+  //Remove underscores.
+  var tableID = tableIDReal.split("_").join(" ");
+  //Show wanted tables.
+  if(isGrey(tableID) && tableID !== button.innerHTML){
+      filterInTable(tableIDReal);
+    }
+  //Hide uwanted tables.
+  else{
+    filterOutTable(tableIDReal);
   }
-  else
-    unsortedButton.style.backgroundColor = "lightgrey";*/
+}
+
+
+function filterOutTable(tableID){
+  //Loop through each row and hide it.
+  $('#' + tableID + ' > tbody  > tr').each(function(){
+    $(this).hide();
+  });
+}
+
+function filterInTable(tableID){
+  //Loop through each row and show it.
+  $('#' + tableID + ' > tbody  > tr').each(function(){
+    $(this).show();
+  });
+}
+
+function isGrey(table){
+  //Get the background color of the row.
+  buttonColor = document.getElementById("filter " + table).style.backgroundColor;
+  //Is the background ofthe button grey?
+  if(buttonColor == "lightgrey")
+    return true;
+  return false;
 }
 /*-----------------------------End of Filtering-------------------------------*/
 /*---------------------------------Search-------------------------------------*/
