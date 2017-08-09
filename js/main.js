@@ -162,7 +162,6 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 {
   // Find the parent, table-wrapper, and get table
   var table = $(this).parent().next();
-  console.log(table);
 
   if (isEmpty(table))
   {
@@ -1324,6 +1323,13 @@ function filterBy(buttonID) {
     hideTables();
     return;
   }
+  //If Unsorted is selected, only show the unsorted table.
+  if(category == "Unsorted"){
+    filterUnsorted();
+    hideTables();
+    return;
+  }
+
   if (filter)
     filterIn(button, buttonID);
   else
@@ -1422,6 +1428,32 @@ function filterAll() {
       currentRow.style.display = "table-row";
     }
   }
+}
+
+function filterUnsorted(){
+  /*var tables, i, j, currentRow, filterBar;
+  var whitesmoke = "#f1f1f1";
+  filterBar = document.getElementById("leftSidebar");
+  var unsortedButton = document.getElementById("filter Unsorted");
+  tables = document.getElementsByTagName("table");
+  //Get the TR tags from the table.
+  for (j = 0; j < tables.length; j++) {
+    rows = tables[j].getElementsByTagName("TR");
+    //Manipulate each TR by changing the display of it to be shown.
+    if(tables[j].id != "Unsorted"){
+      for (i = 0; i < rows.length; i++) {
+        currentRow = rows[i];
+        $(currentRow).hide();
+      }
+    }
+  }
+  //Change the backgorund color of the buttons when they're selected.
+  if (unsortedButton.style.backgroundColor == "lightgrey"){
+    unsortedButton.style.backgroundColor = whitesmoke;
+    checkFilterAll();
+  }
+  else
+    unsortedButton.style.backgroundColor = "lightgrey";*/
 }
 /*-----------------------------End of Filtering-------------------------------*/
 /*---------------------------------Search-------------------------------------*/
