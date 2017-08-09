@@ -199,7 +199,7 @@ function createNewTable() {
     type: "info",
   });
 
-  createTable(makeID()); // Create a table with a random ID;
+  createTable(makeID(), true); // Create a table with a random ID;
   window.scrollTo(0, document.body.scrollHeight);
 }
 
@@ -209,7 +209,7 @@ function deleteTable(tableName) {
 
     // If unsorted table doesn't already exist, create it
     if(document.getElementById("Unsorted") == null) {
-      createTable("Unsorted");
+      createTable("Unsorted", false);
     }
 
     // For each row, make a new Task and create a row for it in the unsorted table
@@ -264,7 +264,7 @@ function populateTrello() {
       var cat = str.split(" ").join("_");
       if (cat === trelloCat[i]) {
         if (document.getElementById(cat) == null) {
-          createTable(cat);
+          createTable(cat, false);
         }
         populateTable(user.tasks[j], cat, j);
       }
@@ -281,7 +281,7 @@ function populateZend() {
       if (user.tasks[j].category == zendCat[i]) {
         var capCat = (user.tasks[j].category).charAt(0).toUpperCase() + (user.tasks[j].category).substring(1);
         if (document.getElementById(capCat) == null) {
-          createTable(capCat);
+          createTable(capCat, false);
         }
         populateTable(user.tasks[j], capCat, j);
       }
@@ -289,15 +289,14 @@ function populateZend() {
   }
 }
 
-function createTable(tableName) {
-
+function createTable(tableName, isNewTable) {
   // Create table structure
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  var tableWrapper = createTableWrapper(tableName);
+  var tableWrapper = createTableWrapper(tableName, isNewTable);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -340,16 +339,13 @@ function createTable(tableName) {
   table.appendChild(head);
   table.appendChild(body)
   tableWrapper.appendChild(table);
-  // mainDiv.appendChild(table);
   mainDiv.appendChild(tableWrapper);
 
-  if(tableName !== "Unsorted") {
-    makeButtons(tableName);
-  }
+  makeButtons(tableName);
 }
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
-function createTableWrapper(tableName) {
+function createTableWrapper(tableName, isNewTable) {
 
   var tableWrapper = document.createElement("div");
   var title = document.createElement("h3");
@@ -364,9 +360,12 @@ function createTableWrapper(tableName) {
 
 
   var cat = tableName.split("_").join(" ");
-  var tableTitle = document.createTextNode(cat);
+  var tableTitle;
+  if(isNewTable)
+    tableTitle = document.createTextNode("[New Table]");
+  else
+    tableTitle = document.createTextNode(cat);
 
-  //var tableTitle = document.createTextNode(tableName);
   title.appendChild(tableTitle);
   header.appendChild(title);
   header.appendChild(divider);
