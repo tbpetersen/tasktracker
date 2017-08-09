@@ -242,6 +242,7 @@ function deleteTable(tableName) {
   }, {
     type: "danger",
   });
+  updateFilters();
 }
 
 function isEmpty(tableName) {
@@ -1327,8 +1328,23 @@ function getFilters(){
     if(!categories.includes(tasks[i].category))
       categories.push(tasks[i].category);
   }
-  categories.push("Unsorted");
+  //categories.push("Unsorted");
   return categories;
+}
+
+function updateFilters(){
+  var tables = document.getElementsByTagName("table");
+  clearFilters();
+  $('.wrapper-header > h3').each(function(){
+    console.log("Creating a Filter Button for " + this.innerHTML);
+    createFilterButton(this.innerHTML);
+  });
+}
+
+function clearFilters(){
+  var sideBar = document.getElementById("leftSidebar")
+  var filters = sideBar.getElementsByTagName("button");
+  $(filters).remove();
 }
 
 function filterBy(buttonID) {
