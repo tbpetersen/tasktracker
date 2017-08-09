@@ -379,19 +379,27 @@ function createTableWrapper(tableName) {
 // Event listener for table titles
 $(".main").on("click", "#tableTitle", function() {  
   var $title = $(this);
+  var $tableWrapper = $title.parent().parent();
+  var $table = $title.parent().next();
               
   var $input = $('<input/>').val( $title.text() );
-  $title.replaceWith( $input );
+  $input.focus(function() { this.select(); });  // Selects all text
+  $title.replaceWith($input);
   
   var save = function() {
     var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
-    $input.replaceWith( $titleStr );
+    var $closedInput = $input.val().split(" ").join("_");
+    var $id = $closedInput + wrapperSuffix;
+
+    $table.attr("id", $closedInput);
+    $tableWrapper.attr("id", $id);
+    $input.replaceWith($titleStr);
   };
   
   // Enter key exits form
   $input.keypress(function(e) {
     if (e.which == 13) {
-      $input.blur();
+      $input.blur(); // Exits input focus
       return;
     }
   });
