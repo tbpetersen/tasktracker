@@ -1,0 +1,38 @@
+/*----------------------------------Tags--------------------------------------*/
+html{
+  height: 100%;
+  width: 100%;
+  background-color: lightgrey;
+}
+body{
+  width: 50%;
+  height: 50%;
+  position: fixed;
+  left: 25%;
+  top: 20%;
+  text-align: center;
+  border-radius: 2%;
+}
+/*---------------------------------Classes------------------------------------*/
+
+/*-----------------------------------IDs--------------------------------------*/
+#login{
+  height: 25%;
+  width: 50%;
+  position: fixed;
+  top: 25%;
+}
+
+#title{
+  padding: 5%;
+}
+
+#username{
+  margin: 1%;
+}
+#password{
+  margin: 1%;
+}
+#loginButton{
+  margin: 1%;
+}
