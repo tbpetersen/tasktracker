@@ -143,7 +143,6 @@ $(document).ready(function() {
     });
   });
   //Create the filters from the tasks created.
-
 });
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -200,6 +199,7 @@ function createNewTable() {
   });
   var tableID = makeID();
   createTable(tableID, true); // Create a table with a random ID;
+  updateFilters();
   window.scrollTo(0, document.body.scrollHeight);
 }
 
@@ -382,6 +382,12 @@ $(".main").on("click", "#tableTitle", function() {
 
   var $input = $('<input/>').val( $title.text() );
   $input.focus(function() { this.select(); });  // Selects all text
+  //Update filters when table titles are changed.
+  $input.on("input", function(){
+    if(this.value.length = 1 && this.value.charAt(0) !== this.value.charAt().toUpperCase())
+      this.value = this.value.charAt(0).toUpperCase();
+    updateFilters();
+  });
   $title.replaceWith($input);
 
   var save = function() {
@@ -1333,16 +1339,21 @@ function getFilters(){
 }
 
 function updateFilters(){
+  var currentNode;
   var tables = document.getElementsByTagName("table");
   clearFilters();
-  $('.wrapper-header > h3').each(function(){
-    console.log("Creating a Filter Button for " + this.innerHTML);
-    createFilterButton(this.innerHTML);
+  createFilterButton("View All");
+  $('.wrapper-header').each(function(){
+    currentNode = this.childNodes[0];
+    if(currentNode.tagName === "INPUT")
+      createFilterButton(currentNode.value)
+    else
+      createFilterButton(currentNode.innerHTML);
   });
 }
 
 function clearFilters(){
-  var sideBar = document.getElementById("leftSidebar")
+  var sideBar = document.getElementById("leftSidebar");
   var filters = sideBar.getElementsByTagName("button");
   $(filters).remove();
 }
@@ -1356,12 +1367,11 @@ function filterBy(buttonID) {
   //If View All is slected, reset everything to the defualt.
   if (category == "View All") {
     filterAll();
-    hideTables();
     return;
   }
   //Filter based on the button and whether it should be included or excluded.
   filter(button, buttonID, include);
-  checkFilterAll();
+  checkFilterAll()
   hideTables();
 }
 
@@ -1464,7 +1474,8 @@ function filterInTable(tableID){
 
 function isGrey(table){
   //Get the background color of the row.
-  buttonColor = document.getElementById("filter " + table).style.backgroundColor;
+  console.log(table);
+  var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
   //Is the background ofthe button grey?
   if(buttonColor == "lightgrey")
     return true;
