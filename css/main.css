@@ -125,11 +125,11 @@ td {
 }
 
 .place {
-  display:table;
-  height:69px;
-  /*width:100%;*/
-  width:1442px; /*hard coding for wrappers*/
-  position:absolute;
+  display: table;
+  height: 69px;
+  /*width: 100%;*/
+  width: 1442px; /*hard coding for wrappers*/
+  position: absolute;
 }
 
 .ui-state-highlight {
