@@ -190,6 +190,7 @@ function deleteTablePrompt(tableName) {
 
 /*Creates a new table with a random ID, as it cannot be coded to have it
   dynamically created if it isn"t random.*/
+var tableNumber = 1;
 function createNewTable() {
   $.notify({
     icon: "glyphicon glyphicon-info-sign",
@@ -198,12 +199,13 @@ function createNewTable() {
     type: "info",
   });
 
-  var tableID = makeID();
+  var tableID = "New Table " + tableNumber;
   createTable(tableID, true); // Create a table with a random ID;
   $("#" + tableID).find("tbody").addClass("place");
   updateFilters();
   draggableRows();
   window.scrollTo(0, document.body.scrollHeight);
+  tableNumber++;
 }
 
 function deleteTable(tableName) {
@@ -365,7 +367,7 @@ function createTableWrapper(tableName, isNewTable) {
   var cat = tableName.split("_").join(" ");
   var tableTitle;
   if(isNewTable)
-    tableTitle = document.createTextNode("[New Table]");
+    tableTitle = document.createTextNode("New Table " + tableNumber);
   else
     tableTitle = document.createTextNode(cat);
 
@@ -385,7 +387,7 @@ $(".main").on("click", "#tableTitle", function() {
   var inputText;
   var $input = $('<input/>').val( $title.text() );
   $input.focus(function() { this.select(); });  // Selects all text
-  
+
   //Update filters when table titles are changed.
   $input.on("focusin", function(){
     const inputStay = this.value;
@@ -404,7 +406,7 @@ $(".main").on("click", "#tableTitle", function() {
       }
     updateFilters();
   });
-  
+
   $title.replaceWith($input);
 
   var save = function() {
@@ -1333,7 +1335,6 @@ function getFilters(){//Most likely will change when we implement database
   updateFilters();
   var categories = [];
   var i;
-  categories.push("View All");
   if(onPageLoad){
     var tasks = user.tasks;
     var currentCategory;
@@ -1350,11 +1351,9 @@ function getFilters(){//Most likely will change when we implement database
     var leftSidebar = $("#leftSidebar");
     var buttons = leftSidebar[0].getElementsByTagName("BUTTON")
     for(i = 1; i < buttons.length; i++){
-      console.log("PUSHING: " + buttons[i].id.substring(buttons[i].id.indexOf(" ")));
       categories.push(buttons[i].id.substring(buttons[i].id.indexOf(" ")));
     }
   }
-  console.log(categories)
   return categories;
 }
 
@@ -1491,6 +1490,7 @@ function filterInTable(tableID){
 
 function isGrey(table){
   //Get the background color of the row.
+  console.log(table);
   var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
   //Is the background ofthe button grey?
   if(buttonColor == "lightgrey")
