@@ -1411,7 +1411,7 @@ function checkFilterAll() {
 }
 
 function filterAll() {
-  var tables, i, j, currentRow, filterBar;
+  var tables, i, currentRow, filterBar;
   var whitesmoke = "#f1f1f1";
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
@@ -1421,13 +1421,8 @@ function filterAll() {
 
   tables = document.getElementsByTagName("table");
   //Get the TR tags from the table.
-  for (j = 0; j < tables.length; j++) {
-    rows = tables[j].getElementsByTagName("TR");
-    //Manipulate each TR by changing the display of it to be shown.
-    for (i = 0; i < rows.length; i++) {
-      currentRow = rows[i]
-      currentRow.style.display = "table-row";
-    }
+  for (i = 0; i < tables.length; i++) {
+    filterInTable(tables[i].id);
   }
 }
 
@@ -1466,6 +1461,8 @@ function filterOutTable(tableID){
 }
 
 function filterInTable(tableID){
+  //Show the current table.
+  document.getElementById(tableID + "_table").style.display = "block";
   //Loop through each row and show it.
   $('#' + tableID + ' > tbody  > tr').each(function(){
     $(this).show();
@@ -1474,7 +1471,6 @@ function filterInTable(tableID){
 
 function isGrey(table){
   //Get the background color of the row.
-  console.log(table);
   var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
   //Is the background ofthe button grey?
   if(buttonColor == "lightgrey")
