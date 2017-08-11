@@ -199,7 +199,7 @@ function createNewTable() {
     type: "info",
   });
 
-  var tableID = "New Table " + tableNumber;
+  var tableID = "New_Table_" + tableNumber;
   createTable(tableID, true); // Create a table with a random ID;
   $("#" + tableID).find("tbody").addClass("place");
   updateFilters();
