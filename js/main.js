@@ -379,13 +379,25 @@ $(".main").on("click", "#tableTitle", function() {
   var $title = $(this);
   var $tableWrapper = $title.parent().parent();
   var $table = $title.parent().next();
-
+  var inputText;
   var $input = $('<input/>').val( $title.text() );
   $input.focus(function() { this.select(); });  // Selects all text
   //Update filters when table titles are changed.
+  $input.on("focusin", function(){
+    const inputStay = this.value;
+    inputText = inputStay;
+  });
+
   $input.on("input", function(){
-    if(this.value.length = 1 && this.value.charAt(0) !== this.value.charAt().toUpperCase())
+    if(this.value.length === 1 && this.value !== this.value.toUpperCase())
       this.value = this.value.charAt(0).toUpperCase();
+  });
+  $input.on('focusout', function (e){
+    if(getFilters().includes(this.value)){
+        alert("Please rename this table as there is already one with this name!");
+        this.value = inputText;
+        return;
+      }
     updateFilters();
   });
   $title.replaceWith($input);
@@ -827,19 +839,6 @@ function trelloGet(url) {
   });
 }
 ////////////////////////////////////////////////////////////////////////////////
-
-window.addEventListener("resize", function() {
-  var openButton = document.getElementById("leftOpenButton");
-  if (window.innerWidth < 1200) {
-    if ($("body.toggled").css("padding") != null) {
-      //TODO Issue when resizing smaller and filter panel is out.
-      isClosed = false;
-      $("body").toggleClass("toggled");
-      $(".hamburger").removeClass("is-open");
-      $(".hamburger").addClass("is-closed");
-    }
-  }
-});
 
 /* ------------------ SORT FILTERS ------------------ */
 /*Sorting is done using bubble sort. Hopefully implement a better algorithm in
@@ -1323,18 +1322,33 @@ function createFilterButton(filter){
   newFilter.innerText = filter;
   leftSidebar.appendChild(newFilter);
 }
-
-function getFilters(){
-  var tasks = user.tasks;
+var onPageLoad = true;
+function getFilters(){//Most likely will change when we implement database
+  updateFilters();
   var categories = [];
   var i;
   categories.push("View All");
-  for(i = 0; i < tasks.length; i++)
-  {
-    if(!categories.includes(tasks[i].category))
-      categories.push(tasks[i].category);
+  if(onPageLoad){
+    var tasks = user.tasks;
+    var currentCategory;
+    for(i = 0; i < tasks.length; i++)
+    {
+      currentCategory = tasks[i].category.charAt(0).toUpperCase() + tasks[i].category.substring(1);
+      if(!categories.includes(currentCategory))
+      {
+        categories.push(currentCategory);
+      }
+    }
+    onPageLoad = false;
+  }else{
+    var leftSidebar = $("#leftSidebar");
+    var buttons = leftSidebar[0].getElementsByTagName("BUTTON")
+    for(i = 1; i < buttons.length; i++){
+      console.log("PUSHING: " + buttons[i].id.substring(buttons[i].id.indexOf(" ")));
+      categories.push(buttons[i].id.substring(buttons[i].id.indexOf(" ")));
+    }
   }
-  //categories.push("Unsorted");
+  console.log(categories)
   return categories;
 }
 
