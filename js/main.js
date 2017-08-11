@@ -197,9 +197,12 @@ function createNewTable() {
   }, {
     type: "info",
   });
+
   var tableID = makeID();
   createTable(tableID, true); // Create a table with a random ID;
+  $("#" + tableID).find("tbody").addClass("place");
   updateFilters();
+  draggableRows();
   window.scrollTo(0, document.body.scrollHeight);
 }
 
@@ -382,6 +385,7 @@ $(".main").on("click", "#tableTitle", function() {
   var inputText;
   var $input = $('<input/>').val( $title.text() );
   $input.focus(function() { this.select(); });  // Selects all text
+  
   //Update filters when table titles are changed.
   $input.on("focusin", function(){
     const inputStay = this.value;
@@ -400,6 +404,7 @@ $(".main").on("click", "#tableTitle", function() {
       }
     updateFilters();
   });
+  
   $title.replaceWith($input);
 
   var save = function() {
@@ -407,6 +412,7 @@ $(".main").on("click", "#tableTitle", function() {
     var $closedInput = $input.val().split(" ").join("_");
     var $id = $closedInput + wrapperSuffix;
 
+    // Update table and wrapper ID
     $table.attr("id", $closedInput);
     $tableWrapper.attr("id", $id);
     $input.replaceWith($titleStr);
