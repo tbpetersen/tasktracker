@@ -25,6 +25,8 @@
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/animate.css">
+  
+  <link rel="stylesheet" href="css/tingle.css">
 
   <!-- Additiona Font Pack -->
   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -59,8 +61,24 @@
       <div class="collapse navbar-collapse" id="navbar-links">
         <ul class="nav navbar-nav">
           <li><button class="btn" onclick="changeColor()"><span class="glyphicon glyphicon-adjust"></span></button></li>
-          <li><button class="btn" id=addTable onclick="createNewTable()"><span class="glyphicon glyphicon-plus"></span> Create Table</button></li>
+
+          <!-- <li><button class="btn" id=addTable onclick="createNewTable()"><span class="glyphicon glyphicon-plus"></span> Create Table</button></li> -->
+
           <li><button class="btn" id="openInfo">Open Ticket Panel</button></li>
+          
+          <!-- Table dropdown for creation and reordering -->
+          <li class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownTableOpt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Table Options
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><button class="btn" id=addTable onclick="createNewTable()"><span class="glyphicon glyphicon-plus"></span> Create Table</button></li>
+              <li><button class="btn" data-toggle="modal" data-target="#tableModal" id="reorder">Reorder Tables</button></li>
+            </ul>
+          </li>
+
+          <!-- Link dropdown -->
           <li class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Resources
@@ -90,6 +108,27 @@
       </div>
     </div>
   </nav>
+
+  <!-- Modal 
+  <div class="modal fade" id="tableModal" role="dialog">
+    <div class="modal-dialog">
+    
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>-->
 
   <!-- Info panel -->
   <div class="info-panel">
@@ -148,5 +187,8 @@
   <!-- Custom JavaScript/jQuery Plugins -->
   <script src="js/bootstrap-notify.min.js"></script>
   <script src="js/readmore.min.js"></script>
+
+  <script src="js/tingle.js"></script>
+
 </body>
 </html>

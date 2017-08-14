@@ -10,7 +10,6 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 var isClosed = false;
-const wrapperSuffix = "_table";
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
@@ -64,10 +63,10 @@ class Task {
 Task.prom = new Array();
 
 
-$(document).ready(function() {
 
+$(document).ready(function() {
   // Hamburger menu toggle
-  var trigger = $(".hamburger");
+  var trigger = $('.hamburger');
 
   trigger.click(function() {
     hamburger_cross();
@@ -75,27 +74,27 @@ $(document).ready(function() {
 
   function hamburger_cross() {
     if (isClosed == true) {
-      trigger.removeClass("is-open");
-      trigger.addClass("is-closed");
+      trigger.removeClass('is-open');
+      trigger.addClass('is-closed');
       isClosed = false;
     } else {
-      trigger.removeClass("is-closed");
-      trigger.addClass("is-open");
+      trigger.removeClass('is-closed');
+      trigger.addClass('is-open');
       isClosed = true;
     }
   }
 
-  $("[data-toggle='offcanvas']").click(function() {
-    $("body").toggleClass("toggled");
-    $(".navbar").toggleClass("toggled");
+  $('[data-toggle="offcanvas"]').click(function() {
+    $('body').toggleClass('toggled');
+    $('.navbar').toggleClass('toggled');
   });
 
   // Default toast notifications settings
   $.notifyDefaults({
     allow_dismiss: true,
     animate: {
-      enter: "animated fadeInUp",
-      exit: "animated fadeOutRight"
+      enter: 'animated fadeInUp',
+      exit: 'animated fadeOutRight'
     },
     placement: {
       from: "top",
@@ -103,22 +102,21 @@ $(document).ready(function() {
     },
     offset: 20,
     spacing: 10,
-    delay: 500
+    delay: 500,
   });
 
   // Scroll to top button
   $(window).scroll(function(){
     if ($(this).scrollTop() > 100) {
-      $(".scrollTop").fadeIn();
+      $('.scrollTop').fadeIn();
     }
     else {
-      $(".scrollTop").fadeOut();
+      $('.scrollTop').fadeOut();
     }
   });
 
-  $(".scrollTop").click(function() {
-    $("html, body").animate({scrollTop : 0},800);
-
+  $('.scrollTop').click(function() {
+    $('html, body').animate({scrollTop : 0},800);
     return false;
   });
 
@@ -134,15 +132,13 @@ $(document).ready(function() {
 
       createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
         console.log(user.tasks);
-        createFilters();
 
         populateTrello();
         populateZend();
-        draggableRows(false);
+        draggableRows();
       });
     });
   });
-  //Create the filters from the tasks created.
 });
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -157,101 +153,59 @@ function makeID() {
   return text;
 }
 
-$(".main").on("click", "#deleteTableBtn", function(e)
-{
-  // Find the parent, table-wrapper, and get table
-  var table = $(this).parent().next();
+/*Creates a new table with a random ID, as it cannot be coded to have it
+  dynamically created if it isn't random.*/
+function createNewTable() {
+  $.notify({
+    icon: 'glyphicon glyphicon-info-sign',
+    message: "Table created."
+  }, {
+    type: 'info',
+  });
+  createTable(makeID()); // Create a table with a random ID;
+  window.scrollTo(0, document.body.scrollHeight);
+}
 
-  if (isEmpty(table))
-  {
-    deleteTable(table);
-    return;
+function deleteTable(tableName) {
+  // var table = $(tableName).closest('table');
+
+  // table.remove();
+  // $.notify({
+  //   icon: 'fa fa-exclamation-triangle',
+  //   message: "Table deleted."
+  // }, {
+  //   type: 'danger',
+  // });
+
+  // if (deleteTablePrompt(tableName)) {
+  // if (isEmpty(tableName) || deleteTablePrompt(tableName)) {
+  if (isEmpty(tableName) || confirm("This table isn't empty!\nAre you sure you want to delete it?")) {
+    tableName.remove();
+    $.notify({
+      icon: 'fa fa-exclamation-triangle',
+      message: "Table deleted."
+    }, {
+      type: 'danger',
+    });
   }
-  deleteTablePrompt(table);
-});
+}
 
 function deleteTablePrompt(tableName) {
+  if (isEmpty(tableName))
+  {
+    deleteTable(tableName);
+    return;
+  }
+
   $("#delTableNotif").modal("show");
-  $("#delTableConfirm").unbind('click');
-
-  // Enter keypress for 'Okay'
-  $('#delTableNotif').keyup(function (e) {
-    var key = e.which;
-    if (key == 13) {  // the enter key code
-      $('#delTableConfirm').click();
-    }
-  });   
-
   $("#delTableConfirm").click(function() {
     $("#delTableNotif").modal("hide");
     deleteTable(tableName);
   });
 }
 
-/*Creates a new table with a random ID, as it cannot be coded to have it
-  dynamically created if it isn"t random.*/
-var tableNumber = 1;
-function createNewTable() {
-  $.notify({
-    icon: "glyphicon glyphicon-info-sign",
-    message: "Table created."
-  }, {
-    type: "info",
-  });
-
-  var tableID = "New_Table_" + tableNumber;
-  createTable(tableID, true); // Create a table with a random ID;
-  $("#" + tableID).find("tbody").addClass("place");
-  updateFilters();
-  draggableRows();
-  window.scrollTo(0, document.body.scrollHeight);
-  tableNumber++;
-}
-
-function deleteTable(tableName) {
-
-  if(!isEmpty(tableName)) {
-
-    // If unsorted table doesn't already exist, create it
-    if(document.getElementById("Unsorted") == null) {
-      createTable("Unsorted", false);
-    }
-
-    // For each row, make a new Task and create a row for it in the unsorted table
-    var info = tableName[0].tBodies[0].rows;
-    for(var i = 0; i < info.length; i++) {
-      var task = {
-        name: info[i].cells[0].innerHTML,
-        desc: info[i].cells[1].innerHTML,
-        lastModified: info[i].cells[2].innerHTML,
-        category: info[i].cells[3].innerHTML,
-        id: info[i].id
-      }
-
-      // Make row
-      var unsortedTable = document.getElementById("Unsorted");
-      addRow(task, unsortedTable, task.id);
-    }
-    draggableRows(false);
-  }
-
-  // Delete wrapper and table
-  var wrapperName = tableName[0].id + wrapperSuffix;
-  var wrapper = document.getElementById(wrapperName);
-  wrapper.remove();
-
-  tableName.remove();
-  $.notify({
-    icon: "fa fa-trash",
-    message: "Table deleted."
-  }, {
-    type: "danger",
-  });
-  updateFilters();
-}
-
 function isEmpty(tableName) {
-  var tableLength = $(tableName).find("tbody > tr").length;
+  var tableLength = $(tableName).closest('table').find("td").length
   if (tableLength < 1)
     return true;
   return false;
@@ -267,10 +221,10 @@ function populateTrello() {
   for (var i = 0; i < trelloCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       var str = user.tasks[j].category;
-      var cat = str.split(" ").join("_");
+      var cat = str.split(' ').join('_');
       if (cat === trelloCat[i]) {
         if (document.getElementById(cat) == null) {
-          createTable(cat, false);
+          createTable(cat);
         }
         populateTable(user.tasks[j], cat, j);
       }
@@ -285,25 +239,46 @@ function populateZend() {
   for (var i = 0; i < zendCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       if (user.tasks[j].category == zendCat[i]) {
-        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() + 
-                                      (user.tasks[j].category).substring(1);
-        if (document.getElementById(capCat) == null) {
-          createTable(capCat, false);
+        if (document.getElementById(user.tasks[j].category) == null) {
+          createTable(user.tasks[j].category);
         }
-        populateTable(user.tasks[j], capCat, j);
+        populateTable(user.tasks[j], user.tasks[j].category, j);
       }
     }
   }
 }
 
-function createTable(tableName, isNewTable) {
-  // Create table structure
+function createTable(tableName) {
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  var tableWrapper = createTableWrapper(tableName, isNewTable);
+
+  table.setAttribute("id", tableName);
+
+  // Create the sorting buttons
+  var titleSort = document.createElement("button");
+  var descriptionSort = document.createElement("button");
+  var modifiedSort = document.createElement("button");
+  var categorySort = document.createElement("button");
+  var deleteTable = document.createElement("button");
+
+  //Assign classes to the sorting buttons
+  titleSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  descriptionSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  modifiedSort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  categorySort.setAttribute("class", "sortButton glyphicon glyphicon-triangle-bottom");
+  deleteTable.setAttribute("class", "deleteButton glyphicon glyphicon-remove");
+
+  titleSort.setAttribute("onclick", "sortAlphabet(" + tableName + ",0)");
+  descriptionSort.setAttribute("onclick", "sortAlphabet(" + tableName + ", 1)");
+  modifiedSort.setAttribute("onclick", "sortLastModified(" + tableName + ")");
+  categorySort.setAttribute("onclick", "sortCategory(" + tableName + ")");
+  deleteTable.setAttribute("onclick", "deleteTable(" + tableName + ")");
+
+  // deleteTable.setAttribute("data-toggle", "modal");
+  // deleteTable.setAttribute("data-target", "#removeTableNotif");
 
   //create row and cell element
   row = document.createElement("tr");
@@ -311,6 +286,14 @@ function createTable(tableName, isNewTable) {
   descCell = document.createElement("th");
   modCell = document.createElement("th");
   catCell = document.createElement("th");
+
+  row.setAttribute("id", "firstRow");
+  body.setAttribute("class", "sortable");
+
+  titleCell.setAttribute("id", "titleCell");
+  descCell.setAttribute("id", "descCell");
+  modCell.setAttribute("id", "modCell");
+  catCell.setAttribute("id", "catCell");
 
   // text for cell
   textNode1 = document.createTextNode("Title");
@@ -324,120 +307,25 @@ function createTable(tableName, isNewTable) {
   modCell.appendChild(textNode3);
   catCell.appendChild(textNode4);
 
+  // append buttons to cell
+  titleCell.appendChild(titleSort);
+  descCell.appendChild(descriptionSort);
+  modCell.appendChild(modifiedSort);
+  catCell.appendChild(categorySort);
+  catCell.appendChild(deleteTable);
+
   // append text to row
   row.appendChild(titleCell);
   row.appendChild(descCell);
   row.appendChild(modCell);
   row.appendChild(catCell);
 
-  // Name elements
-  table.setAttribute("id", tableName);
-  table.setAttribute("class", "tables");
-  body.setAttribute("class", "sortable");
-  row.setAttribute("id", "firstRow");
-
-  titleCell.setAttribute("id", "titleCell");
-  descCell.setAttribute("id", "descCell");
-  modCell.setAttribute("id", "modCell");
-  catCell.setAttribute("id", "catCell");
-
   // append row to table/body
   head.appendChild(row);
   table.appendChild(head);
-  table.appendChild(body)
-  tableWrapper.appendChild(table);
-  mainDiv.appendChild(tableWrapper);
-  if(tableName !== "Unsorted")
-    makeButtons(tableName);
+  table.appendChild(body);
+  mainDiv.appendChild(table);
 }
-
-/* Helper function for createTable to create div wrappers to encapsulate tables */
-function createTableWrapper(tableName, isNewTable) {
-
-  var tableWrapper = document.createElement("div");
-  var title = document.createElement("h3");
-  var divider = document.createElement("hr");
-  var header = document.createElement("div");
-  var wrapperName = tableName + wrapperSuffix;
-
-  tableWrapper.setAttribute("id", wrapperName);
-  title.setAttribute("id", "tableTitle");
-  tableWrapper.setAttribute("class", "table-wrapper");
-  header.setAttribute("class", "wrapper-header");
-
-  var cat = tableName.split("_").join(" ");
-  var tableTitle;
-  if(isNewTable)
-    tableTitle = document.createTextNode("New Table " + tableNumber);
-  else
-    tableTitle = document.createTextNode(cat);
-
-  title.appendChild(tableTitle);
-  header.appendChild(title);
-  header.appendChild(divider);
-  tableWrapper.appendChild(header);
-
-  return tableWrapper;
-}
-
-// Event listener for table titles
-$(".main").on("click", "#tableTitle", function() {
-  var $title = $(this);
-  var $tableWrapper = $title.parent().parent();
-  var $table = $title.parent().next();
-  var inputText;
-  var $input = $('<input/>').val( $title.text() );
-  var numKeyPress = 0;
-
-  $input.focus(function() { this.select(); });  // Selects all text
-
-  //Update filters when table titles are changed.
-  $input.on("focusin", function(){
-    const inputStay = this.value;
-    inputText = inputStay;
-  });
-
-  $input.on("input", function(){
-    if(this.value.length === 1 && this.value !== this.value.toUpperCase())
-      this.value = this.value.charAt(0).toUpperCase();
-  });
-
-  $title.replaceWith($input);
-
-  var save = function() {
-    var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
-    var $closedInput = $input.val().split(" ").join("_");
-    var $id = $closedInput + wrapperSuffix;
-
-    // Update table and wrapper ID
-    $table.attr("id", $closedInput);
-    $tableWrapper.attr("id", $id);
-    $input.replaceWith($titleStr);
-  };
-
-  // Enter key exits form
-  $input.keyup(function(e) {
-    ++numKeyPress;
-
-    if (e.which === 13 || e.which === 27) {
-      if (numKeyPress > 1 && getFilters().includes(this.value)) {
-        alert("Please rename this table as there is already one with this name!");
-        this.value = inputText;
-      }
-      else {
-        keyPressed = 0;
-        updateFilters();
-        $input.blur();
-        return;
-      }
-    }
-  });
-
-  /** Avoid callbacks leftovers taking memory when input disappears
-      after clicking away
-  */
-  $input.one('blur', save).focus();
-});
 
 function populateTable(task, tableName, index) {
   var table = document.getElementById(tableName);
@@ -471,12 +359,8 @@ function addRow(task, tableName, index) {
   var cat = task.category;
   var capCat = cat.charAt(0).toUpperCase() + cat.substring(1);
 
-  if(tableName.id != "Unsorted") {
-    var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
-  }
-  else{
-    var body = tableName.tBodies[0];
-  }
+  // table = document.getElementById(tableName);
+  var body = document.getElementById(tableName).getElementsByTagName('tbody')[0];
 
   //create row and cell element
   row = document.createElement("tr");
@@ -485,9 +369,6 @@ function addRow(task, tableName, index) {
   modCell = document.createElement("td");
   catCell = document.createElement("td");
 
-  // Name elements
-  row.setAttribute("id", index);
-  row.setAttribute("class", "notFirst");
   titleCell.setAttribute("id", "title");
   descCell.setAttribute("id", "desc");
   modCell.setAttribute("id", "mod");
@@ -511,11 +392,14 @@ function addRow(task, tableName, index) {
   row.appendChild(modCell);
   row.appendChild(catCell);
 
+  row.setAttribute("id", index);
+  row.setAttribute("class", "notFirst");
+
   // append row to table/body
   body.appendChild(row);
 }
 
-function draggableRows(bool) {
+function draggableRows() {
 
   // Prevent rows from shrinking while dragged
   var fixHelper = function(e, ui) {
@@ -526,192 +410,27 @@ function draggableRows(bool) {
   };
 
   $(".sortable").sortable({
-    axis: 'y',
     helper: fixHelper,
-    //connectWith: ".sortable",
+    connectWith: ".sortable",
     placeholder: "ui-state-highlight",
     zIndex: 99,
     stop: function(e,t) {
       if ($(this).children().length == 0) {
-          $(this).addClass("place");
+          $(this).addClass('place');
       }
-      if ($(t.item).closest("tbody").children().length > 0) {
-          $(t.item).closest("tbody").removeClass("place");
+      if ($(t.item).closest('tbody').children().length > 0) {
+          $(t.item).closest('tbody').removeClass('place');
       }
-    }
+    },
+
+    receive: function() {
+      //console.log($(this).closest('table'));
+    },
+
   });
   $("#sortable").disableSelection();
- 
-  if(!bool) {
-    $(".sortable").sortable({connectWith: ".sortable"});
-  }
-  //$("#sortable").disableSelection();
-}
-
-function makeButtons(tableName) {
-
-  var table = document.getElementById(tableName);
-  var wrapperHeader = $("#" + tableName).siblings('div');
-
-  var titleCell = table.rows[0].cells[0];
-  var descCell = table.rows[0].cells[1];
-  var modCell = table.rows[0].cells[2];
-  var catCell = table.rows[0].cells[3];
-
-  var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
-  var button2 = "glyphicon glyphicon-remove";
-
-  // Create the sorting buttons
-  var titleSort = document.createElement("button");
-  var descriptionSort = document.createElement("button");
-  var modifiedSort = document.createElement("button");
-  var categorySort = document.createElement("button");
-  var deleteTable = document.createElement("button");
-
-  //Assign classes to the sorting buttons
-  titleSort.setAttribute("class", button1);
-  descriptionSort.setAttribute("class", button1);
-  modifiedSort.setAttribute("class", button1);
-  categorySort.setAttribute("class", button1);
-  deleteTable.setAttribute("class", button2);
-  deleteTable.setAttribute("id", "deleteTableBtn");
-
-  titleSort.onclick = function(titleSort){
-    sortAlphabet(tableName, 0);
-  }
-  descriptionSort.onclick = function(descriptionSort){
-    sortAlphabet(tableName, 1);
-  }
-  modifiedSort.onclick = function(modifiedSort){
-    sortLastModified(tableName);
-  }
-  categorySort.onclick = function(categorySort){
-    sortCategory(tableName);
-  }
-
-  // append buttons to cell
-  titleCell.appendChild(titleSort);
-  descCell.appendChild(descriptionSort);
-  modCell.appendChild(modifiedSort);
-  catCell.appendChild(categorySort);
-
-  wrapperHeader.append(deleteTable);
 }
 /* End populating/setting up tables */
-
-$("#reorder").click(function(e)
-{
-  draggableRows(true);
-  e.preventDefault();
-
-  // instantiate new modal
-  var modal = new tingle.modal({
-    footer: true,
-    stickyFooter: true,
-    closeMethods: ['overlay', 'button', 'escape'],
-    closeLabel: "Close",
-    //cssClass: ['custom-class-1', 'custom-class-2'],
-    onOpen: function() {
-      draggableRows(true);
-    },
-    onClose: function() {
-    },
-    beforeClose: function() {
-      draggableRows(true);
-
-      return true; // close the modal
-    }
-  });
-
-  // set content
-  modal.setContent('<h3>Reorder Tables</h3>');
-
-  var table = listTables();
-  modal.setContent(table);
-
-  // CANCEL
-  modal.addFooterBtn('Cancel', 'tingle-btn tingle-btn--primary', function() {
-    modal.close();
-  });
-
-  // SAVE: reorder tables
-  modal.addFooterBtn('Save', 'tingle-btn tingle-btn--danger', function() {
-    for(var i = 1; i < table.rows.length - 1; i++) {
-      var id = (table.rows[i].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
-      var id2 = (table.rows[i + 1].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
-
-      $("#" + id).after($("#" + id2));
-      draggableRows(true);
-    }
-    modal.close();
-  });
-
-  // open modal
-  modal.open();
-});
-
-function listTables() {
-
-  // Get the names of all tables 
-  var tables = document.getElementsByClassName('tables');
-  var tableNames = [];
-  for(var i = 0; i < tables.length; i++) {
-    tableNames.push(tables[i].id);
-  }
-  
-  // Create table structure
-  var table = document.createElement("TABLE");
-  //var mainDiv = document.getElementById("main-container");
-
-  var head = document.createElement("thead");
-  var body = document.createElement("tbody");
-
-  //create row and cell element
-  row = document.createElement("tr");
-  titleCell = document.createElement("th");
-
-  // text for cell
-  textNode1 = document.createTextNode("Table Title");
-  titleCell.appendChild(textNode1);
-  row.appendChild(titleCell);
-
-  // Name elements
-  table.setAttribute("id", "names");
-  //table.setAttribute("class", "tables");
-  body.setAttribute("class", "sortable");
-  //body.classList.add("modal");
-  row.setAttribute("id", "firstRow");
-  titleCell.setAttribute("id", "titleCell");
-
-  // append row to table/body
-  head.appendChild(row);
-  table.appendChild(head);
-  table.appendChild(body)
-  //tableWrapper.appendChild(table);
-  // mainDiv.appendChild(table);
-  //mainDiv.appendChild(tableWrapper);
-
-  for(var j = 0; j < tableNames.length; j++) {
-
-    //create row and cell element
-    row = document.createElement("tr");
-    titleCell = document.createElement("td");
-
-    // Name elements
-    row.setAttribute("class", "notFirst");
-    titleCell.setAttribute("id", "titleCell");
-
-    // text for cell
-    var str = (tableNames[j]).split("_").join(" ");
-    textNode1 = document.createTextNode(str);
-    titleCell.appendChild(textNode1);
-    row.appendChild(titleCell);
-    body.appendChild(row);
-  } 
-
-  //$(".sortable").sortable({containment: "#names", scroll: false});
-  return table;
-}
 
 function setupPage() {
   if (!redirectToHTTPS()) {
@@ -933,6 +652,8 @@ function createTasksFromCardsAndTickets(cardsAndTickets) {
       tasks.push(new Task(cardsAndTickets[i][j], i));
     }
     user.tasks = tasks;
+    //console.log(tasks);
+    //console.log(user.tasks);
   }
   return Promise.all(Task.prom);
 }
@@ -971,6 +692,23 @@ function trelloGet(url) {
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+window.addEventListener("resize", function() {
+  var openButton = document.getElementById("leftOpenButton");
+  if (window.innerWidth < 1200) {
+    if ($('body.toggled').css("padding") != null) {
+      isClosed = false;
+      $('body').toggleClass('toggled');
+      $('.hamburger').removeClass('is-open');
+      $('.hamburger').addClass('is-closed');
+    }
+  }
+});
+
+/*Refresh the page*/
+function refresh() {
+  location.reload();
+}
+
 /* ------------------ SORT FILTERS ------------------ */
 /*Sorting is done using bubble sort. Hopefully implement a better algorithm in
   the future.*/
@@ -985,6 +723,7 @@ function sortAlphabet(tableName, index) {
     return;
   }
   var table, rows, switching, i, x, y, shouldSwitch;
+  tableName = $(tableName).closest('table').attr('id');
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -995,7 +734,7 @@ function sortAlphabet(tableName, index) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length-1); i++) {
+    for (i = 0; i < (rows.length-2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -1023,6 +762,7 @@ function sortAlphabet(tableName, index) {
 /*Sort the data alphabetically reversed*/
 function sortAlphabetReverse(tableName, index) {
   var table, rows, switching, i, x, y, shouldSwitch;
+  tableName = $(tableName).closest('table').attr('id');
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -1033,7 +773,7 @@ function sortAlphabetReverse(tableName, index) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length-1); i++) {
+    for (i = 0; i < (rows.length-2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -1076,6 +816,7 @@ function sortCategory(tableName) {
     return;
   }
   var table, rows, switching, i, x, y, shouldSwitch;
+  tableName = $(tableName).closest('table').attr('id');
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -1086,7 +827,7 @@ function sortCategory(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length - 2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -1112,6 +853,7 @@ function sortCategory(tableName) {
 
 function sortCategoryReverse(tableName) {
   var table, rows, switching, i, x, y, shouldSwitch;
+  tableName = $(tableName).closest('table').attr('id');
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -1122,7 +864,7 @@ function sortCategoryReverse(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length - 2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -1158,6 +900,7 @@ function sortLastModified(tableName) {
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
     "Oct", "Nov", "Dec"
   ];
+  tableName = $(tableName).closest('table').attr('id');
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -1168,7 +911,7 @@ function sortLastModified(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length - 2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -1208,6 +951,7 @@ function sortlastModifiedReversed(tableName) {
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept",
     "Oct", "Nov", "Dec"
   ];
+  tableName = $(tableName).closest('table').attr('id');
   table = document.getElementById(tableName);
   switching = true;
   /*Make a loop that will continue until
@@ -1218,7 +962,7 @@ function sortlastModifiedReversed(tableName) {
     rows = table.getElementsByTagName("TR");
     /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 0; i < (rows.length - 2); i++) {
       //start by saying there should be no switching:
       shouldSwitch = false;
       /*Get the two elements you want to compare,
@@ -1324,7 +1068,7 @@ function changeColor() {
 /* Helper method that creates the card div */
 function createTicketCard(cardIndex)
 {
-  var newCard = document.createElement("div");
+  var newCard = document.createElement('div');
   var task = user.tasks[cardIndex];
   var cardTitle = task.name;
   var cardDesc = task.desc;
@@ -1332,11 +1076,11 @@ function createTicketCard(cardIndex)
   var date = formatDate(task.lastModified);
   var url = task.url;
 
-  newCard.className = "panel panel-default";
+  newCard.className = 'panel panel-default';
   newCard.id = cardIndex;
 
   newCard.innerHTML = '<div class="panel-heading">' +
-    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
+    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' + 
     '<a target="_blank" href="' + url + '">' + cardTitle + '</a>' +
     '</h3></div>' +
     '<div class="panel-body">' +
@@ -1346,8 +1090,8 @@ function createTicketCard(cardIndex)
     '</div></div>';
 
   document.getElementById("card-list").appendChild(newCard);
-  $("#" + cardIndex).addClass("animated fadeInRight");
-  $(".panel-body p").readmore({
+  $('#' + cardIndex).addClass('animated fadeInRight');
+  $('.panel-body p').readmore({
     speed: 200,
   });
   newCard.scrollIntoView();
@@ -1371,10 +1115,10 @@ $(".main").on("click", "table > tbody > tr", function(e)
   // Check if card id exists in set
   if (cardsCreated.has(this.id)) {
     $.notify({
-      icon: "fa fa-exclamation-triangle",
+      icon: 'fa fa-exclamation-triangle',
       message: "Ticket already queued."
     }, {
-      type: "warning",
+      type: 'warning',
     });
 
     return;
@@ -1384,10 +1128,10 @@ $(".main").on("click", "table > tbody > tr", function(e)
     createTicketCard(this.id);
 
     $.notify({
-      icon: "fa fa-check",
+      icon: 'fa fa-check',
       message: "Ticket queued."
     }, {
-      type: "success",
+      type: 'success',
     });
   }
 });
@@ -1412,7 +1156,7 @@ $("#openInfo").click(function(e)
 /* Clears all ticket cards inside ticket panel */
 $("#clearBtn").click(function()
 {
-  $("#card-list").empty();
+  $('#card-list').empty();
   cardsCreated.clear();
 });
 
@@ -1420,119 +1164,124 @@ $("#clearBtn").click(function()
    particular card */
 $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 {
-  var card = $(this).closest(".panel-default");
-  var index = card.attr("id");
+  var card = $(this).closest('.panel-default');
+  var index = card.attr('id');
 
   if (cardsCreated.has(index)) {
     cardsCreated.delete(index);
   }
 
-  card.addClass("animated fadeOutRight");
-  card.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function() {
+  card.addClass('animated fadeOutRight');
+  card.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
     $(this).remove();
   });
 });
 
 /* ------------------ END OF TICKET PANEL ------------------ */
+
+function sort() {
+  switch (document.getElementsByName("sortBy")[0].value) {
+    case "a-z":
+      sortAlphabet();
+      break;
+
+    case "z-a":
+      sortAlphabetReverse();
+      break;
+
+    case "dueDate":
+      sortDueDate();
+      break;
+
+    case "startDate":
+      sortStartDate();
+      break;
+
+    case "category":
+      sortCategory();
+      break;
+
+    case "lastModified":
+      sortLastModified();
+      break;
+
+    case "lastModifiedReversed":
+      sortlastModifiedReversed();
+      break;
+  }
+}
 /*--------------------------------Filters-------------------------------------*/
-function createFilters(){
-  var filters = getFilters();
-  var i;
-  for(i = 0; i < filters.length; i++){
-    createFilterButton(filters[i]);
-  }
-}
-
-function createFilterButton(filter){
-  var leftSidebar = document.getElementById("leftSidebar");
-  var newFilter = document.createElement("button");
-  filter = filter.charAt(0).toUpperCase() + filter.slice(1);
-  newFilter.setAttribute("id", "filter " + filter);
-  newFilter.setAttribute("class", "w3-bar-item w3-button");
-  newFilter.setAttribute("onclick", "filterBy(this.id)");
-  newFilter.innerText = filter;
-  leftSidebar.appendChild(newFilter);
-}
-var onPageLoad = true;
-function getFilters(){//Most likely will change when we implement database
-  var categories = [];
-  var i;
-  if(onPageLoad){
-    updateFilters();
-    var tasks = user.tasks;
-    var currentCategory;
-    for(i = 0; i < tasks.length; i++)
-    {
-      currentCategory = tasks[i].category.charAt(0).toUpperCase() + tasks[i].category.substring(1);
-      if(!categories.includes(currentCategory))
-      {
-        categories.push(currentCategory);
-      }
-    }
-    onPageLoad = false;
-  }else{
-    var leftSidebar = $("#leftSidebar");
-    var buttons = leftSidebar[0].getElementsByTagName("BUTTON")
-    for(i = 1; i < buttons.length; i++){
-      categories.push(buttons[i].id.substring(buttons[i].id.indexOf(" ") + 1));
-    }
-  }
-  return categories;
-}
-
-function updateFilters(){
-  var currentNode;
-  var tables = document.getElementsByTagName("table");
-  clearFilters();
-  createFilterButton("View All");
-  $('.wrapper-header').each(function(){
-    currentNode = this.childNodes[0];
-    if(currentNode.tagName === "INPUT")
-      createFilterButton(currentNode.value)
-    else
-      createFilterButton(currentNode.innerHTML);
-  });
-}
-
-function clearFilters(){
-  var sideBar = document.getElementById("leftSidebar");
-  var filters = sideBar.getElementsByTagName("button");
-  $(filters).remove();
-}
-
 function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
   var button = document.getElementById(buttonID);
-  var include = true;
+  var filter = true;
   if (button.style.backgroundColor == "lightgrey")
-    include= false;
+    filter = false;
   //If View All is slected, reset everything to the defualt.
   if (category == "View All") {
     filterAll();
     return;
   }
-  //Filter based on the button and whether it should be included or excluded.
-  filter(button, buttonID, include);
-  checkFilterAll()
-  hideTables();
+  if (filter)
+    filterIn(button, buttonID);
+  else
+    filterOut(button, buttonID);
+    checkFilterAll();
+    hideTables();
 }
 
-function filter(button, buttonID, include) {
-  var table, tableIDReal, currentRow, i, j;
+function filterIn(button, buttonID) {
+  var table, currentRow, i, j;
   var whitesmoke = "#f1f1f1";
   var category = document.getElementById(buttonID).innerHTML;
   var currentRowHTML;
-  tables = document.getElementsByTagName("table");
-  for (i = 0; i < tables.length; i++) { // Grab each table.
-    currentTable = tables[i];
-    tableIDReal = currentTable.id;
-    //Hide unwanted tables.
-    if(include)
-      filterIn(tableIDReal, button)
-    else
-      filterOut(tableIDReal, button)
+  table = document.getElementsByTagName("table");
+  for (j = 0; j < table.length; j++) { // Grab each table.
+    rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
+    for (i = 0; i < rows.length-1; i++) { // Manipulate said row.
+      currentRow = rows[i]
+      currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
+      if (currentRowHTML != category &&
+        currentRow.style.display != "none" &&
+        button.style.backgroundColor != "lightgrey" && filterIn) {
+        if (document.getElementById("filter " +
+            currentRowHTML).style.backgroundColor ==
+          "lightgrey") {
+          continue;
+        }
+        $(currentRow).hide(); // If the row is not whats filtered, hide it.
+      } else if (currentRowHTML == category &&
+        currentRow.style.display == "none" &&
+        button.style.backgroundColor != "lightgrey")
+        $(currentRow).show();
+    }
   }
   //Change the backgorund color of the buttons when they're selected.
+  if (button.style.backgroundColor == "lightgrey")
+    button.style.backgroundColor = whitesmoke;
+  else
+    button.style.backgroundColor = "lightgrey";
+}
+
+function filterOut(button, buttonID) {
+  var table, currentRow, i, j;
+  var whitesmoke = "#f1f1f1";
+  var category = document.getElementById(buttonID).innerHTML;
+  table = document.getElementsByTagName("table");
+  for (j = 0; j < table.length; j++) { // Grab each table.
+    rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
+    for (i = 0; i < rows.length-1; i++) { // Manipulate said row.
+      currentRow = rows[i]
+      currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
+      //If the current row needs to be filtered out, hide it.
+      if (currentRowHTML == category &&
+        currentRow.style.display != "none" &&
+        button.style.backgroundColor == "lightgrey") {
+        $(currentRow).hide();
+      }
+    }
+  }
+  //Change the background color of the buttons when they're selected.
   if (button.style.backgroundColor == "lightgrey")
     button.style.backgroundColor = whitesmoke;
   else
@@ -1553,7 +1302,7 @@ function checkFilterAll() {
 }
 
 function filterAll() {
-  var tables, i, currentRow, filterBar;
+  var table, i, j, currentRow, filterBar;
   var whitesmoke = "#f1f1f1";
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
@@ -1563,62 +1312,14 @@ function filterAll() {
 
   tables = document.getElementsByTagName("table");
   //Get the TR tags from the table.
-  for (i = 0; i < tables.length; i++) {
-    filterInTable(tables[i].id);
-  }
-}
-
-function filterIn(tableIDReal, button){
-  //Remove underscores
-  var tableID = tableIDReal.split("_").join(" ");
-  //Hide unwanted tables.
-  if(!isGrey(tableID) && tableID !== button.innerHTML){
-      filterOutTable(tableIDReal);
+  for (j = 0; j < tables.length; j++) {
+    rows = tables[j].getElementsByTagName("TR");
+    //Manipulate each TR by changing the display of it to be shown.
+    for (i = 0; i < rows.length; i++) {
+      currentRow = rows[i]
+      currentRow.style.display = "table-row";
     }
-  //Show wanted tables.
-  else {
-    filterInTable(tableIDReal);
   }
-}
-
-function filterOut(tableIDReal, button){
-  //Remove underscores.
-  var tableID = tableIDReal.split("_").join(" ");
-  //Show wanted tables.
-  if(isGrey(tableID) && tableID !== button.innerHTML){
-      filterInTable(tableIDReal);
-    }
-  //Hide uwanted tables.
-  else{
-    filterOutTable(tableIDReal);
-  }
-}
-
-
-function filterOutTable(tableID){
-  //Loop through each row and hide it.
-  $('#' + tableID + ' > tbody  > tr').each(function(){
-    $(this).hide();
-  });
-}
-
-function filterInTable(tableID){
-  //Show the current table.
-  document.getElementById(tableID + "_table").style.display = "block";
-  //Loop through each row and show it.
-  $('#' + tableID + ' > tbody  > tr').each(function(){
-    $(this).show();
-  });
-}
-
-function isGrey(table){
-  //Get the background color of the row.
-  console.log(table);
-  var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
-  //Is the background ofthe button grey?
-  if(buttonColor == "lightgrey")
-    return true;
-  return false;
 }
 /*-----------------------------End of Filtering-------------------------------*/
 /*---------------------------------Search-------------------------------------*/
@@ -1626,9 +1327,6 @@ function isGrey(table){
 function search() {
   //Text typed in search.
   var searchFor = document.getElementsByClassName("form-control")[0].value;
-  if(searchFor === ""){
-    return filterAll();
-  }
   //Tables of tasks.
   var tables = document.getElementsByTagName("table");
   var rows;
@@ -1637,7 +1335,7 @@ function search() {
   for (j = 0; j < tables.length; j++) {
     rows = tables[j].getElementsByTagName("TR");
     //Go through each individual section of each row.
-    for (i = 1; i < rows.length; i++) {
+    for (i = 0; i < rows.length; i++) {
       currentRow = rows[i]
       items = currentRow.getElementsByTagName("TD");
       //Check if the section contains the search.
@@ -1660,19 +1358,13 @@ function search() {
 /*------------------------------Hiding table----------------------------------*/
 function hideTables(){
   var tables = document.getElementsByTagName("table");
-  var wrapper;
-
   //Go through each table, if it's elements are hidden, hide it. If not, show.
   for(var i = 0; i < tables.length; i++){
-    wrapperID ="#" + $(tables[i]).attr("id") + wrapperSuffix;
-
-    if(isTableHidden(tables[i])) {
-      $(wrapperID).hide();
+    if(isTableHidden(tables[i]))
+      $(tables[i]).hide();
+    else
+      $(tables[i]).show();
     }
-    else {
-      $(wrapperID).show();
-    }
-  }
 }
 
 function isTableHidden(table){
