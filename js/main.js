@@ -143,7 +143,6 @@ $(document).ready(function() {
     });
   });
   //Create the filters from the tasks created.
-
 });
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -191,6 +190,7 @@ function deleteTablePrompt(tableName) {
 
 /*Creates a new table with a random ID, as it cannot be coded to have it
   dynamically created if it isn"t random.*/
+var tableNumber = 1;
 function createNewTable() {
   $.notify({
     icon: "glyphicon glyphicon-info-sign",
@@ -199,8 +199,13 @@ function createNewTable() {
     type: "info",
   });
 
-  createTable(makeID()); // Create a table with a random ID;
+  var tableID = "New_Table_" + tableNumber;
+  createTable(tableID, true); // Create a table with a random ID;
+  $("#" + tableID).find("tbody").addClass("place");
+  updateFilters();
+  draggableRows();
   window.scrollTo(0, document.body.scrollHeight);
+  tableNumber++;
 }
 
 function deleteTable(tableName) {
@@ -209,7 +214,7 @@ function deleteTable(tableName) {
 
     // If unsorted table doesn't already exist, create it
     if(document.getElementById("Unsorted") == null) {
-      createTable("Unsorted");
+      createTable("Unsorted", false);
     }
 
     // For each row, make a new Task and create a row for it in the unsorted table
@@ -218,8 +223,8 @@ function deleteTable(tableName) {
       var task = {
         name: info[i].cells[0].innerHTML,
         desc: info[i].cells[1].innerHTML,
-        lastModified: info[i].cells[2].innerHTML, 
-        category: info[i].cells[3].innerHTML, 
+        lastModified: info[i].cells[2].innerHTML,
+        category: info[i].cells[3].innerHTML,
         id: info[i].id
       }
 
@@ -242,6 +247,7 @@ function deleteTable(tableName) {
   }, {
     type: "danger",
   });
+  updateFilters();
 }
 
 function isEmpty(tableName) {
@@ -264,7 +270,7 @@ function populateTrello() {
       var cat = str.split(" ").join("_");
       if (cat === trelloCat[i]) {
         if (document.getElementById(cat) == null) {
-          createTable(cat);
+          createTable(cat, false);
         }
         populateTable(user.tasks[j], cat, j);
       }
@@ -279,9 +285,10 @@ function populateZend() {
   for (var i = 0; i < zendCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       if (user.tasks[j].category == zendCat[i]) {
-        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() + (user.tasks[j].category).substring(1);
+        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() + 
+                                      (user.tasks[j].category).substring(1);
         if (document.getElementById(capCat) == null) {
-          createTable(capCat);
+          createTable(capCat, false);
         }
         populateTable(user.tasks[j], capCat, j);
       }
@@ -289,15 +296,14 @@ function populateZend() {
   }
 }
 
-function createTable(tableName) {
-
+function createTable(tableName, isNewTable) {
   // Create table structure
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  var tableWrapper = createTableWrapper(tableName);
+  var tableWrapper = createTableWrapper(tableName, isNewTable);
 
   //create row and cell element
   row = document.createElement("tr");
@@ -340,16 +346,13 @@ function createTable(tableName) {
   table.appendChild(head);
   table.appendChild(body)
   tableWrapper.appendChild(table);
-  // mainDiv.appendChild(table);
   mainDiv.appendChild(tableWrapper);
-
-  if(tableName !== "Unsorted") {
+  if(tableName !== "Unsorted")
     makeButtons(tableName);
-  }
 }
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
-function createTableWrapper(tableName) {
+function createTableWrapper(tableName, isNewTable) {
 
   var tableWrapper = document.createElement("div");
   var title = document.createElement("h3");
@@ -362,11 +365,13 @@ function createTableWrapper(tableName) {
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
-
   var cat = tableName.split("_").join(" ");
-  var tableTitle = document.createTextNode(cat);
+  var tableTitle;
+  if(isNewTable)
+    tableTitle = document.createTextNode("New Table " + tableNumber);
+  else
+    tableTitle = document.createTextNode(cat);
 
-  //var tableTitle = document.createTextNode(tableName);
   title.appendChild(tableTitle);
   header.appendChild(title);
   header.appendChild(divider);
@@ -376,21 +381,49 @@ function createTableWrapper(tableName) {
 }
 
 // Event listener for table titles
-$(".main").on("click", "#tableTitle", function() {  
+$(".main").on("click", "#tableTitle", function() {
   var $title = $(this);
-              
+  var $tableWrapper = $title.parent().parent();
+  var $table = $title.parent().next();
+  var inputText;
   var $input = $('<input/>').val( $title.text() );
-  $title.replaceWith( $input );
-  
+  $input.focus(function() { this.select(); });  // Selects all text
+
+  //Update filters when table titles are changed.
+  $input.on("focusin", function(){
+    const inputStay = this.value;
+    inputText = inputStay;
+  });
+
+  $input.on("input", function(){
+    if(this.value.length === 1 && this.value !== this.value.toUpperCase())
+      this.value = this.value.charAt(0).toUpperCase();
+  });
+  $input.on('focusout', function (e){
+    if(getFilters().includes(this.value)){
+        alert("Please rename this table as there is already one with this name!");
+        this.value = inputText;
+      }
+    updateFilters();
+  });
+
+  $title.replaceWith($input);
+
   var save = function() {
     var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
-    $input.replaceWith( $titleStr );
+    var $closedInput = $input.val().split(" ").join("_");
+    var $id = $closedInput + wrapperSuffix;
+
+    // Update table and wrapper ID
+    $table.attr("id", $closedInput);
+    $tableWrapper.attr("id", $id);
+    $input.replaceWith($titleStr);
   };
-  
+
   // Enter key exits form
   $input.keypress(function(e) {
     if (e.which == 13) {
-      $input.blur();
+      $input.blur(); // Exits input focus
       return;
     }
   });
@@ -895,8 +928,6 @@ function createTasksFromCardsAndTickets(cardsAndTickets) {
       tasks.push(new Task(cardsAndTickets[i][j], i));
     }
     user.tasks = tasks;
-    //console.log(tasks);
-    //console.log(user.tasks);
   }
   return Promise.all(Task.prom);
 }
@@ -934,19 +965,6 @@ function trelloGet(url) {
   });
 }
 ////////////////////////////////////////////////////////////////////////////////
-
-window.addEventListener("resize", function() {
-  var openButton = document.getElementById("leftOpenButton");
-  if (window.innerWidth < 1200) {
-    if ($("body.toggled").css("padding") != null) {
-      //TODO Issue when resizing smaller and filter panel is out.
-      isClosed = false;
-      $("body").toggleClass("toggled");
-      $(".hamburger").removeClass("is-open");
-      $(".hamburger").addClass("is-closed");
-    }
-  }
-});
 
 /* ------------------ SORT FILTERS ------------------ */
 /*Sorting is done using bubble sort. Hopefully implement a better algorithm in
@@ -1430,93 +1448,86 @@ function createFilterButton(filter){
   newFilter.innerText = filter;
   leftSidebar.appendChild(newFilter);
 }
-
-function getFilters(){
-  var tasks = user.tasks;
+var onPageLoad = true;
+function getFilters(){//Most likely will change when we implement database
   var categories = [];
   var i;
-  categories.push("View All");
-  for(i = 0; i < tasks.length; i++)
-  {
-    if(!categories.includes(tasks[i].category))
-      categories.push(tasks[i].category);
+  if(onPageLoad){
+    updateFilters();
+    var tasks = user.tasks;
+    var currentCategory;
+    for(i = 0; i < tasks.length; i++)
+    {
+      currentCategory = tasks[i].category.charAt(0).toUpperCase() + tasks[i].category.substring(1);
+      if(!categories.includes(currentCategory))
+      {
+        categories.push(currentCategory);
+      }
+    }
+    onPageLoad = false;
+  }else{
+    var leftSidebar = $("#leftSidebar");
+    var buttons = leftSidebar[0].getElementsByTagName("BUTTON")
+    for(i = 1; i < buttons.length; i++){
+      categories.push(buttons[i].id.substring(buttons[i].id.indexOf(" ") + 1));
+    }
   }
-  categories.push("Unsorted");
   return categories;
+}
+
+function updateFilters(){
+  var currentNode;
+  var tables = document.getElementsByTagName("table");
+  clearFilters();
+  createFilterButton("View All");
+  $('.wrapper-header').each(function(){
+    currentNode = this.childNodes[0];
+    if(currentNode.tagName === "INPUT")
+      createFilterButton(currentNode.value)
+    else
+      createFilterButton(currentNode.innerHTML);
+  });
+}
+
+function clearFilters(){
+  var sideBar = document.getElementById("leftSidebar");
+  var filters = sideBar.getElementsByTagName("button");
+  $(filters).remove();
 }
 
 function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
   var button = document.getElementById(buttonID);
-  var filter = true;
+  var include = true;
   if (button.style.backgroundColor == "lightgrey")
-    filter = false;
+    include= false;
   //If View All is slected, reset everything to the defualt.
   if (category == "View All") {
     filterAll();
-    hideTables();
     return;
   }
-  if (filter)
-    filterIn(button, buttonID);
-  else
-    filterOut(button, buttonID);
-  checkFilterAll();
+  //Filter based on the button and whether it should be included or excluded.
+  filter(button, buttonID, include);
+  checkFilterAll()
   hideTables();
 }
 
-function filterIn(button, buttonID) {
-  var table, currentRow, i, j;
+function filter(button, buttonID, include) {
+  var table, tableIDReal, currentRow, i, j;
   var whitesmoke = "#f1f1f1";
   var category = document.getElementById(buttonID).innerHTML;
   var currentRowHTML;
-  table = document.getElementsByTagName("table");
-  for (j = 0; j < table.length; j++) { // Grab each table.
-    rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 1; i < rows.length; i++) { // Manipulate said row.
-      currentRow = rows[i]
-      currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
-      if (currentRowHTML != category &&
-        currentRow.style.display != "none" &&
-        button.style.backgroundColor != "lightgrey" && filterIn) {
-        if (document.getElementById("filter " +
-            currentRowHTML).style.backgroundColor ==
-          "lightgrey") {
-          continue;
-        }
-        $(currentRow).hide(); // If the row is not whats filtered, hide it.
-      } else if (currentRowHTML == category &&
-        currentRow.style.display == "none" &&
-        button.style.backgroundColor != "lightgrey")
-        $(currentRow).show();
-    }
+  tables = document.getElementsByTagName("table");
+  for (i = 0; i < tables.length; i++) { // Grab each table.
+    currentTable = tables[i];
+    tableIDReal = currentTable.id;
+    //Hide unwanted tables.
+    if(include)
+      filterIn(tableIDReal, button)
+    else
+      filterOut(tableIDReal, button)
   }
   //Change the backgorund color of the buttons when they're selected.
-  if (button.style.backgroundColor == "lightgrey")
-    button.style.backgroundColor = whitesmoke;
-  else
-    button.style.backgroundColor = "lightgrey";
-}
-
-function filterOut(button, buttonID) {
-  var table, currentRow, i, j;
-  var whitesmoke = "#f1f1f1";
-  var category = document.getElementById(buttonID).innerHTML;
-  table = document.getElementsByTagName("table");
-  for (j = 0; j < table.length; j++) { // Grab each table.
-    rows = table[j].getElementsByTagName("TR"); // Grab the rows of each table.
-    for (i = 1; i < rows.length; i++) { // Manipulate said row.
-      currentRow = rows[i]
-      currentRowHTML = currentRow.getElementsByTagName("TD")[3].innerHTML;
-      //If the current row needs to be filtered out, hide it.
-      if (currentRowHTML == category &&
-        currentRow.style.display != "none" &&
-        button.style.backgroundColor == "lightgrey") {
-        $(currentRow).hide();
-      }
-    }
-  }
-  //Change the background color of the buttons when they're selected.
   if (button.style.backgroundColor == "lightgrey")
     button.style.backgroundColor = whitesmoke;
   else
@@ -1537,7 +1548,7 @@ function checkFilterAll() {
 }
 
 function filterAll() {
-  var tables, i, j, currentRow, filterBar;
+  var tables, i, currentRow, filterBar;
   var whitesmoke = "#f1f1f1";
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
@@ -1547,14 +1558,62 @@ function filterAll() {
 
   tables = document.getElementsByTagName("table");
   //Get the TR tags from the table.
-  for (j = 0; j < tables.length; j++) {
-    rows = tables[j].getElementsByTagName("TR");
-    //Manipulate each TR by changing the display of it to be shown.
-    for (i = 0; i < rows.length; i++) {
-      currentRow = rows[i]
-      currentRow.style.display = "table-row";
-    }
+  for (i = 0; i < tables.length; i++) {
+    filterInTable(tables[i].id);
   }
+}
+
+function filterIn(tableIDReal, button){
+  //Remove underscores
+  var tableID = tableIDReal.split("_").join(" ");
+  //Hide unwanted tables.
+  if(!isGrey(tableID) && tableID !== button.innerHTML){
+      filterOutTable(tableIDReal);
+    }
+  //Show wanted tables.
+  else {
+    filterInTable(tableIDReal);
+  }
+}
+
+function filterOut(tableIDReal, button){
+  //Remove underscores.
+  var tableID = tableIDReal.split("_").join(" ");
+  //Show wanted tables.
+  if(isGrey(tableID) && tableID !== button.innerHTML){
+      filterInTable(tableIDReal);
+    }
+  //Hide uwanted tables.
+  else{
+    filterOutTable(tableIDReal);
+  }
+}
+
+
+function filterOutTable(tableID){
+  //Loop through each row and hide it.
+  $('#' + tableID + ' > tbody  > tr').each(function(){
+    $(this).hide();
+  });
+}
+
+function filterInTable(tableID){
+  //Show the current table.
+  document.getElementById(tableID + "_table").style.display = "block";
+  //Loop through each row and show it.
+  $('#' + tableID + ' > tbody  > tr').each(function(){
+    $(this).show();
+  });
+}
+
+function isGrey(table){
+  //Get the background color of the row.
+  console.log(table);
+  var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
+  //Is the background ofthe button grey?
+  if(buttonColor == "lightgrey")
+    return true;
+  return false;
 }
 /*-----------------------------End of Filtering-------------------------------*/
 /*---------------------------------Search-------------------------------------*/

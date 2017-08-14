@@ -1,37 +1,37 @@
 @media only screen and (max-width: 1590px) {
   .navbar-header {
-      float: none;
+    float: none;
   }
-  .navbar-left,.navbar-right {
-      float: none !important;
+  .navbar-left, .navbar-right {
+    float: none !important;
   }
   .navbar-toggle {
-      display: block;
+    display: block;
   }
   .navbar-collapse {
-      border-top: 1px solid transparent;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   .navbar-fixed-top {
-      top: 0;
-      border-width: 0 0 1px;
+    top: 0;
+    border-width: 0 0 1px;
   }
   .navbar-collapse.collapse {
-      display: none!important;
+    display: none!important;
   }
   .navbar-nav {
-      float: none!important;
-      margin-top: 7.5px;
+    float: none!important;
+    margin-top: 7.5px;
   }
   .navbar-nav>li {
-      float: none;
+    float: none;
   }
   .navbar-nav>li>a {
-      padding-top: 10px;
-      padding-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
-  .collapse.in{
-      display:block !important;
+  .collapse.in {
+    display: block !important;
   }
 }
 
@@ -45,16 +45,19 @@
 }
 
 @media only screen and (max-width: 950px) {
-	#table{
-		min-width: 920px;
+  #table {
+    min-width: 920px;
   }
+}
 
-  #app-title{
+@media only screen and (max-width: 1150px) {
+  #app-title {
     visibility: hidden;
   }
 }
+
 @media only screen and (max-width: 540px) {
-  .navbar-toggle{
+  .navbar-toggle {
     position: absolute;
     left: 470px;
   }
@@ -86,6 +89,7 @@ body.toggled #leftSidebar {
   left: 0%;
 }
 
+
 /* Tables */
 body.toggled .place {
   display:table;
@@ -109,32 +113,72 @@ th {
   white-space: nowrap;
 }
 
-td, #titleCell {width: 25%; text-align: center;}
-td, #descCell {width: 55%; text-align: center;}
-td, #modCell {width: 10%; text-align: center;}
-td, #catCell {width: 10%; text-align: center;}
+td, #titleCell {
+  width: 25%;
+  text-align: center;
+}
 
-td, #title {width: 25%; text-align: left;}
-td, #desc {width: 55%; text-align: left;}
-td, #mod {width: 10%; text-align: center;}
-td, #cat {width: 10%; text-align: center;}
+td, #descCell {
+  width: 55%;
+  text-align: center;
+}
+
+td, #modCell {
+  width: 10%;
+  text-align: center;
+}
+
+td, #catCell {
+  width: 10%;
+  text-align: center;
+}
+
+td, #title {
+  width: 25%;
+  text-align: left;
+}
+
+td, #desc {
+  width: 55%;
+  text-align: left;
+}
+
+td, #mod {
+  width: 10%;
+  text-align: center;
+}
+
+td, #cat {
+  width: 10%;
+  text-align: center;
+}
 
 td {
   height: 69px;
   border-style: solid;
   word-wrap: break-word;
   border-width: thin;
-  border-color: #ededed; /* vs #d3d3d3 */
+  border-color: #ededed;
+  /* vs #d3d3d3 */
   padding: .75%;
   cursor: pointer;
 }
 
+.wrapper-header input {
+  border: none;
+  font-size: 150%;
+  margin-top: 1%;
+  width: 95%;
+  display: block;
+}
+
 .place {
-  display:table;
-  height:69px;
+  display: table;
+  height: 69px;
   /*width:100%;*/
-  width:1351px; /*hard coding for wrappers*/
-  position:absolute;
+  width: 1442px;
+  /*hard coding for wrappers*/
+  position: absolute;
 }
 
 .ui-state-highlight {
@@ -142,8 +186,10 @@ td {
 }
 
 .notFirst:hover {
-    background-color: #dd6367;
+  background-color: #dd6367;
 }
+
+
 /* End table CSS*/
 
 #logo {
@@ -281,25 +327,23 @@ select#sortList {
   margin-right: 2px;
 }
 
-.panel-body
-{
+.panel-body {
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
 
-.panel-body hr
-{
+.panel-body hr {
   margin: 5px;
 }
 
-.panel-body a
-{
+.panel-body a {
   font-weight: bold;
   color: #dd6367;
 }
 
 
 /* Navbar */
+
 .navbar {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
@@ -312,11 +356,11 @@ select#sortList {
 }
 
 .navbar.toggled {
-  margin-left: 10%;;
+  margin-left: 10%;
+  ;
 }
 
-.navbar-brand
-{
+.navbar-brand {
   position: absolute;
   top: 0%;
   left: 80px;
@@ -325,7 +369,6 @@ select#sortList {
   padding: 0;
   margin: 0;
 }
-
 
 #navbar-links {
   background-color: whitesmoke;
@@ -336,7 +379,7 @@ select#sortList {
   background-color: #dcdcdc;
 }
 
-#navbar-links li > .btn {
+#navbar-links li>.btn {
   width: 100%;
   text-align: left;
 }
@@ -346,13 +389,13 @@ select#sortList {
   color: #333
 }
 
-.navbar-nav li > .btn {
+.navbar-nav li>.btn {
   border-radius: 0;
   height: 55px;
   background-color: transparent;
 }
 
-.navbar-nav li > .btn:active {
+.navbar-nav li>.btn:active {
   background: #ccc;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -377,6 +420,7 @@ select#sortList {
   text-decoration: none;
 }
 
+
 /* Search form */
 
 .form-control:focus {
@@ -384,10 +428,13 @@ select#sortList {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
 }
 
+
 /* Alert notifications */
+
 .alert {
   width: 400px;
 }
+
 
 /* Hamburger menu icon */
 
@@ -461,9 +508,7 @@ select#sortList {
   bottom: 5px;
 }
 
-.hamburger.is-closed .hamb-top, .hamburger.is-closed .hamb-middle,
-	.hamburger.is-closed .hamb-bottom, .hamburger.is-open .hamb-top, .hamburger.is-open
-	.hamb-middle, .hamburger.is-open .hamb-bottom {
+.hamburger.is-closed .hamb-top, .hamburger.is-closed .hamb-middle, .hamburger.is-closed .hamb-bottom, .hamburger.is-open .hamb-top, .hamburger.is-open .hamb-middle, .hamburger.is-open .hamb-bottom {
   height: 4px;
   left: 0;
   position: absolute;
@@ -511,13 +556,13 @@ select#sortList {
   opacity: 1;
 }
 
-.sortButton, #deleteTableBtn{
+.sortButton, #deleteTableBtn {
   border: none;
   height: 2vh;
   width: 3vh;
 }
 
-.sortButton{
+.sortButton {
   background-color: transparent;
 }
 
@@ -529,7 +574,9 @@ select#sortList {
   color: black;
 }
 
+
 /* Scroll to top button */
+
 .scrollTop {
   width: 42px;
   height: 42px;
@@ -554,7 +601,9 @@ select#sortList {
   background-color: rgba(164, 164, 164, 1);
 }
 
+
 /* Delete Table Notification */
+
 .modal-open {
   padding-right: 0 !important;
 }
@@ -584,6 +633,7 @@ select#sortList {
 
 
 /* Table wrappers */
+
 .table-wrapper {
   border: solid #000;
   border-width: 4px;
