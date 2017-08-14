@@ -48,6 +48,7 @@
 	#table{
 		min-width: 920px;
   }
+
   #app-title{
     visibility: hidden;
   }
@@ -86,6 +87,18 @@ body.toggled #leftSidebar {
 }
 
 /* Tables */
+body.toggled .place {
+  display:table;
+  height:69px;
+  /*width:100%;*/
+  width:1208.110px; /*hard coding for wrappers*/
+  position:absolute;
+}
+
+/*.padding {
+  margin-bottom: 5%;  
+}*/
+
 table, th {
   width: 100%;
   margin-bottom: 5%;
@@ -116,11 +129,11 @@ td {
   cursor: pointer;
 }
 
-.place{
+.place {
   display:table;
   height:69px;
   /*width:100%;*/
-  width:1442px; /*hard coding for wrappers*/
+  width:1351px; /*hard coding for wrappers*/
   position:absolute;
 }
 
@@ -587,4 +600,12 @@ select#sortList {
 
 .wrapper-header hr {
   border-top: 1px solid #8c8b8b;
+}
+
+.wrapper-header input {
+  border: none;
+  font-size: 150%;
+  margin-top: 1%;
+  width: 95%;
+  display: block;
 }

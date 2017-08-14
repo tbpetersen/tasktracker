@@ -64,8 +64,8 @@ class Task {
 Task.prom = new Array();
 
 
-
 $(document).ready(function() {
+
   // Hamburger menu toggle
   var trigger = $(".hamburger");
 
@@ -138,7 +138,7 @@ $(document).ready(function() {
 
         populateTrello();
         populateZend();
-        draggableRows();
+        draggableRows(false);
       });
     });
   });
@@ -162,7 +162,6 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 {
   // Find the parent, table-wrapper, and get table
   var table = $(this).parent().next();
-  console.log(table);
 
   if (isEmpty(table))
   {
@@ -175,6 +174,14 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 function deleteTablePrompt(tableName) {
   $("#delTableNotif").modal("show");
   $("#delTableConfirm").unbind('click');
+
+  // Enter keypress for 'Okay'
+  $('#delTableNotif').keypress(function (e) {
+    var key = e.which;
+    if (key == 13) {  // the enter key code
+      $('#delTableConfirm').click();
+    }
+  });   
 
   $("#delTableConfirm").click(function() {
     $("#delTableNotif").modal("hide");
@@ -220,7 +227,7 @@ function deleteTable(tableName) {
       var unsortedTable = document.getElementById("Unsorted");
       addRow(task, unsortedTable, task.id);
     }
-    draggableRows();
+    draggableRows(false);
   }
 
   // Delete wrapper and table
@@ -238,7 +245,7 @@ function deleteTable(tableName) {
 }
 
 function isEmpty(tableName) {
-  var tableLength = tableName.find("tbody > tr").length;
+  var tableLength = $(tableName).find("tbody > tr").length;
   if (tableLength < 1)
     return true;
   return false;
@@ -290,7 +297,6 @@ function createTable(tableName) {
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  //console.log(tableName);
   var tableWrapper = createTableWrapper(tableName);
 
   //create row and cell element
@@ -344,7 +350,7 @@ function createTable(tableName) {
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
 function createTableWrapper(tableName) {
-  //console.log(tableName)
+
   var tableWrapper = document.createElement("div");
   var title = document.createElement("h3");
   var divider = document.createElement("hr");
@@ -352,11 +358,11 @@ function createTableWrapper(tableName) {
   var wrapperName = tableName + wrapperSuffix;
 
   tableWrapper.setAttribute("id", wrapperName);
+  title.setAttribute("id", "tableTitle");
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
-  //var wrap = document.getElementById(wrapperName);
-  //console.log(wrapperName);
+
   var cat = tableName.split("_").join(" ");
   var tableTitle = document.createTextNode(cat);
 
@@ -368,6 +374,32 @@ function createTableWrapper(tableName) {
 
   return tableWrapper;
 }
+
+// Event listener for table titles
+$(".main").on("click", "#tableTitle", function() {  
+  var $title = $(this);
+              
+  var $input = $('<input/>').val( $title.text() );
+  $title.replaceWith( $input );
+  
+  var save = function() {
+    var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
+    $input.replaceWith( $titleStr );
+  };
+  
+  // Enter key exits form
+  $input.keypress(function(e) {
+    if (e.which == 13) {
+      $input.blur();
+      return;
+    }
+  });
+
+  /** Avoid callbacks leftovers taking memory when input disappears
+      after clicking away
+  */
+  $input.one('blur', save).focus();
+});
 
 function populateTable(task, tableName, index) {
   var table = document.getElementById(tableName);
@@ -445,7 +477,7 @@ function addRow(task, tableName, index) {
   body.appendChild(row);
 }
 
-function draggableRows() {
+function draggableRows(bool) {
 
   // Prevent rows from shrinking while dragged
   var fixHelper = function(e, ui) {
@@ -456,8 +488,9 @@ function draggableRows() {
   };
 
   $(".sortable").sortable({
+    axis: 'y',
     helper: fixHelper,
-    connectWith: ".sortable",
+    //connectWith: ".sortable",
     placeholder: "ui-state-highlight",
     zIndex: 99,
     stop: function(e,t) {
@@ -470,6 +503,11 @@ function draggableRows() {
     }
   });
   $("#sortable").disableSelection();
+ 
+  if(!bool) {
+    $(".sortable").sortable({connectWith: ".sortable"});
+  }
+  //$("#sortable").disableSelection();
 }
 
 function makeButtons(tableName) {
@@ -500,7 +538,6 @@ function makeButtons(tableName) {
   deleteTable.setAttribute("class", button2);
   deleteTable.setAttribute("id", "deleteTableBtn");
 
-  //titleSort.setAttribute(" ", "sortAlphabet(" + tableName + ",0)");
   titleSort.onclick = function(titleSort){
     sortAlphabet(tableName, 0);
   }
@@ -520,10 +557,123 @@ function makeButtons(tableName) {
   modCell.appendChild(modifiedSort);
   catCell.appendChild(categorySort);
 
-  // catCell.appendChild(deleteTable);
   wrapperHeader.append(deleteTable);
 }
 /* End populating/setting up tables */
+
+$("#reorder").click(function(e)
+{
+  draggableRows(true);
+  e.preventDefault();
+
+  // instantiate new modal
+  var modal = new tingle.modal({
+    footer: true,
+    stickyFooter: true,
+    closeMethods: ['overlay', 'button', 'escape'],
+    closeLabel: "Close",
+    //cssClass: ['custom-class-1', 'custom-class-2'],
+    onOpen: function() {
+      draggableRows(true);
+    },
+    onClose: function() {
+    },
+    beforeClose: function() {
+      draggableRows(true);
+
+      return true; // close the modal
+    }
+  });
+
+  // set content
+  modal.setContent('<h3>Reorder Tables</h3>');
+
+  var table = listTables();
+  modal.setContent(table);
+
+  // CANCEL
+  modal.addFooterBtn('Cancel', 'tingle-btn tingle-btn--primary', function() {
+    modal.close();
+  });
+
+  // SAVE: reorder tables
+  modal.addFooterBtn('Save', 'tingle-btn tingle-btn--danger', function() {
+    for(var i = 1; i < table.rows.length - 1; i++) {
+      var id = (table.rows[i].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
+      var id2 = (table.rows[i + 1].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
+
+      $("#" + id).after($("#" + id2));
+      draggableRows(true);
+    }
+    modal.close();
+  });
+
+  // open modal
+  modal.open();
+});
+
+function listTables() {
+
+  // Get the names of all tables 
+  var tables = document.getElementsByClassName('tables');
+  var tableNames = [];
+  for(var i = 0; i < tables.length; i++) {
+    tableNames.push(tables[i].id);
+  }
+  
+  // Create table structure
+  var table = document.createElement("TABLE");
+  //var mainDiv = document.getElementById("main-container");
+
+  var head = document.createElement("thead");
+  var body = document.createElement("tbody");
+
+  //create row and cell element
+  row = document.createElement("tr");
+  titleCell = document.createElement("th");
+
+  // text for cell
+  textNode1 = document.createTextNode("Table Title");
+  titleCell.appendChild(textNode1);
+  row.appendChild(titleCell);
+
+  // Name elements
+  table.setAttribute("id", "names");
+  //table.setAttribute("class", "tables");
+  body.setAttribute("class", "sortable");
+  //body.classList.add("modal");
+  row.setAttribute("id", "firstRow");
+  titleCell.setAttribute("id", "titleCell");
+
+  // append row to table/body
+  head.appendChild(row);
+  table.appendChild(head);
+  table.appendChild(body)
+  //tableWrapper.appendChild(table);
+  // mainDiv.appendChild(table);
+  //mainDiv.appendChild(tableWrapper);
+
+  for(var j = 0; j < tableNames.length; j++) {
+
+    //create row and cell element
+    row = document.createElement("tr");
+    titleCell = document.createElement("td");
+
+    // Name elements
+    row.setAttribute("class", "notFirst");
+    titleCell.setAttribute("id", "titleCell");
+
+    // text for cell
+    var str = (tableNames[j]).split("_").join(" ");
+    textNode1 = document.createTextNode(str);
+    titleCell.appendChild(textNode1);
+    row.appendChild(titleCell);
+    body.appendChild(row);
+  } 
+
+  //$(".sortable").sortable({containment: "#names", scroll: false});
+  return table;
+}
 
 function setupPage() {
   if (!redirectToHTTPS()) {
