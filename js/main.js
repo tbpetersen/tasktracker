@@ -402,7 +402,6 @@ $(".main").on("click", "#tableTitle", function() {
     if(getFilters().includes(this.value)){
         alert("Please rename this table as there is already one with this name!");
         this.value = inputText;
-        return;
       }
     updateFilters();
   });
@@ -1332,10 +1331,10 @@ function createFilterButton(filter){
 }
 var onPageLoad = true;
 function getFilters(){//Most likely will change when we implement database
-  updateFilters();
   var categories = [];
   var i;
   if(onPageLoad){
+    updateFilters();
     var tasks = user.tasks;
     var currentCategory;
     for(i = 0; i < tasks.length; i++)
@@ -1351,7 +1350,7 @@ function getFilters(){//Most likely will change when we implement database
     var leftSidebar = $("#leftSidebar");
     var buttons = leftSidebar[0].getElementsByTagName("BUTTON")
     for(i = 1; i < buttons.length; i++){
-      categories.push(buttons[i].id.substring(buttons[i].id.indexOf(" ")));
+      categories.push(buttons[i].id.substring(buttons[i].id.indexOf(" ") + 1));
     }
   }
   return categories;
