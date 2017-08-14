@@ -175,7 +175,7 @@ function deleteTablePrompt(tableName) {
   $("#delTableConfirm").unbind('click');
 
   // Enter keypress for 'Okay'
-  $('#delTableNotif').keypress(function (e) {
+  $('#delTableNotif').keyup(function (e) {
     var key = e.which;
     if (key == 13) {  // the enter key code
       $('#delTableConfirm').click();
@@ -386,6 +386,8 @@ $(".main").on("click", "#tableTitle", function() {
   var $table = $title.parent().next();
   var inputText;
   var $input = $('<input/>').val( $title.text() );
+  var numKeyPress = 0;
+
   $input.focus(function() { this.select(); });  // Selects all text
 
   //Update filters when table titles are changed.
@@ -397,13 +399,6 @@ $(".main").on("click", "#tableTitle", function() {
   $input.on("input", function(){
     if(this.value.length === 1 && this.value !== this.value.toUpperCase())
       this.value = this.value.charAt(0).toUpperCase();
-  });
-  $input.on('focusout', function (e){
-    if(getFilters().includes(this.value)){
-        alert("Please rename this table as there is already one with this name!");
-        this.value = inputText;
-      }
-    updateFilters();
   });
 
   $title.replaceWith($input);
@@ -420,10 +415,20 @@ $(".main").on("click", "#tableTitle", function() {
   };
 
   // Enter key exits form
-  $input.keypress(function(e) {
-    if (e.which == 13) {
-      $input.blur(); // Exits input focus
-      return;
+  $input.keyup(function(e) {
+    ++numKeyPress;
+
+    if (e.which === 13 || e.which === 27) {
+      if (numKeyPress > 1 && getFilters().includes(this.value)) {
+        alert("Please rename this table as there is already one with this name!");
+        this.value = inputText;
+      }
+      else {
+        keyPressed = 0;
+        updateFilters();
+        $input.blur();
+        return;
+      }
     }
   });
 

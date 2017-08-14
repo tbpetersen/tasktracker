@@ -561,6 +561,7 @@ select#sortList {
   right: 0;
   background-color: #dd6367;
   color: black;
+  padding: inherit;
 }
 
 
