@@ -180,7 +180,7 @@ function deleteTablePrompt(tableName) {
     if (key == 13) {  // the enter key code
       $('#delTableConfirm').click();
     }
-  });   
+  });
 
   $("#delTableConfirm").click(function() {
     $("#delTableNotif").modal("hide");
@@ -285,7 +285,7 @@ function populateZend() {
   for (var i = 0; i < zendCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       if (user.tasks[j].category == zendCat[i]) {
-        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() + 
+        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() +
                                       (user.tasks[j].category).substring(1);
         if (document.getElementById(capCat) == null) {
           createTable(capCat, false);
@@ -541,7 +541,7 @@ function draggableRows(bool) {
     }
   });
   $("#sortable").disableSelection();
- 
+
   if(!bool) {
     $(".sortable").sortable({connectWith: ".sortable"});
   }
@@ -644,6 +644,7 @@ $("#reorder").click(function(e)
       draggableRows(true);
     }
     modal.close();
+    updateFilters();
   });
 
   // open modal
@@ -652,13 +653,13 @@ $("#reorder").click(function(e)
 
 function listTables() {
 
-  // Get the names of all tables 
+  // Get the names of all tables
   var tables = document.getElementsByClassName('tables');
   var tableNames = [];
   for(var i = 0; i < tables.length; i++) {
     tableNames.push(tables[i].id);
   }
-  
+
   // Create table structure
   var table = document.createElement("TABLE");
   //var mainDiv = document.getElementById("main-container");
@@ -707,7 +708,7 @@ function listTables() {
     titleCell.appendChild(textNode1);
     row.appendChild(titleCell);
     body.appendChild(row);
-  } 
+  }
 
   //$(".sortable").sortable({containment: "#names", scroll: false});
   return table;
@@ -1525,18 +1526,21 @@ function filter(button, buttonID, include) {
   tables = document.getElementsByTagName("table");
   for (i = 0; i < tables.length; i++) { // Grab each table.
     currentTable = tables[i];
-    tableIDReal = currentTable.id;
-    //Hide unwanted tables.
-    if(include)
+    if(currentTable.id !== "names"){
+      console.log(currentTable.id);
+      tableIDReal = currentTable.id;
+      //Hide unwanted tables.
+      if(include)
       filterIn(tableIDReal, button)
-    else
+      else
       filterOut(tableIDReal, button)
+    }
   }
   //Change the backgorund color of the buttons when they're selected.
   if (button.style.backgroundColor == "lightgrey")
-    button.style.backgroundColor = whitesmoke;
+  button.style.backgroundColor = whitesmoke;
   else
-    button.style.backgroundColor = "lightgrey";
+  button.style.backgroundColor = "lightgrey";
 }
 
 function checkFilterAll() {
@@ -1613,7 +1617,6 @@ function filterInTable(tableID){
 
 function isGrey(table){
   //Get the background color of the row.
-  console.log(table);
   var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
   //Is the background ofthe button grey?
   if(buttonColor == "lightgrey")
