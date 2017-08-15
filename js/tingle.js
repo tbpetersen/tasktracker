@@ -109,6 +109,8 @@
 
         // check if modal is bigger than screen height
         this.checkOverflow();
+
+        $('html').css('overflow', 'hidden');
     };
 
     Modal.prototype.isOpen = function() {
@@ -152,6 +154,8 @@
                 self.opts.onClose.call(this);
             }
         }
+
+        $('html').css('overflow', 'auto');
     };
 
     Modal.prototype.setContent = function(content) {
