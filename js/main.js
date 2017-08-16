@@ -431,8 +431,13 @@ $(".main").on("click", "#tableTitle", function() {
       ++numKeyPress;
 
       if (e.which === 13 || e.which === 27) {
-        if (numKeyPress > 1 && getFilters().includes(this.value)) {
-          alert("Please rename this table as there is already one with this name!");
+        //Get the name of the table that you are currently working with.
+        var table = this.parentNode.parentNode.id
+        table = table.substring(0, table.indexOf("_table"));
+        table = table.split("_").join(" ");
+        //Check if the new table name is the same as others.
+        if (numKeyPress > 1 && getFilters().includes(this.value) && this.value !== table) {
+          alert("Please rename this table as there is already one with the name \"" + this.value + "\"");
           this.value = inputText;
         }
         else {
