@@ -145,18 +145,6 @@ $(document).ready(function() {
   //Create the filters from the tasks created.
 });
 
-/*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
-  Generates and returns a random string ID.*/
-function makeID() {
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-  for (var i = 0; i < 5; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  return text;
-}
-
 $(".main").on("click", "#deleteTableBtn", function(e)
 {
   // Find the parent, table-wrapper, and get table
