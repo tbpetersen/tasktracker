@@ -193,7 +193,7 @@ function deleteTablePrompt(tableName) {
 var tableNumber = 1;
 function createNewTable() {
   $.notify({
-    icon: "glyphicon glyphicon-info-sign",
+    icon: "glyphicon glyphicon-plus-sign",
     message: "Table created."
   }, {
     type: "info",
@@ -216,6 +216,10 @@ function deleteTable(tableName) {
     if(document.getElementById("Unsorted") == null) {
       createTable("Unsorted", false);
     }
+
+    // For when unsorted table is empty but still exists & table being deleted
+    // is not empty, remove 'place' class before adding new rows
+    $("#Unsorted").find("tbody").removeClass("place");
 
     // For each row, make a new Task and create a row for it in the unsorted table
     var info = tableName[0].tBodies[0].rows;
