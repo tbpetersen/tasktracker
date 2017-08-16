@@ -399,8 +399,9 @@ $(".main").on("click", "#tableTitle", function() {
     });
 
     $input.on("focusout", function(){
-      if(!this.value || isEmpty(this.value))
+      if(!this.value || isEmptyString(this.value))
         this.value = inputText;
+      updateFilters();
     });
 
     $input.on("input", function(){
@@ -446,14 +447,14 @@ $(".main").on("click", "#tableTitle", function() {
   $input.one('blur', save).focus();
 });
 
-/* Name: isEmpty
+/* Name: isEmptyString
    Purpose: Tell whether the string is empty or not.
    Description: Runs through the string looking for anything that isn't an empty
     space and returns true or false if the string is empty.
    Parameter: String - The string to be checked if it's empty or not.
    Return: Boolean - Whether the string is empty or not.
 */
-function isEmpty(string){
+function isEmptyString(string){
   var i;
   for(i = 0; i < string.length; i++){
     if(string.charAt(i) !== ' ')
@@ -1566,7 +1567,6 @@ function filter(button, buttonID, include) {
 }
 
 function checkFilterAll() {
-  console.log("Checking Filter All");
   var table, i, j, filterBar;
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
@@ -1580,7 +1580,6 @@ function checkFilterAll() {
 }
 
 function filterAll() {
-console.log("Filtering All");
   var tables, i, currentRow, filterBar;
   var whitesmoke = "#f1f1f1";
   filterBar = document.getElementById("leftSidebar");
