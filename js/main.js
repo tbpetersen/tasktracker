@@ -392,56 +392,80 @@ $(".main").on("click", "#tableTitle", function() {
   var inputText;
   var $input = $('<input/>').val( $title.text() );
   var numKeyPress = 0;
+  //Only allow changing of names for tables that arent Unsorted.
+  if(this.innerHTML !== "Unsorted"){
+    $input.focus(function() { this.select(); });  // Selects all text
 
-  $input.focus(function() { this.select(); });  // Selects all text
+    //Update filters when table titles are changed.
+    $input.on("focusin", function(){
+      const inputStay = this.value;
+      inputText = inputStay;
+    });
 
-  //Update filters when table titles are changed.
-  $input.on("focusin", function(){
-    const inputStay = this.value;
-    inputText = inputStay;
-  });
-
-  $input.on("input", function(){
-    if(this.value.length === 1 && this.value !== this.value.toUpperCase())
-      this.value = this.value.charAt(0).toUpperCase();
-  });
-
-  $title.replaceWith($input);
-
-  var save = function() {
-    var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
-    var $closedInput = $input.val().split(" ").join("_");
-    var $id = $closedInput + wrapperSuffix;
-
-    // Update table and wrapper ID
-    $table.attr("id", $closedInput);
-    $tableWrapper.attr("id", $id);
-    $input.replaceWith($titleStr);
-  };
-
-  // Enter key exits form
-  $input.keyup(function(e) {
-    ++numKeyPress;
-
-    if (e.which === 13 || e.which === 27) {
-      if (numKeyPress > 1 && getFilters().includes(this.value)) {
-        alert("Please rename this table as there is already one with this name!");
+    $input.on("focusout", function(){
+      if(!this.value || isEmptyString(this.value))
         this.value = inputText;
-      }
-      else {
-        keyPressed = 0;
-        updateFilters();
-        $input.blur();
-        return;
+      updateFilters();
+    });
+
+    $input.on("input", function(){
+      if(this.value.length === 1 && this.value !== this.value.toUpperCase())
+        this.value = this.value.charAt(0).toUpperCase();
+    });
+
+    $title.replaceWith($input);
+
+    var save = function() {
+      var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
+      var $closedInput = $input.val().split(" ").join("_");
+      var $id = $closedInput + wrapperSuffix;
+
+      // Update table and wrapper ID
+      $table.attr("id", $closedInput);
+      $tableWrapper.attr("id", $id);
+      $input.replaceWith($titleStr);
+    };
+
+    // Enter key exits form
+    $input.keyup(function(e) {
+      ++numKeyPress;
+
+      if (e.which === 13 || e.which === 27) {
+        if (numKeyPress > 1 && getFilters().includes(this.value)) {
+          alert("Please rename this table as there is already one with this name!");
+          this.value = inputText;
+        }
+        else {
+          keyPressed = 0;
+          updateFilters();
+          $input.blur();
+          return;
+        }
       }
     }
-  });
+  )};
 
   /** Avoid callbacks leftovers taking memory when input disappears
       after clicking away
   */
   $input.one('blur', save).focus();
 });
+
+/* Name: isEmptyString
+   Purpose: Tell whether the string is empty or not.
+   Description: Runs through the string looking for anything that isn't an empty
+    space and returns true or false if the string is empty.
+   Parameter: String - The string to be checked if it's empty or not.
+   Return: Boolean - Whether the string is empty or not.
+*/
+function isEmptyString(string){
+  var i;
+  for(i = 0; i < string.length; i++){
+    if(string.charAt(i) !== ' ')
+      return false;
+  }
+  return true;
+}
 
 function populateTable(task, tableName, index) {
   var table = document.getElementById(tableName);
@@ -1547,7 +1571,6 @@ function filter(button, buttonID, include) {
 }
 
 function checkFilterAll() {
-  console.log("Checking Filter All");
   var table, i, j, filterBar;
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
@@ -1561,7 +1584,6 @@ function checkFilterAll() {
 }
 
 function filterAll() {
-console.log("Filtering All");
   var tables, i, currentRow, filterBar;
   var whitesmoke = "#f1f1f1";
   filterBar = document.getElementById("leftSidebar");
