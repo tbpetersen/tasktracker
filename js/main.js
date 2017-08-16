@@ -1514,8 +1514,8 @@ function filterBy(buttonID) {
   }
   //Filter based on the button and whether it should be included or excluded.
   filter(button, buttonID, include);
-  checkFilterAll()
-  hideTables();
+  if(!checkFilterAll())
+    hideTables();
 }
 
 function filter(button, buttonID, include) {
@@ -1527,7 +1527,6 @@ function filter(button, buttonID, include) {
   for (i = 0; i < tables.length; i++) { // Grab each table.
     currentTable = tables[i];
     if(currentTable.id !== "names"){
-      console.log(currentTable.id);
       tableIDReal = currentTable.id;
       //Hide unwanted tables.
       if(include)
@@ -1538,12 +1537,13 @@ function filter(button, buttonID, include) {
   }
   //Change the backgorund color of the buttons when they're selected.
   if (button.style.backgroundColor == "lightgrey")
-  button.style.backgroundColor = whitesmoke;
+    button.style.backgroundColor = whitesmoke;
   else
-  button.style.backgroundColor = "lightgrey";
+    button.style.backgroundColor = "lightgrey";
 }
 
 function checkFilterAll() {
+  console.log("Checking Filter All");
   var table, i, j, filterBar;
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
@@ -1557,6 +1557,7 @@ function checkFilterAll() {
 }
 
 function filterAll() {
+console.log("Filtering All");
   var tables, i, currentRow, filterBar;
   var whitesmoke = "#f1f1f1";
   filterBar = document.getElementById("leftSidebar");
@@ -1568,7 +1569,8 @@ function filterAll() {
   tables = document.getElementsByTagName("table");
   //Get the TR tags from the table.
   for (i = 0; i < tables.length; i++) {
-    filterInTable(tables[i].id);
+    if(tables[i].id !== "names")
+      filterInTable(tables[i].id);
   }
 }
 
