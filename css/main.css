@@ -100,7 +100,7 @@ body.toggled .place {
 }
 
 /*.padding {
-  margin-bottom: 5%;  
+  margin-bottom: 5%;
 }*/
 
 table, th {
@@ -631,6 +631,7 @@ select#sortList {
 /* Table wrappers */
 
 .table-wrapper {
+  min-width: 530px;
   border: solid #000;
   border-width: 4px;
   margin-bottom: 30px;
