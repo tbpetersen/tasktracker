@@ -1714,3 +1714,12 @@ function isTableHidden(table){
   return true;
 }
 /*---------------------------End of Hiding table------------------------------*/
+
+/*----------------------------Collapsable Menu--------------------------------*/
+$(document).on('click', '.navbar-collapse.in',function(e) {
+    if( ($(e.target).is('button') || $(e.target).is('a'))
+      && $(e.target).attr('class') != 'dropdown-toggle' ) 
+    {
+        $(this).collapse('hide');
+    }
+});
