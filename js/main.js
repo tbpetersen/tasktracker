@@ -161,6 +161,7 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 {
   // Find the parent, table-wrapper, and get table
   var table = $(this).parent().next();
+  console.log(table);
 
   if (isEmpty(table))
   {
@@ -172,19 +173,26 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 
 function deleteTablePrompt(tableName) {
   $("#delTableNotif").modal("show");
-  $("#delTableConfirm").unbind('click');
+  $("#delTableConfirm").unbind("click");
+  $("#delTableNotif").unbind("keyup");
+
+  var removeTable = function() {
+    $("#delTableNotif").modal("hide");
+    deleteTable(tableName);
+  }
 
   // Enter keypress for 'Okay'
   $('#delTableNotif').keyup(function (e) {
+    e.preventDefault();
+
     var key = e.which;
     if (key == 13) {  // the enter key code
-      $('#delTableConfirm').click();
+      removeTable();
     }
   });
 
   $("#delTableConfirm").click(function() {
-    $("#delTableNotif").modal("hide");
-    deleteTable(tableName);
+    removeTable();
   });
 }
 
@@ -240,11 +248,14 @@ function deleteTable(tableName) {
   }
 
   // Delete wrapper and table
-  var wrapperName = tableName[0].id + wrapperSuffix;
+  // var wrapperName = tableName[0].id + wrapperSuffix;
+  var wrapperName = tableName.parent().attr("id");
   var wrapper = document.getElementById(wrapperName);
-  wrapper.remove();
+  console.log(wrapper);
 
   tableName.remove();
+  wrapper.remove();
+
   $.notify({
     icon: "fa fa-trash",
     message: "Table deleted."
