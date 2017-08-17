@@ -159,7 +159,7 @@
         if (typeof content === 'string') {
             this.modalBoxContent.innerHTML = content;
         } else {
-            this.modalBoxContent.innerHTML = "";
+            //this.modalBoxContent.innerHTML = "";
             this.modalBoxContent.appendChild(content);
         }
     };
