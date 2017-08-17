@@ -162,7 +162,6 @@ $(".main").on("click", "#deleteTableBtn", function(e)
   // Find the parent, table-wrapper, and get table
   var table = $(this).parent().next();
 
-  console.log(table);
   if((table[0].id === "Unsorted") && !(isEmpty(table))) {
     deleteUnsorted();
     return; 
@@ -177,14 +176,14 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 });
 
 function deleteUnsorted() {
-  $("#delUnsorted").modal("show");
-  $("#delTableConfirm").unbind('click');  
+  $('#delUnsorted').modal('show');
+  $('#confirm').unbind('click');  
   
   // Enter keypress for 'Okay'
-  $('#delTableNotif').keypress(function (e) {
+  $('#delUnsorted').keyup(function (e) {
     var key = e.which;
     if (key == 13) {  // the enter key code
-      $('#delTableConfirm').click();
+      $('#confirm').click();
     }
   }); 
 }
@@ -194,12 +193,12 @@ function deleteTablePrompt(tableName) {
   $("#delTableConfirm").unbind('click');
 
   // Enter keypress for 'Okay'
-  $('#delTableNotif').keypress(function (e) {
+  $('#delTableNotif').keyup(function (e) {
     var key = e.which;
     if (key == 13) {  // the enter key code
       $('#delTableConfirm').click();
     }
-  });   
+  });
 
   $("#delTableConfirm").click(function() {
     $("#delTableNotif").modal("hide");
@@ -212,7 +211,7 @@ function deleteTablePrompt(tableName) {
 var tableNumber = 1;
 function createNewTable() {
   $.notify({
-    icon: "glyphicon glyphicon-info-sign",
+    icon: "glyphicon glyphicon-plus-sign",
     message: "Table created."
   }, {
     type: "info",
@@ -235,6 +234,10 @@ function deleteTable(tableName) {
     if(document.getElementById("Unsorted") == null) {
       createTable("Unsorted", false);
     }
+
+    // For when unsorted table is empty but still exists & table being deleted
+    // is not empty, remove 'place' class before adding new rows
+    $("#Unsorted").find("tbody").removeClass("place");
 
     // For each row, make a new Task and create a row for it in the unsorted table
     var info = tableName[0].tBodies[0].rows;
@@ -304,7 +307,7 @@ function populateZend() {
   for (var i = 0; i < zendCat.length; i++) {
     for (var j = 0; j < user.tasks.length; j++) {
       if (user.tasks[j].category == zendCat[i]) {
-        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() + 
+        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() +
                                       (user.tasks[j].category).substring(1);
         if (document.getElementById(capCat) == null) {
           createTable(capCat, false);
@@ -407,52 +410,86 @@ $(".main").on("click", "#tableTitle", function() {
   var $table = $title.parent().next();
   var inputText;
   var $input = $('<input/>').val( $title.text() );
-  $input.focus(function() { this.select(); });  // Selects all text
+  var numKeyPress = 0;
+  //Only allow changing of names for tables that arent Unsorted.
+  if(this.innerHTML !== "Unsorted"){
+    $input.focus(function() { this.select(); });  // Selects all text
 
-  //Update filters when table titles are changed.
-  $input.on("focusin", function(){
-    const inputStay = this.value;
-    inputText = inputStay;
-  });
+    //Update filters when table titles are changed.
+    $input.on("focusin", function(){
+      const inputStay = this.value;
+      inputText = inputStay;
+    });
 
-  $input.on("input", function(){
-    if(this.value.length === 1 && this.value !== this.value.toUpperCase())
-      this.value = this.value.charAt(0).toUpperCase();
-  });
-  $input.on('focusout', function (e){
-    if(getFilters().includes(this.value)){
-        alert("Please rename this table as there is already one with this name!");
+    $input.on("focusout", function(){
+      if(!this.value || isEmptyString(this.value))
         this.value = inputText;
+      updateFilters();
+    });
+
+    $input.on("input", function(){
+      if(this.value.length === 1 && this.value !== this.value.toUpperCase())
+        this.value = this.value.charAt(0).toUpperCase();
+    });
+
+    $title.replaceWith($input);
+
+    var save = function() {
+      var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
+      var $closedInput = $input.val().split(" ").join("_");
+      var $id = $closedInput + wrapperSuffix;
+
+      // Update table and wrapper ID
+      $table.attr("id", $closedInput);
+      $tableWrapper.attr("id", $id);
+      $input.replaceWith($titleStr);
+    };
+
+    // Enter key exits form
+    $input.keyup(function(e) {
+      ++numKeyPress;
+
+      if (e.which === 13 || e.which === 27) {
+        //Get the name of the table that you are currently working with.
+        var table = this.parentNode.parentNode.id
+        table = table.substring(0, table.indexOf("_table"));
+        table = table.split("_").join(" ");
+        //Check if the new table name is the same as others.
+        if (numKeyPress > 1 && getFilters().includes(this.value) && this.value !== table) {
+          alert("Please rename this table as there is already one with the name \"" + this.value + "\"");
+          this.value = inputText;
+        }
+        else {
+          keyPressed = 0;
+          updateFilters();
+          $input.blur();
+          return;
+        }
       }
-    updateFilters();
-  });
-
-  $title.replaceWith($input);
-
-  var save = function() {
-    var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
-    var $closedInput = $input.val().split(" ").join("_");
-    var $id = $closedInput + wrapperSuffix;
-
-    // Update table and wrapper ID
-    $table.attr("id", $closedInput);
-    $tableWrapper.attr("id", $id);
-    $input.replaceWith($titleStr);
-  };
-
-  // Enter key exits form
-  $input.keypress(function(e) {
-    if (e.which == 13) {
-      $input.blur(); // Exits input focus
-      return;
     }
-  });
+  )};
 
   /** Avoid callbacks leftovers taking memory when input disappears
       after clicking away
   */
   $input.one('blur', save).focus();
 });
+
+/* Name: isEmptyString
+   Purpose: Tell whether the string is empty or not.
+   Description: Runs through the string looking for anything that isn't an empty
+    space and returns true or false if the string is empty.
+   Parameter: String - The string to be checked if it's empty or not.
+   Return: Boolean - Whether the string is empty or not.
+*/
+function isEmptyString(string){
+  var i;
+  for(i = 0; i < string.length; i++){
+    if(string.charAt(i) !== ' ')
+      return false;
+  }
+  return true;
+}
 
 function populateTable(task, tableName, index) {
   var table = document.getElementById(tableName);
@@ -556,7 +593,7 @@ function draggableRows(bool) {
     }
   });
   $("#sortable").disableSelection();
- 
+
   if(!bool) {
     $(".sortable").sortable({connectWith: ".sortable"});
   }
@@ -674,6 +711,7 @@ $("#reorder").click(function(e) {
       draggableRows(true);
     }
     modal.close();
+    updateFilters();
   });
 
   // open modal
@@ -682,13 +720,13 @@ $("#reorder").click(function(e) {
 
 function listTables() {
 
-  // Get the names of all tables 
+  // Get the names of all tables
   var tables = document.getElementsByClassName('tables');
   var tableNames = [];
   for(var i = 0; i < tables.length; i++) {
     tableNames.push(tables[i].id);
   }
-  
+
   // Create table structure
   var table = document.createElement("TABLE");
 
@@ -732,7 +770,7 @@ function listTables() {
     titleCell.appendChild(textNode1);
     row.appendChild(titleCell);
     body.appendChild(row);
-  } 
+  }
 
   //$(".sortable").sortable({containment: "#names", scroll: false});
   return table;
@@ -1538,8 +1576,8 @@ function filterBy(buttonID) {
   }
   //Filter based on the button and whether it should be included or excluded.
   filter(button, buttonID, include);
-  checkFilterAll()
-  hideTables();
+  if(!checkFilterAll())
+    hideTables();
 }
 
 function filter(button, buttonID, include) {
@@ -1550,12 +1588,14 @@ function filter(button, buttonID, include) {
   tables = document.getElementsByTagName("table");
   for (i = 0; i < tables.length; i++) { // Grab each table.
     currentTable = tables[i];
-    tableIDReal = currentTable.id;
-    //Hide unwanted tables.
-    if(include)
+    if(currentTable.id !== "names"){
+      tableIDReal = currentTable.id;
+      //Hide unwanted tables.
+      if(include)
       filterIn(tableIDReal, button)
-    else
+      else
       filterOut(tableIDReal, button)
+    }
   }
   //Change the backgorund color of the buttons when they're selected.
   if (button.style.backgroundColor == "lightgrey")
@@ -1589,7 +1629,8 @@ function filterAll() {
   tables = document.getElementsByTagName("table");
   //Get the TR tags from the table.
   for (i = 0; i < tables.length; i++) {
-    filterInTable(tables[i].id);
+    if(tables[i].id !== "names")
+      filterInTable(tables[i].id);
   }
 }
 
@@ -1638,7 +1679,6 @@ function filterInTable(tableID){
 
 function isGrey(table){
   //Get the background color of the row.
-  console.log(table);
   var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
   //Is the background ofthe button grey?
   if(buttonColor == "lightgrey")
@@ -1715,3 +1755,12 @@ function isTableHidden(table){
   return true;
 }
 /*---------------------------End of Hiding table------------------------------*/
+
+/*----------------------------Collapsable Menu--------------------------------*/
+$(document).on('click', '.navbar-collapse.in',function(e) {
+    if( ($(e.target).is('button') || $(e.target).is('a'))
+      && $(e.target).attr('class') != 'dropdown-toggle' ) 
+    {
+        $(this).collapse('hide');
+    }
+});

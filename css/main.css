@@ -576,21 +576,22 @@ select#sortList {
   right: 0;
   background-color: #dd6367;
   color: black;
+  padding: inherit;
 }
 
 
 /* Scroll to top button */
 
 .scrollTop {
-  width: 42px;
-  height: 42px;
-  line-height: 42px;
+  width: 52px;
+  height: 52px;
+  line-height: 52px;
   text-align: center;
-  background-color: rgba(164, 164, 164, 0.7);
+  background-color: transparent;
   font-weight: bold;
-  font-size: 42px;
+  font-size: 52px;
   position: fixed;
-  margin: 10px;
+  margin: 20px;
   bottom: 0%;
   right: 0%;
   display: none;
@@ -600,11 +601,6 @@ select#sortList {
 .scrollTop.toggled {
   right: 20%;
 }
-
-.scrollTop:hover {
-  background-color: rgba(164, 164, 164, 1);
-}
-
 
 /* Delete Table Notification */
 
