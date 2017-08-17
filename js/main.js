@@ -150,6 +150,11 @@ $(".main").on("click", "#deleteTableBtn", function(e)
   // Find the parent, table-wrapper, and get table
   var table = $(this).parent().next();
 
+  if((table[0].id === "Unsorted") && !(isEmpty(table))) {
+    deleteUnsorted();
+    return; 
+  }
+
   if (isEmpty(table))
   {
     deleteTable(table);
@@ -157,6 +162,19 @@ $(".main").on("click", "#deleteTableBtn", function(e)
   }
   deleteTablePrompt(table);
 });
+
+function deleteUnsorted() {
+  $('#delUnsorted').modal('show');
+  $('#confirm').unbind('click');  
+  
+  // Enter keypress for 'Okay'
+  $('#delUnsorted').keyup(function (e) {
+    var key = e.which;
+    if (key == 13) {  // the enter key code
+      $('#confirm').click();
+    }
+  }); 
+}
 
 function deleteTablePrompt(tableName) {
   $("#delTableNotif").modal("show");
@@ -339,7 +357,8 @@ function createTable(tableName, isNewTable) {
   table.appendChild(body)
   tableWrapper.appendChild(table);
   mainDiv.appendChild(tableWrapper);
-  if(tableName !== "Unsorted")
+
+  //if(tableName !== "Unsorted")
     makeButtons(tableName);
 }
 
@@ -566,6 +585,9 @@ function draggableRows(bool) {
   if(!bool) {
     $(".sortable").sortable({connectWith: ".sortable"});
   }
+  /*else {
+    $(".sortable").sortable({containment: ".tingle-modal"});
+  }*/
   //$("#sortable").disableSelection();
 }
 
@@ -620,9 +642,7 @@ function makeButtons(tableName) {
 }
 /* End populating/setting up tables */
 
-$("#reorder").click(function(e)
-{
-  draggableRows(true);
+$("#reorder").click(function(e) {
   e.preventDefault();
 
   // instantiate new modal
@@ -634,12 +654,12 @@ $("#reorder").click(function(e)
     //cssClass: ['custom-class-1', 'custom-class-2'],
     onOpen: function() {
       draggableRows(true);
+      $('#reorder').prop('disabled', true);
     },
     onClose: function() {
     },
     beforeClose: function() {
-      draggableRows(true);
-
+      $('#reorder').prop('disabled', false);
       return true; // close the modal
     }
   });
@@ -649,6 +669,20 @@ $("#reorder").click(function(e)
 
   var table = listTables();
   modal.setContent(table);
+
+  $("#addTable").click(function(e) {
+    e.preventDefault();
+
+    var table = document.getElementById("names");
+    if(table) {
+      //deleteTable(table);
+      modal.setContent('<h3>Reorder Tables</h3>');
+
+      var table = listTables();
+      modal.setContent(table);
+      draggableRows(true);
+    }
+  });
 
   // CANCEL
   modal.addFooterBtn('Cancel', 'tingle-btn tingle-btn--primary', function() {
@@ -683,7 +717,6 @@ function listTables() {
 
   // Create table structure
   var table = document.createElement("TABLE");
-  //var mainDiv = document.getElementById("main-container");
 
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
@@ -701,7 +734,6 @@ function listTables() {
   table.setAttribute("id", "names");
   //table.setAttribute("class", "tables");
   body.setAttribute("class", "sortable");
-  //body.classList.add("modal");
   row.setAttribute("id", "firstRow");
   titleCell.setAttribute("id", "titleCell");
 
@@ -709,9 +741,6 @@ function listTables() {
   head.appendChild(row);
   table.appendChild(head);
   table.appendChild(body)
-  //tableWrapper.appendChild(table);
-  // mainDiv.appendChild(table);
-  //mainDiv.appendChild(tableWrapper);
 
   for(var j = 0; j < tableNames.length; j++) {
 
