@@ -105,6 +105,15 @@ body.toggled .place {
   padding-top: 10px;
 }
 
+.btn, button {
+  background-color: transparent;
+  border-radius: 0
+}
+
+h1, h2, h3 {
+  font-family: 'Roboto', sans-serif;
+}
+
 table, th {
   width: 100%;
   margin-bottom: 5%;
@@ -243,6 +252,10 @@ select#sortList {
   border: none;
   outline: none;
   display: block;
+}
+
+.leftSidebarItem.btn {
+  text-align: left;
 }
 
 .leftSidebarItem:hover {
@@ -426,11 +439,6 @@ select#sortList {
   box-shadow: none;
 }
 */
-
-.btn, button {
-  background-color: transparent;
-  border-radius: 0
-}
 
 /*.btn, button:not(.navbar-toggle .hamburger):active {
   background-color: transparent;
@@ -628,6 +636,7 @@ select#sortList {
   right: 0%;
   display: none;
   transition: right 0.5s ease;
+  color: #000;
 }
 
 .scrollTop.toggled {
