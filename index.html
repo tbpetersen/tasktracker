@@ -22,10 +22,7 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
-  
-  <!--COMMENT THIS BACK IN FOR OLD FONT, OTHERWISE ROBOTO-->
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  
+
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/animate.css">
   <link rel="stylesheet" href="css/tingle.css">
@@ -97,7 +94,7 @@
             </ul>
           </li>
           <li id="searchBar">
-            <form onsubmit="return search()" class="navbar-form navbar-right">
+            <form onsubmit="return search()" class="navbar-form">
               <div class="form-group has-feedback">
                 <label class="control-label sr-only">Search</label>
                 <input type="text" class="form-control" placeholder="Search" />
@@ -123,8 +120,8 @@
 <!-- End of info panel -->
 
 <!-- FILTER SIDEBAR -->
-  <div class="w3-sidebar w3-light-gray w3-bar-block" id="leftSidebar">
-    <h3 class="w3-bar-item" id="filters">Filters</h3>
+  <div id="leftSidebar">
+    <h3 id="filters">Filters</h3>
   </div>
   <!-- END FILTER SIDEBAR -->
 
