@@ -23,7 +23,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
 
-  <link rel="stylesheet" href="css/main.css">
+  <link id="main_style" rel="stylesheet" href="css/night.css">
   <link rel="stylesheet" href="css/animate.css">
   <link rel="stylesheet" href="css/tingle.css">
 
@@ -49,8 +49,10 @@
           <span class="glyphicon glyphicon-menu-hamburger"></span>
         </button>
 
-        <a class="navbar-brand" href="index.html"><img src="images/logo.png"
-          id=logo alt="SDSC">
+<!--         <a class="navbar-brand" href="index.html"><img src="images/logo.png"
+          id=logo alt="SDSC"> -->
+        <a class="navbar-brand" href="index.html"><img src="images/logo-invert.png"
+          id="logo" alt="SDSC">
         </a>
       </div>
 
@@ -59,7 +61,7 @@
       <!-- Nav links -->
       <div class="collapse navbar-collapse" id="navbar-links">
         <ul class="nav navbar-nav">
-          <li><button class="btn" onclick="changeColor()"><span class="glyphicon glyphicon-adjust"></span></button></li>
+          <li><button class="btn" id="changeThemeBtn"><span class="glyphicon glyphicon-adjust"></span></button></li>
 
           <!-- <li><button class="btn" id=addTable onclick="createNewTable()"><span class="glyphicon glyphicon-plus"></span> Create Table</button></li> -->
 

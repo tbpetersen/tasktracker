@@ -1357,40 +1357,24 @@ function closeLeft() {
 
 /*-------------------- THEME CHANGE ------------------*/
 
-var alternate = 1;
+$("#changeThemeBtn").click(function() {
+  var mainTheme = "css/main.css";
+  var nightTheme = "css/night.css";
+  var currentTheme = $('#main_style').attr("href");
 
-function changeColor() {
-  var body = document.body.style;
-  var ticketBarHead = document.getElementById("info-header").style;
-  var ticketHeads = document.getElementsByClassName("panel-heading");
-  var tickets = document.getElementsByClassName("panel-body");
-  var tableHeads = document.getElementsByTagName("thead");
+  if (currentTheme === mainTheme)
+  {
+    $("#main_style").attr("href", nightTheme);
+    $("#logo").attr("src", "images/logo-invert.png");
 
-  if (alternate == 1) {
-    body.backgroundColor = "#1E1E1E";
-    body.color = "lightgrey";
-    ticketBarHead.backgroundColor = "#1E1E1E";
-    for (var i = 0; i < tickets.length; i++) {
-      tickets[i].style.backgroundColor = "#7E7E7E";
-      ticketHeads[i].style.backgroundColor = "#6E6E6E";
-    }
-    for (var i = 0; i < tableHeads.length; i++) {
-      tableHeads[i].style.color = "white";
-    }
-  } else {
-    body.backgroundColor = "#FFF";
-    body.color = "#333";
-    ticketBarHead.backgroundColor = "#CCC";
-    for (var i = 0; i < tickets.length; i++) {
-      tickets[i].style.backgroundColor = "#FFF";
-      ticketHeads[i].style.backgroundColor = "#F5F5F5";
-    }
-    for (var i = 0; i < tableHeads.length; i++) {
-      tableHeads[i].style.color = "#333";
-    }
   }
-  alternate = alternate % 2 + 1; //Increment/decrement alternate.
-}
+  else
+  {
+    $("#main_style").attr("href", mainTheme);
+    $("#logo").attr("src", "images/logo.png");
+  }
+});
+
 /* ------------------ END THEME CHANGE ------------------ */
 
 /* ------------------ TICKET PANEL ------------------ */
