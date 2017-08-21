@@ -1510,7 +1510,7 @@ function createFilterButton(filter){
   var newFilter = document.createElement("button");
   filter = filter.charAt(0).toUpperCase() + filter.slice(1);
   newFilter.setAttribute("id", "filter " + filter);
-  newFilter.setAttribute("class", "w3-bar-item w3-button");
+  newFilter.setAttribute("class", "leftSidebarItem btn");
   newFilter.setAttribute("onclick", "filterBy(this.id)");
   newFilter.innerText = filter;
   leftSidebar.appendChild(newFilter);
