@@ -153,7 +153,7 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 
   if((table[0].id === "Unsorted") && !(isEmpty(table))) {
     deleteUnsorted();
-    return; 
+    return;
   }
 
   if (isEmpty(table))
@@ -166,15 +166,15 @@ $(".main").on("click", "#deleteTableBtn", function(e)
 
 function deleteUnsorted() {
   $('#delUnsorted').modal('show');
-  $('#confirm').unbind('click');  
-  
+  $('#confirm').unbind('click');
+
   // Enter keypress for 'Okay'
   $('#delUnsorted').keyup(function (e) {
     var key = e.which;
     if (key == 13) {  // the enter key code
       $('#confirm').click();
     }
-  }); 
+  });
 }
 
 function deleteTablePrompt(tableName) {
@@ -1550,7 +1550,8 @@ function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
   var button = document.getElementById(buttonID);
   var include = true;
-  if (button.style.backgroundColor == "lightgrey")
+
+  if (button.style.backgroundColor === "lightgrey" || button.style.backgroundColor === "rgb(23, 23, 23)")
     include= false;
   //If View All is slected, reset everything to the defualt.
   if (category == "View All") {
@@ -1564,6 +1565,8 @@ function filterBy(buttonID) {
 }
 
 function filter(button, buttonID, include) {
+  var nightTheme = "css/night.css";
+  var currentTheme = $('#main_style').attr("href");
   var table, tableIDReal, currentRow, i, j;
   var whitesmoke = "#f1f1f1";
   var category = document.getElementById(buttonID).innerHTML;
@@ -1575,16 +1578,32 @@ function filter(button, buttonID, include) {
       tableIDReal = currentTable.id;
       //Hide unwanted tables.
       if(include)
-      filterIn(tableIDReal, button)
+        filterIn(tableIDReal, button)
       else
-      filterOut(tableIDReal, button)
+        filterOut(tableIDReal, button)
     }
   }
   //Change the backgorund color of the buttons when they're selected.
-  if (button.style.backgroundColor == "lightgrey")
-    button.style.backgroundColor = whitesmoke;
-  else
-    button.style.backgroundColor = "lightgrey";
+  if(currentTheme === nightTheme){
+    if (button.style.backgroundColor == "rgb(23, 23, 23)"){
+      button.style.border = "none";
+      button.style.backgroundColor = "rgb(33, 33, 33)";
+    }
+    else{
+      button.style.border = "thin solid grey";
+      button.style.backgroundColor = "rgb(23, 23, 23)";
+    }
+  }
+  else{
+    if (button.style.backgroundColor == "lightgrey"){
+      button.style.border = "none";
+      button.style.backgroundColor = whitesmoke;
+    }
+    else{
+      button.style.border = "thin solid grey";
+      button.style.backgroundColor = "lightgrey";
+    }
+  }
 }
 
 function checkFilterAll() {
@@ -1593,21 +1612,30 @@ function checkFilterAll() {
   var buttons = filterBar.getElementsByTagName("BUTTON");
   for (i = 0; i < buttons.length; i++) {
     //Check if any of the filter buttons are selected.
-    if (buttons[i].style.backgroundColor == "lightgrey")
+    if (buttons[i].style.backgroundColor === "lightgrey" ||
+      buttons[i].style.backgroundColor === "rgb(23, 23, 23)"){
       return false;
+    }
   }
   filterAll();
   return true;
 }
 
 function filterAll() {
+  var nightTheme = "css/night.css";
+  var currentTheme = $('#main_style').attr("href");
   var tables, i, currentRow, filterBar;
   var whitesmoke = "#f1f1f1";
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
   //If the Filter All button was pressed, change the button colors to default.
-  for (i = 0; i < buttons.length; i++)
-    buttons[i].style.backgroundColor = whitesmoke;
+  for (i = 0; i < buttons.length; i++){
+    buttons[i].style.border = "none";
+    if(currentTheme == nightTheme)
+      buttons[i].style.backgroundColor = "rgb(33, 33, 33)";
+    else
+      buttons[i].style.backgroundColor = whitesmoke;
+  }
 
   tables = document.getElementsByTagName("table");
   //Get the TR tags from the table.
@@ -1664,7 +1692,7 @@ function isGrey(table){
   //Get the background color of the row.
   var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
   //Is the background ofthe button grey?
-  if(buttonColor == "lightgrey")
+  if(buttonColor == "lightgrey" || buttonColor == "rgb(23, 23, 23)")
     return true;
   return false;
 }
@@ -1742,7 +1770,7 @@ function isTableHidden(table){
 /*----------------------------Collapsable Menu--------------------------------*/
 $(document).on('click', '.navbar-collapse.in',function(e) {
     if( ($(e.target).is('button') || $(e.target).is('a'))
-      && $(e.target).attr('class') != 'dropdown-toggle' ) 
+      && $(e.target).attr('class') != 'dropdown-toggle' )
     {
         $(this).collapse('hide');
     }
