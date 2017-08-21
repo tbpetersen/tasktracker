@@ -250,6 +250,7 @@ select#sortList {
 
 .leftSidebarItem.btn {
   text-align: left;
+  background-color: #212121;
 }
 
 .leftSidebarItem:hover {
@@ -411,7 +412,7 @@ select#sortList {
 }
 
 .navbar-toggle, .navbar-toggle:hover, .navbar-toggle:active {
-    background: #171717 !important; 
+    background: #171717 !important;
     color: #E0E0E0 !important;
 }
 

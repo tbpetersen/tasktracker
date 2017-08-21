@@ -1361,6 +1361,7 @@ $("#changeThemeBtn").click(function() {
     $("#main_style").attr("href", mainTheme);
     $("#logo").attr("src", "images/logo.png");
   }
+  filterAll();
 });
 
 /* ------------------ END THEME CHANGE ------------------ */

@@ -677,21 +677,15 @@ select#sortList {
 /* Table wrappers */
 
 .table-wrapper {
-<<<<<<< HEAD
   min-width: 530px;
   font-family: 'Roboto', sans-serif;
   border: solid #000;
   border-width: 4px;
-  margin-bottom: 30px;
-=======
   background-color: #fcfcfc;
   box-shadow: 0px 0px 5px gray;
-/*  border: solid #000;
-  border-width: 4px; */
   border-radius: 10px;
   margin-bottom: 50px;
   padding-top: 10px;
->>>>>>> origin/master
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 10px;
