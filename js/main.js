@@ -434,6 +434,7 @@ $(".main").on("click", "#tableTitle", function() {
       if(!this.value || isEmptyString(this.value))
         this.value = inputText;
       updateFilters();
+      filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay selected but the buttons become unhighlighted. Temp fix implemented to filter all when focus out.
     });
 
     $input.on("input", function(){
@@ -1391,9 +1392,8 @@ $("body").on("click", "#changeThemeBtn", function(e) {
     $("#main_style").attr("href", mainTheme);
     $("#logo").attr("src", "images/logo.png");
   }
-  //filterAll(); //TODO Temporary fix. Allow to transition to night mode without filtering all while having some filtered.
   currentTheme = $('#main_style').attr("href");
-  updateFilterColors(currentTheme);
+  changeFilterColors(currentTheme);
 });
 
 /* ------------------ END THEME CHANGE ------------------ */
@@ -1573,7 +1573,7 @@ function updateFilters(){
   });
 }
 
-function updateFilterColors(currentTheme){
+function changeFilterColors(currentTheme){
   var buttons = $('#leftSidebar')[0].getElementsByTagName("button")
   var isNightMode = currentTheme == "css/night.css";
   for(var i = 0; i < buttons.length; ++i){
