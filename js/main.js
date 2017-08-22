@@ -1589,6 +1589,10 @@ function filter(button, buttonID, include) {
   var whitesmoke = "#f1f1f1";
   var category = document.getElementById(buttonID).innerHTML;
   var currentRowHTML;
+  var mainTheme = "css/main.css";
+  var nightTheme = "css/night.css";
+  var currTheme = $('#main_style').attr("href");
+
   tables = document.getElementsByTagName("table");
   for (i = 0; i < tables.length; i++) { // Grab each table.
     currentTable = tables[i];
