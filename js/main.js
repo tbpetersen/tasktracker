@@ -1392,6 +1392,8 @@ $("#changeThemeBtn").click(function() {
     $("#logo").attr("src", "images/logo.png");
   }
   //filterAll(); //TODO Temporary fix. Allow to transition to night mode without filtering all while having some filtered.
+  currentTheme = $('#main_style').attr("href");
+  updateFilterColors(currentTheme);
 });
 
 /* ------------------ END THEME CHANGE ------------------ */
@@ -1569,6 +1571,22 @@ function updateFilters(){
     else
       createFilterButton(currentNode.innerHTML);
   });
+}
+
+function updateFilterColors(currentTheme){
+  var buttons = $('#leftSidebar')[0].getElementsByTagName("button")
+  var isNightMode = currentTheme == "css/night.css";
+  for(var i = 0; i < buttons.length; ++i){
+    if(isNightMode){
+      if(buttons[i].style.backgroundColor === "lightgrey")
+        buttons[i].style.backgroundColor = "rgb(23, 23, 23)";
+    }
+    else {
+      if (buttons[i].style.backgroundColor === "rgb(23, 23, 23)") {
+        buttons[i].style.backgroundColor = "lightgrey";
+      }
+    }
+  }
 }
 
 function clearFilters(){
