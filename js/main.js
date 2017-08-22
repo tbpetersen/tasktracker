@@ -1375,7 +1375,8 @@ function closeLeft() {
 
 /*-------------------- THEME CHANGE ------------------*/
 
-$("#changeThemeBtn").click(function() {
+// $("#changeThemeBtn").click(function() {
+$("body").on("click", "#changeThemeBtn", function(e) {
   var mainTheme = "css/main.css";
   var nightTheme = "css/night.css";
   var currentTheme = $('#main_style').attr("href");
@@ -1384,7 +1385,6 @@ $("#changeThemeBtn").click(function() {
   {
     $("#main_style").attr("href", nightTheme);
     $("#logo").attr("src", "images/logo-invert.png");
-
   }
   else
   {
@@ -1580,10 +1580,15 @@ function updateFilterColors(currentTheme){
     if(isNightMode){
       if(buttons[i].style.backgroundColor === "lightgrey")
         buttons[i].style.backgroundColor = "rgb(23, 23, 23)";
+      else
+        buttons[i].style.backgroundColor = "rgb(33, 33, 33)"
     }
     else {
       if (buttons[i].style.backgroundColor === "rgb(23, 23, 23)") {
         buttons[i].style.backgroundColor = "lightgrey";
+      }
+      else{
+        buttons[i].style.backgroundColor = "#f1f1f1";
       }
     }
   }
@@ -1622,6 +1627,9 @@ function filter(button, buttonID, include) {
   var nightLight = "#212121";
   var category = document.getElementById(buttonID).innerHTML;
   var currentRowHTML;
+  var mainTheme = "css/main.css";
+  var nightTheme = "css/night.css";
+  var currTheme = $('#main_style').attr("href");
 
   tables = document.getElementsByTagName("table");
   var buttonColor = button.style.backgroundColor;

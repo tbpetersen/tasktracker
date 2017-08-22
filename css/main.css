@@ -79,7 +79,7 @@ body {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   height: 100%;
-  padding-top: 70px
+  padding-top: 70px;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -99,8 +99,8 @@ body.toggled .place {
   width:1208.110px; /*hard coding for wrappers*/
   position:absolute;
 }
+
 .main {
-  margin-top: 65px;
   padding-top: 10px;
 }
 
@@ -422,6 +422,11 @@ select#sortList {
   overflow-x: hidden;
 }
 
+.navbar-collapse li>button {
+  width: 100%;
+  text-align: left;
+}
+
 #navbar-links li:not(#searchBar):hover {
   background-color: #dcdcdc;
 }
@@ -653,6 +658,10 @@ select#sortList {
   padding-right: 0 !important;
 }
 
+.modal-header, .modal-body, .modal-footer {
+  border-style: none;
+}
+
 .modal-header {
   white-space: nowrap;
   font-size: 30px;
@@ -681,8 +690,6 @@ select#sortList {
 .table-wrapper {
   min-width: 530px;
   font-family: 'Roboto', sans-serif;
-  border: solid #000;
-  border-width: 4px;
   background-color: #fcfcfc;
   box-shadow: 0px 0px 5px gray;
   border-radius: 10px;
