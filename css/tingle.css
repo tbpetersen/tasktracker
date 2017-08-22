@@ -201,6 +201,7 @@
   text-decoration: none;
   font-size: inherit;
   font-family: inherit;
+  font-weight: bold;
   line-height: normal;
   cursor: pointer;
   -webkit-transition: background-color .4s ease;
@@ -213,7 +214,7 @@
 }
 
 .tingle-btn--danger {
-  background-color: #dd6367;
+  background-color: #A2270C;
   float: right;
 }
 
