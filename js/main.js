@@ -139,6 +139,7 @@ $(document).ready(function() {
         populateTrello();
         populateZend();
         draggableRows(false);
+        egg();
       });
     });
   });
@@ -514,7 +515,12 @@ function formatDate(date) {
 
   return date;
 }
-
+function strip(html)
+{
+   var tmp = document.createElement("DIV");
+   tmp.innerHTML = html;
+   return tmp.textContent || tmp.innerText || "";
+}
 function addRow(task, tableName, index) {
 
   // Get title of task
@@ -608,10 +614,6 @@ function draggableRows(bool) {
   if(!bool) {
     $(".sortable").sortable({connectWith: ".sortable"});
   }
-  /*else {
-    $(".sortable").sortable({containment: ".tingle-modal"});
-  }*/
-  //$("#sortable").disableSelection();
 }
 
 function makeButtons(tableName) {
@@ -688,7 +690,7 @@ $("#reorder").click(function(e) {
   });
 
   // set content
-  modal.setContent('<h3>Reorder Tables</h3>');
+  modal.setContent('<h3><font color="#A2270C">Reorder Tables</font></h3>');
 
   var table = listTables();
   modal.setContent(table);
@@ -699,7 +701,7 @@ $("#reorder").click(function(e) {
     var table = document.getElementById("names");
     if(table) {
       //deleteTable(table);
-      modal.setContent('<h3>Reorder Tables</h3>');
+      modal.setContent('<h3><font color="#A2270C">Reorder Tables</font></h3>');
 
       var table = listTables();
       modal.setContent(table);
@@ -714,6 +716,8 @@ $("#reorder").click(function(e) {
 
   // SAVE: reorder tables
   modal.addFooterBtn('Save', 'tingle-btn tingle-btn--danger', function() {
+    var table = document.getElementById("names");
+
     for(var i = 1; i < table.rows.length - 1; i++) {
       var id = (table.rows[i].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
       var id2 = (table.rows[i + 1].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
@@ -728,6 +732,19 @@ $("#reorder").click(function(e) {
   // open modal
   modal.open();
 });
+
+function egg() {
+  var egg = new Egg();
+  egg
+    .addCode("b,o,b", function() {
+      jQuery('#egggif').fadeIn(500, function() {
+        window.setTimeout(function() { jQuery('#egggif').hide(); }, 5000);
+      });
+    })
+    .addHook(function(){
+      document.body.style.backgroundImage = "url('js/parrot.gif')";
+    }).listen();
+}
 
 function listTables() {
 
