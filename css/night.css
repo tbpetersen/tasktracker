@@ -638,10 +638,27 @@ select#sortList {
   padding-right: 0 !important;
 }
 
+.modal-header, .modal-body, .modal-footer {
+  border-style: none;
+}
+
 .modal-header {
   white-space: nowrap;
   font-size: 30px;
   color: #B93C3C;
+  background-color: #171717;
+}
+
+.modal-header #closeModal {
+  color: #E0E0E0;
+}
+
+.modal-body {
+  background-color: #212121;
+}
+
+.modal-footer {
+  background-color: #212121;
 }
 
 #warningLabel {

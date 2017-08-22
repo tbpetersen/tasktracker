@@ -653,6 +653,10 @@ select#sortList {
   padding-right: 0 !important;
 }
 
+.modal-header, .modal-body, .modal-footer {
+  border-style: none;
+}
+
 .modal-header {
   white-space: nowrap;
   font-size: 30px;

@@ -1383,7 +1383,7 @@ $("#changeThemeBtn").click(function() {
   {
     $("#main_style").attr("href", nightTheme);
     $("#logo").attr("src", "images/logo-invert.png");
-
+    
   }
   else
   {
