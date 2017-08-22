@@ -661,6 +661,22 @@ select#sortList {
   background-color: #212121;
 }
 
+.tingle-modal-box {
+  background-color: #212121 !important;
+}
+
+.tingle-btn--primary {
+  background-color: #171717 !important;
+}
+
+.tingle-btn--danger {
+  background-color: #B93C3C !important;
+}
+
+.tingle-modal-box h3 {
+  color: #B93C3C;
+}
+
 #warningLabel {
   font-weight: bold;
   font-size: 30px;

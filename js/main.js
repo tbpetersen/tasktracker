@@ -1374,7 +1374,8 @@ function closeLeft() {
 
 /*-------------------- THEME CHANGE ------------------*/
 
-$("#changeThemeBtn").click(function() {
+// $("#changeThemeBtn").click(function() {
+$("body").on("click", "#changeThemeBtn", function(e) {
   var mainTheme = "css/main.css";
   var nightTheme = "css/night.css";
   var currentTheme = $('#main_style').attr("href");
@@ -1383,17 +1384,14 @@ $("#changeThemeBtn").click(function() {
   {
     $("#main_style").attr("href", nightTheme);
     $("#logo").attr("src", "images/logo-invert.png");
-    
   }
   else
   {
     $("#main_style").attr("href", mainTheme);
     $("#logo").attr("src", "images/logo.png");
   }
-<<<<<<< HEAD
+
   filterAll(); //TODO Temporary fix. Allow to transition to night mode without filtering all while having some filtered.
-=======
->>>>>>> 29615cd1bb306773f74500516f148124d3b47c78
 });
 
 /* ------------------ END THEME CHANGE ------------------ */
