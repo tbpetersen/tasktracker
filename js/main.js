@@ -1361,7 +1361,7 @@ $("#changeThemeBtn").click(function() {
     $("#main_style").attr("href", mainTheme);
     $("#logo").attr("src", "images/logo.png");
   }
-  filterAll();
+  filterAll(); //TODO Temporary fix. Allow to transition to night mode without filtering all while having some filtered.
 });
 
 /* ------------------ END THEME CHANGE ------------------ */
