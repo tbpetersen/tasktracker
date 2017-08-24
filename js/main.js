@@ -667,6 +667,7 @@ function makeButtons(tableName) {
 }
 /* End populating/setting up tables */
 
+/* Reordering tables modal */
 $("#reorder").click(function(e) {
   e.preventDefault();
 
@@ -742,7 +743,9 @@ function egg() {
       });
     })
     .addHook(function(){
-      document.body.style.backgroundImage = "url('js/parrot.gif')";
+      //if("url('js/parrot.gif')") {
+        document.body.style.backgroundImage = "url('js/parrot.gif')";
+      //}
     }).listen();
 }
 
@@ -757,11 +760,9 @@ function listTables() {
 
   // Create table structure
   var table = document.createElement("TABLE");
-
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  //create row and cell element
   row = document.createElement("tr");
   titleCell = document.createElement("th");
 
@@ -772,7 +773,6 @@ function listTables() {
 
   // Name elements
   table.setAttribute("id", "names");
-  //table.setAttribute("class", "tables");
   body.setAttribute("class", "sortable");
   row.setAttribute("id", "firstRow");
   titleCell.setAttribute("id", "titleCell");
@@ -799,10 +799,9 @@ function listTables() {
     row.appendChild(titleCell);
     body.appendChild(row);
   }
-
-  //$(".sortable").sortable({containment: "#names", scroll: false});
   return table;
 }
+/* End modal */
 
 function setupPage() {
   if (!redirectToHTTPS()) {
