@@ -34,12 +34,14 @@ class Task {
       this.lastModified = this.getTimeStampFromString(data.dateLastActivity);
       this.createdAt = this.getTrelloCreationTime(this.id);
       this.setCategory(this, data.idList);
+      this.group = data.nameBoard;
     } else /* Zendesk*/ {
       this.name = data.subject;
       this.desc = data.description;
       this.lastModified = this.getTimeStampFromString(data.updated_at);
       this.createdAt = this.getTimeStampFromString(data.created_at);
       this.category = data.status;
+      this.setGroup(this, data.group_id);
     }
   }
 
@@ -51,6 +53,14 @@ class Task {
   getTimeStampFromString(timeString) {
     let date = new Date(timeString);
     return date.getTime();
+  }
+
+  setGroup(task, groupID){
+    let prom = zendeskGet("groups/" + groupID + ".json");
+    Task.prom.push(prom);
+    prom.then(function(groupData) {
+      task.group = groupData.group.name;
+    })
   }
 
   setCategory(task, listID) {
@@ -937,7 +947,7 @@ function getCardsAndTickets() {
 function getTrelloCards() {
   return new Promise(function(resolve, reject) {
     getTrelloBoards().then(function(boards) {
-        getCardsFromBoard(getBoardsIDs(boards)).then(function(cards) {
+        getCardsFromBoard(boards).then(function(cards) {
             getUsersCards(cards).then(function(usersCards) {
                 resolve(usersCards);
               })
@@ -959,26 +969,21 @@ function getTrelloBoards() {
   return trelloGet("members/me/boards");
 }
 
-function getBoardsIDs(boards) {
-  let boardIDs = new Array();
-  for (let i = 0; i < boards.length; i++) {
-    boardIDs.push(boards[i].id);
-  }
-  return boardIDs;
-}
-
-function getCardsFromBoard(boardsIDs) {
+function getCardsFromBoard(boards) {
+  //TODO trevor
   return new Promise(function(resolve, reject) {
     let boardDataPromises = new Array();
-    for (let i = 0; i < boardsIDs.length; i++) {
-      boardDataPromises.push(trelloGet("boards/" + boardsIDs[i] + "/cards"));
+    for (let i = 0; i < boards.length; i++) {
+      boardDataPromises.push(trelloGet("boards/" + boards[i].id + "/cards"));
     }
     Promise.all(boardDataPromises).then(function(cardArrays) {
         let allCards = new Array();
         for (let i = 0; i < cardArrays.length; i++) {
           let singleArray = cardArrays[i];
           for (let j = 0; j < singleArray.length; j++) {
-            allCards.push(singleArray[j]);
+            let card = singleArray[j];
+            card.nameBoard = boards[i].name;
+            allCards.push(card);
           }
         }
         resolve(allCards);
