@@ -33,15 +33,17 @@ class Task {
       this.desc = data.desc;
       this.lastModified = this.getTimeStampFromString(data.dateLastActivity);
       this.createdAt = this.getTrelloCreationTime(this.id);
-      this.setCategory(this, data.idList);
+      this.category = data.list.name;
       this.group = data.nameBoard;
+      this.requester = null;
     } else /* Zendesk*/ {
       this.name = data.subject;
       this.desc = data.description;
       this.lastModified = this.getTimeStampFromString(data.updated_at);
       this.createdAt = this.getTimeStampFromString(data.created_at);
       this.category = data.status;
-      this.setGroup(this, data.group_id);
+      this.group = data.group.name;
+      this.setRequester(this, data.requester_id)
     }
   }
 
@@ -55,19 +57,12 @@ class Task {
     return date.getTime();
   }
 
-  setGroup(task, groupID){
-    let prom = zendeskGet("groups/" + groupID + ".json");
+  setRequester(task, requesterID) {
+    // TODO Get all the list at once and then store that data so you are not making a new request for each card
+    let prom = zendeskGet("users/" + requesterID);
     Task.prom.push(prom);
-    prom.then(function(groupData) {
-      task.group = groupData.group.name;
-    })
-  }
-
-  setCategory(task, listID) {
-    let prom = trelloGet("lists/" + listID);
-    Task.prom.push(prom);
-    prom.then(function(listData) {
-      task.category = listData.name;
+    prom.then(function(requesterData) {
+      task.requester = requesterData.user;
     })
   }
 }
@@ -139,18 +134,22 @@ $(document).ready(function() {
     getCardsAndTickets().then(function(cardsAndTickets) {
       console.log(cardsAndTickets);
 
-      user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
+      addInfoToCardsAndTickets(cardsAndTickets).then(function(){
+        user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
-      createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
-        console.log(user.tasks);
-        createFilters();
+        createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
+          console.log(user.tasks);
+          createFilters();
 
-        populateTrello();
-        populateZend();
-        draggableRows(false);
-        egg();
+          populateTrello();
+          populateZend();
+          draggableRows(false);
+          egg();
+        });
+
       });
+
     });
   });
   //Create the filters from the tasks created.
@@ -910,6 +909,7 @@ function setTrelloID() {
 
       .then(function(trelloData) {
         user.trello.id = trelloData.id;
+        user.trello.boardIDs = trelloData.idBoards;
         resolve();
       })
 
@@ -1023,6 +1023,97 @@ function getZendeskTickets() {
   //return zendeskGet("search.json?query=type:ticket status<solved assignee_id:" + user.zendesk.id);
   return zendeskGet("search.json?query=type:ticket status<solved");
 }
+function addInfoToCardsAndTickets(cardsAndTickets){
+  let trelloCards = cardsAndTickets[0];
+  let zendeskCards = cardsAndTickets[1];
+  return new Promise(function(resolve, reject) {
+      let addInfoTrelloGroup = addTrelloGroups(trelloCards);
+      let addInfoZendeskGroup = addZendeskGroups(zendeskCards);
+      //TODO let addInfoZendeskRequester = zendeskGet("search.json?query=type:user role:end-user");
+
+      Promise.all([addInfoTrelloGroup, addInfoZendeskGroup]).then(function(data){
+        resolve();
+      });
+  });
+}
+
+function addZendeskGroups(zendeskCards){
+  return new Promise(function(resolve, reject){
+    let prom = zendeskGet("groups.json");
+    prom.then(function(groupsData){
+      groupsData = groupsData.groups;
+      for(let i = 0; i < zendeskCards.length; i++){
+        let group = findGroup(zendeskCards[i], groupsData);
+        if(group == null){
+          zendeskCards[i].group = null;
+          continue;
+        }
+        let groupObject = new Object();
+        groupObject.id = group.id;
+        groupObject.name = group.name;
+        zendeskCards[i].group = groupObject;
+      }
+      resolve();
+    });
+  });
+}
+
+function addTrelloGroups(trelloCards){
+  return new Promise(function(resolve, reject){
+    let listPromisesArray = new Array();
+    for(let i = 0; i < user.trello.boardIDs.length; i++){
+      let listPromise = trelloGet("boards/" + user.trello.boardIDs[i] + "/lists");
+      listPromisesArray.push(listPromise);
+    }
+
+    let listPromises = Promise.all(listPromisesArray);
+    listPromises.then(function(listsData){
+      listsData = oneArrayFromMany(listsData);
+      for(let i = 0; i < trelloCards.length; i++){
+        let list = findList(trelloCards[i], listsData);
+        if(list == null){
+          trelloCards[i].list = null;
+          continue;
+        }
+        let listObject = new Object();
+        listObject.id = list.id;
+        listObject.name = list.name;
+        trelloCards[i].list = listObject;
+      }
+      resolve();
+    });
+  });
+
+}
+
+function oneArrayFromMany(arrayOfArrays){
+  let returnArray = new Array();
+  for(let i =0; i < arrayOfArrays.length; i++){
+    for(let j = 0; j < arrayOfArrays[i].length; j++){
+      returnArray.push(arrayOfArrays[i][j]);
+    }
+  }
+  return returnArray;
+}
+
+function findList(card, lists){
+  for(let i = 0; i < lists.length; i++){
+    if(card.idList == lists[i].id){
+      return lists[i];
+    }
+  }
+  return null;
+}
+
+function findGroup(card, groups){
+  for(let i = 0; i < groups.length; i++){
+    if(card.group_id == groups[i].id){
+      return groups[i];
+    }
+  }
+  return null;
+}
+
 
 function createTasksFromCardsAndTickets(cardsAndTickets) {
   let tasks = new Array();
