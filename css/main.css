@@ -119,7 +119,7 @@ table, th {
   border-collapse: separate;
 }
 
-tbody 
+tbody
 {
   max-width: inherit;
 }
@@ -267,7 +267,7 @@ select#sortList {
 
 #leftSidebar h3 {
   margin-top: 0px;
-  background-color: #A2270C;
+  background-color: #c60909;
   height: 55px;
   display: flex;
   align-items: center;
@@ -314,7 +314,7 @@ select#sortList {
 
 #info-header {
   margin: 0;
-  background-color: #A2270C;
+  background-color: #c60909;
   height: 5%;
   width: 100%;
   font-weight: bold;
