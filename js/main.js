@@ -6,6 +6,8 @@ const TRE_API_URL = "https://trello.com/1/";
 
 const TRE_APP_KEY = "8886ef1a1bc5ad08caad020068a3f9a2";
 
+const ZEN_TICKET_URL = "https://sdsc.zendesk.com/agent/tickets/";
+
 var zendeskToken = "";
 var trelloToken = "";
 var user;
@@ -228,6 +230,7 @@ function createNewTable() {
   var tableID = "New_Table_" + tableNumber;
   createTable(tableID, true); // Create a table with a random ID;
   $("#" + tableID).find("tbody").addClass("place");
+  console.log($("#" + tableID).find("tbody").parent());
   updateFilters();
   draggableRows();
   window.scrollTo(0, document.body.scrollHeight);
@@ -1409,7 +1412,19 @@ function createTicketCard(cardIndex)
   var cardDesc = task.desc;
   var status = task.category.charAt(0).toUpperCase() + task.category.substring(1);
   var date = formatDate(task.lastModified);
-  var url = task.url;
+  var type = task.type;
+
+  if (type === 1)
+  {
+    var id = task.id;
+    var url = ZEN_TICKET_URL + id;
+  }
+  else
+  {
+    var url = task.url;
+  }
+
+  console.log(url);
 
   newCard.className = "panel panel-default";
   newCard.id = cardIndex;
