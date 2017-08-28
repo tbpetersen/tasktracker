@@ -1521,8 +1521,6 @@ function createTicketCard(cardIndex)
     var url = task.url;
   }
 
-  console.log(url);
-
   newCard.className = "panel panel-default";
   newCard.id = cardIndex;
 
