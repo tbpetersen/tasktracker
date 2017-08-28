@@ -45,7 +45,7 @@ class Task {
       this.createdAt = this.getTimeStampFromString(data.created_at);
       this.category = data.status;
       this.group = data.group.name;
-      //this.setRequester(this, data.requester_id)
+      // this.setRequester(this, data.requester_id);
       this.requester = null;
     }
   }
@@ -1519,18 +1519,56 @@ function createTicketCard(cardIndex)
     var url = task.url;
   }
 
-  newCard.className = "panel panel-default";
   newCard.id = cardIndex;
+  newCard.setAttribute("class", "panel panel-default");
+  newCard.setAttribute("id", cardIndex);
 
-  newCard.innerHTML = '<div class="panel-heading">' +
-    '<h3 class="panel-title"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i>' +
-    '<a target="_blank" href="' + url + '">' + cardTitle + '</a>' +
-    '</h3></div>' +
-    '<div class="panel-body">' +
-    '<strong>Status: </strong> ' + status + ' <br>' +
-    '<strong>Last Modified: </strong> ' + date + ' <br><br>' +
-    '<strong>Description</strong> <hr><p>' + cardDesc + '</p>' +
-    '</div></div>';
+  // Header
+  var panelHead = document.createElement("div");
+
+  panelHead.setAttribute("class", "panel-heading");
+
+  // Title
+  var panelTitle = document.createElement("h3");
+  var removeIcon = document.createElement("i");
+  var link = document.createElement("a");
+
+  removeIcon.setAttribute("class", "glyphicon glyphicon-remove-sign");
+  removeIcon.setAttribute("aria-hidden", "true");
+  link.setAttribute("target", "_blank");
+  link.setAttribute("href", url);
+  link.innerHTML = cardTitle;
+  panelTitle.setAttribute("class", "panel-title");
+
+  panelTitle.appendChild(removeIcon);
+  panelTitle.appendChild(link);
+  panelHead.appendChild(panelTitle);
+
+  // Body
+  var body = document.createElement("div");
+
+  body.setAttribute("class", "panel-body");
+  body.innerHTML =  "<strong>Status: </strong> " + status + " <br>" +
+    "<strong>Last Modified: </strong> " + date;
+
+  // Zendesk Requester Info
+  if (task.requester)
+  {
+    var requester = task.requester.name;
+    var reqEmail = task.requester.email;
+
+    body.innerHTML += "<br> <strong>Requester: </strong>" + requester + " <br>" +
+      "<strong>Requester's Email: </strong>" + reqEmail + " <br><br>";
+  }
+  else
+  {
+    body.innerHTML += "<br><br>";
+  }
+
+  body.innerHTML += '<strong>Description</strong> <hr><p>' + cardDesc + '</p>';
+
+  newCard.appendChild(panelHead);
+  newCard.appendChild(body);
 
   document.getElementById("card-list").appendChild(newCard);
   $("#" + cardIndex).addClass("animated fadeInRight");
