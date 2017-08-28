@@ -109,8 +109,13 @@ body.toggled .place {
   border-radius: 0
 }
 
-h1, h2, h3 {
+/*h1, h2, h3 {
   font-family: 'Roboto', sans-serif;
+}*/
+
+/* weird placeholder stuff */
+tbody {
+  width: 96.25%!important;
 }
 
 table, th {
@@ -188,9 +193,8 @@ td {
 .place {
   display: table;
   height: 69px;
-  /*width:100%;*/
-  width: 1442px;
-  /*hard coding for wrappers*/
+  width:100%;
+  /*width: 1442px;*/
   position: absolute;
 }
 

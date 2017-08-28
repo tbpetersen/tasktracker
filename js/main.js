@@ -136,14 +136,12 @@ $(document).ready(function() {
         console.log(user.tasks);
         createFilters();
 
-        populateTrello();
-        populateZend();
+        populatePage();
         draggableRows(false);
         egg();
       });
     });
   });
-  //Create the filters from the tasks created.
 });
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -228,6 +226,7 @@ function createNewTable() {
   var tableID = "New_Table_" + tableNumber;
   createTable(tableID, true); // Create a table with a random ID;
   $("#" + tableID).find("tbody").addClass("place");
+  console.log($("#" + tableID).find("tbody").parent());
   updateFilters();
   draggableRows();
   window.scrollTo(0, document.body.scrollHeight);
@@ -289,42 +288,20 @@ function isEmpty(tableName) {
   return false;
 }
 
-
 /* Populating/setting up tables */
-function populateTrello() {
+function populatePage() {
+  var cat = [];
 
-  var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review",
-  "Completed", "July_Billing"];
-
-  for (var i = 0; i < trelloCat.length; i++) {
-    for (var j = 0; j < user.tasks.length; j++) {
-      var str = user.tasks[j].category;
-      var cat = str.split(" ").join("_");
-      if (cat === trelloCat[i]) {
-        if (document.getElementById(cat) == null) {
-          createTable(cat, false);
-        }
-        populateTable(user.tasks[j], cat, j);
-      }
+  for (var i = 0; i < user.tasks.length; i++) {
+    var str = user.tasks[i].category.split(" ").join("_");
+    var catName = str.charAt(0).toUpperCase() + str.substring(1);
+    if (!cat.includes(catName)) {
+      cat.push(catName);
     }
-  }
-}
-
-function populateZend() {
-
-  var zendCat = ["open", "pending", "closed", "new", "solved", "hold"];
-
-  for (var i = 0; i < zendCat.length; i++) {
-    for (var j = 0; j < user.tasks.length; j++) {
-      if (user.tasks[j].category == zendCat[i]) {
-        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() +
-                                      (user.tasks[j].category).substring(1);
-        if (document.getElementById(capCat) == null) {
-          createTable(capCat, false);
-        }
-        populateTable(user.tasks[j], capCat, j);
-      }
+    if (document.getElementById(catName) == null) {
+      createTable(catName, false);
     }
+    populateTable(user.tasks[i], catName, i);
   }
 }
 
@@ -513,12 +490,7 @@ function formatDate(date) {
 
   return date;
 }
-function strip(html)
-{
-   var tmp = document.createElement("DIV");
-   tmp.innerHTML = html;
-   return tmp.textContent || tmp.innerText || "";
-}
+
 function addRow(task, tableName, index) {
 
   // Get title of task
@@ -560,6 +532,19 @@ function addRow(task, tableName, index) {
   modCell.setAttribute("id", "mod");
   catCell.setAttribute("id", "cat");
 
+  // Link to task
+  var btn = document.createElement("BUTTON");
+  btn.setAttribute("id", "linkButton");
+  btn.setAttribute("class", "btn");
+
+  var icon = document.createElement("span");
+  icon.className = "glyphicon glyphicon-link";
+  
+  btn.onclick = function() {
+    window.open(task.url, "_blank");
+  };
+  btn.appendChild(icon);
+
   // text for cell
   textNode1 = document.createTextNode(title);
   textNode2 = document.createTextNode(shortDesc);
@@ -568,6 +553,7 @@ function addRow(task, tableName, index) {
 
   // append text to cell
   titleCell.appendChild(textNode1);
+  titleCell.appendChild(btn);
   descCell.appendChild(textNode2);
   modCell.appendChild(textNode3);
   catCell.appendChild(textNode4);
@@ -955,7 +941,9 @@ function getTrelloCards() {
 }
 
 function getTrelloBoards() {
+  console.log(trelloGet("members/me/boards"));
   return trelloGet("members/me/boards");
+
 }
 
 function getBoardsIDs(boards) {
