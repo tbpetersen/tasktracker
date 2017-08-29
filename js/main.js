@@ -45,7 +45,7 @@ class Task {
       this.createdAt = this.getTimeStampFromString(data.created_at);
       this.category = data.status;
       this.group = data.group.name;
-      // this.setRequester(this, data.requester_id);
+      //this.setRequester(this, data.requester_id)
       this.requester = null;
     }
   }
@@ -145,17 +145,13 @@ $(document).ready(function() {
           console.log(user.tasks);
           createFilters();
 
-          populateTrello();
-          populateZend();
-          draggableRows(false);
-          egg();
         });
-
+        populatePage();
+        draggableRows(false);
+        egg();
       });
-
     });
   });
-  //Create the filters from the tasks created.
 });
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -302,42 +298,20 @@ function isEmpty(tableName) {
   return false;
 }
 
-
 /* Populating/setting up tables */
-function populateTrello() {
+function populatePage() {
+  var cat = [];
 
-  var trelloCat = ["Not_Started", "Blocked", "In_Progress", "To_Review",
-  "Completed", "July_Billing"];
-
-  for (var i = 0; i < trelloCat.length; i++) {
-    for (var j = 0; j < user.tasks.length; j++) {
-      var str = user.tasks[j].category;
-      var cat = str.split(" ").join("_");
-      if (cat === trelloCat[i]) {
-        if (document.getElementById(cat) == null) {
-          createTable(cat, false);
-        }
-        populateTable(user.tasks[j], cat, j);
-      }
+  for (var i = 0; i < user.tasks.length; i++) {
+    var str = user.tasks[i].category.split(" ").join("_");
+    var catName = str.charAt(0).toUpperCase() + str.substring(1);
+    if (!cat.includes(catName)) {
+      cat.push(catName);
     }
-  }
-}
-
-function populateZend() {
-
-  var zendCat = ["open", "pending", "closed", "new", "solved", "hold"];
-
-  for (var i = 0; i < zendCat.length; i++) {
-    for (var j = 0; j < user.tasks.length; j++) {
-      if (user.tasks[j].category == zendCat[i]) {
-        var capCat = (user.tasks[j].category).charAt(0).toUpperCase() +
-                                      (user.tasks[j].category).substring(1);
-        if (document.getElementById(capCat) == null) {
-          createTable(capCat, false);
-        }
-        populateTable(user.tasks[j], capCat, j);
-      }
+    if (document.getElementById(catName) == null) {
+      createTable(catName, false);
     }
+    populateTable(user.tasks[i], catName, i);
   }
 }
 
@@ -354,24 +328,29 @@ function createTable(tableName, isNewTable) {
   row = document.createElement("tr");
   titleCell = document.createElement("th");
   descCell = document.createElement("th");
+  groupCell = document.createElement("th");
   modCell = document.createElement("th");
   catCell = document.createElement("th");
 
   // text for cell
   textNode1 = document.createTextNode("Title");
   textNode2 = document.createTextNode("Description");
-  textNode3 = document.createTextNode("Last Modified");
-  textNode4 = document.createTextNode("Category");
+  textNode3 = document.createTextNode("Group/Board");
+  textNode4 = document.createTextNode("Last Modified");
+  textNode5 = document.createTextNode("Category");
 
   // append text to cell
   titleCell.appendChild(textNode1);
   descCell.appendChild(textNode2);
-  modCell.appendChild(textNode3);
-  catCell.appendChild(textNode4);
+  groupCell.appendChild(textNode3);
+  modCell.appendChild(textNode4);
+  catCell.appendChild(textNode5);
+
 
   // append text to row
   row.appendChild(titleCell);
   row.appendChild(descCell);
+  row.appendChild(groupCell);
   row.appendChild(modCell);
   row.appendChild(catCell);
 
@@ -383,6 +362,7 @@ function createTable(tableName, isNewTable) {
 
   titleCell.setAttribute("id", "titleCell");
   descCell.setAttribute("id", "descCell");
+  groupCell.setAttribute("id", "groupCell");
   modCell.setAttribute("id", "modCell");
   catCell.setAttribute("id", "catCell");
 
@@ -530,12 +510,7 @@ function formatDate(date) {
 
   return date;
 }
-function strip(html)
-{
-   var tmp = document.createElement("DIV");
-   tmp.innerHTML = html;
-   return tmp.textContent || tmp.innerText || "";
-}
+
 function addRow(task, tableName, index) {
 
   // Get title of task
@@ -555,6 +530,9 @@ function addRow(task, tableName, index) {
   var cat = task.category;
   var capCat = cat.charAt(0).toUpperCase() + cat.substring(1);
 
+  // Get group/board of task
+  var group = task.group;
+
   if(tableName.id != "Unsorted") {
     var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
   }
@@ -566,6 +544,7 @@ function addRow(task, tableName, index) {
   row = document.createElement("tr");
   titleCell = document.createElement("td");
   descCell = document.createElement("td");
+  groupCell = document.createElement("td");
   modCell = document.createElement("td");
   catCell = document.createElement("td");
 
@@ -574,24 +553,49 @@ function addRow(task, tableName, index) {
   row.setAttribute("class", "notFirst");
   titleCell.setAttribute("id", "title");
   descCell.setAttribute("id", "desc");
+  groupCell.setAttribute("id", "group");
   modCell.setAttribute("id", "mod");
   catCell.setAttribute("id", "cat");
+
+  // Link to task
+  var btn = document.createElement("BUTTON");
+  btn.setAttribute("id", "linkButton");
+  btn.setAttribute("class", "btn");
+
+  var icon = document.createElement("span");
+  icon.className = "glyphicon glyphicon-link";
+
+  btn.onclick = function() {
+    if (task.type == 0) { 
+      window.open(task.url, "_blank");
+    }
+    else {
+      var zendURL = ZEN_TICKET_URL + task.id;
+      window.open(zendURL, "_blank");
+    }
+
+  };
+  btn.appendChild(icon);
 
   // text for cell
   textNode1 = document.createTextNode(title);
   textNode2 = document.createTextNode(shortDesc);
-  textNode3 = document.createTextNode(date);
-  textNode4 = document.createTextNode(capCat);
+  textNode3 = document.createTextNode(group);
+  textNode4 = document.createTextNode(date);
+  textNode5 = document.createTextNode(capCat);
 
   // append text to cell
   titleCell.appendChild(textNode1);
+  titleCell.appendChild(btn);
   descCell.appendChild(textNode2);
-  modCell.appendChild(textNode3);
-  catCell.appendChild(textNode4);
+  groupCell.appendChild(textNode3);
+  modCell.appendChild(textNode4);
+  catCell.appendChild(textNode5);
 
   // append text to row
   row.appendChild(titleCell);
   row.appendChild(descCell);
+  row.appendChild(groupCell);
   row.appendChild(modCell);
   row.appendChild(catCell);
 
@@ -686,6 +690,7 @@ function makeButtons(tableName) {
 }
 /* End populating/setting up tables */
 
+/* Reordering tables modal */
 $("#reorder").click(function(e) {
   e.preventDefault();
 
@@ -709,7 +714,7 @@ $("#reorder").click(function(e) {
   });
 
   // set content
-  modal.setContent('<h3><font color="#A2270C">Reorder Tables</font></h3>');
+  modal.setContent('<h3>Reorder Tables</h3>');
 
   var table = listTables();
   modal.setContent(table);
@@ -719,8 +724,7 @@ $("#reorder").click(function(e) {
 
     var table = document.getElementById("names");
     if(table) {
-      //deleteTable(table);
-      modal.setContent('<h3><font color="#A2270C">Reorder Tables</font></h3>');
+      modal.setContent('<h3>Reorder Tables</h3>');
 
       var table = listTables();
       modal.setContent(table);
@@ -761,7 +765,7 @@ function egg() {
       });
     })
     .addHook(function(){
-      document.body.style.backgroundImage = "url('js/parrot.gif')";
+      document.body.style.backgroundImage = "url('js/parrot.gif')";      
     }).listen();
 }
 
@@ -776,11 +780,9 @@ function listTables() {
 
   // Create table structure
   var table = document.createElement("TABLE");
-
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  //create row and cell element
   row = document.createElement("tr");
   titleCell = document.createElement("th");
 
@@ -791,7 +793,6 @@ function listTables() {
 
   // Name elements
   table.setAttribute("id", "names");
-  //table.setAttribute("class", "tables");
   body.setAttribute("class", "sortable");
   row.setAttribute("id", "firstRow");
   titleCell.setAttribute("id", "titleCell");
@@ -818,10 +819,9 @@ function listTables() {
     row.appendChild(titleCell);
     body.appendChild(row);
   }
-
-  //$(".sortable").sortable({containment: "#names", scroll: false});
   return table;
 }
+/* End modal */
 
 function setupPage() {
   if (!redirectToHTTPS()) {
@@ -974,7 +974,9 @@ function getTrelloCards() {
 }
 
 function getTrelloBoards() {
+  console.log(trelloGet("members/me/boards"));
   return trelloGet("members/me/boards");
+
 }
 
 function getCardsFromBoard(boards) {

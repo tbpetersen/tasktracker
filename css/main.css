@@ -109,9 +109,19 @@ body.toggled .place {
   border-radius: 0
 }
 
-h1, h2, h3 {
+/*h1, h2, h3 {
   font-family: 'Roboto', sans-serif;
+}*/
+
+h3 {
+  font-weight: bold;
+  color:#A2270C;
 }
+
+/* weird placeholder stuff */
+tbody {
+  width: 96.25%!important;
+  max-width: inherit;}
 
 table, th {
   width: 100%;
@@ -137,7 +147,7 @@ td, #titleCell {
 }
 
 td, #descCell {
-  width: 55%;
+  width: 45%;
   text-align: center;
 }
 
@@ -151,13 +161,18 @@ td, #catCell {
   text-align: center;
 }
 
+td, #groupCell {
+  width: 10%;
+  text-align: center;
+}
+
 td, #title {
   width: 25%;
   text-align: left;
 }
 
 td, #desc {
-  width: 55%;
+  width: 45%;
   text-align: left;
 }
 
@@ -167,6 +182,11 @@ td, #mod {
 }
 
 td, #cat {
+  width: 10%;
+  text-align: center;
+}
+
+td, #group {
   width: 10%;
   text-align: center;
 }
@@ -186,9 +206,9 @@ td {
   position: absolute;
   display: table;
   height: 69px;
-  width: 100%;
+  width:100%;
   /*width: 1442px;*/
-  /*hard coding for wrappers*/
+  position: absolute;
 }
 
 .ui-state-highlight {
@@ -199,10 +219,6 @@ td {
   background-color: #A2270C;
   color: #FFF;
 }
-
-/*body {background-image: url("sad_parrot.gif");}*/
-
-
 /* End table CSS*/
 
 #logo {
