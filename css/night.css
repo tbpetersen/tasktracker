@@ -235,6 +235,7 @@ select#sortList {
   transition: all 0.5s ease;
   width: 10%;
   z-index: 100;
+  background-color: #212121;
 }
 
 .leftSidebarItem {
@@ -248,7 +249,6 @@ select#sortList {
 
 .leftSidebarItem.btn {
   text-align: left;
-  background-color: #212121;
 }
 
 .leftSidebarItem:hover {
