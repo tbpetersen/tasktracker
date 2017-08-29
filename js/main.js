@@ -1,10 +1,12 @@
 const ZEN_AUTH_URL = "https://sdsc.zendesk.com/oauth/authorizations/new?response_type=token&client_id=client_services_tool_dev&scope=read%20write";
-const TRE_AUTH_URL = "https://trello.com/1/authorize?key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost";
+const TRE_AUTH_URL = "https://trello.com/1/authorize?name=Zello&key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost";
 
 const ZEN_API_URL = "https://sdsc.zendesk.com/api/v2/";
 const TRE_API_URL = "https://trello.com/1/";
 
 const TRE_APP_KEY = "8886ef1a1bc5ad08caad020068a3f9a2";
+
+const ZEN_TICKET_URL = "https://sdsc.zendesk.com/agent/tickets/";
 
 var zendeskToken = "";
 var trelloToken = "";
@@ -33,13 +35,18 @@ class Task {
       this.desc = data.desc;
       this.lastModified = this.getTimeStampFromString(data.dateLastActivity);
       this.createdAt = this.getTrelloCreationTime(this.id);
-      this.setCategory(this, data.idList);
+      this.category = data.list.name;
+      this.group = data.nameBoard;
+      this.requester = null;
     } else /* Zendesk*/ {
       this.name = data.subject;
       this.desc = data.description;
       this.lastModified = this.getTimeStampFromString(data.updated_at);
       this.createdAt = this.getTimeStampFromString(data.created_at);
       this.category = data.status;
+      this.group = data.group.name;
+      this.setRequester(this, data.requester_id)
+      this.requester = null;
     }
   }
 
@@ -53,11 +60,12 @@ class Task {
     return date.getTime();
   }
 
-  setCategory(task, listID) {
-    let prom = trelloGet("lists/" + listID);
+  setRequester(task, requesterID) {
+    // TODO Get all the list at once and then store that data so you are not making a new request for each card
+    let prom = zendeskGet("users/" + requesterID);
     Task.prom.push(prom);
-    prom.then(function(listData) {
-      task.category = listData.name;
+    prom.then(function(requesterData) {
+      task.requester = requesterData.user;
     })
   }
 }
@@ -129,13 +137,15 @@ $(document).ready(function() {
     getCardsAndTickets().then(function(cardsAndTickets) {
       console.log(cardsAndTickets);
 
-      user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
+      addInfoToCardsAndTickets(cardsAndTickets).then(function(){
+        user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
-      createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
-        console.log(user.tasks);
-        createFilters();
+        createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
+          console.log(user.tasks);
+          createFilters();
 
+        });
         populatePage();
         draggableRows(false);
         egg();
@@ -318,24 +328,29 @@ function createTable(tableName, isNewTable) {
   row = document.createElement("tr");
   titleCell = document.createElement("th");
   descCell = document.createElement("th");
+  groupCell = document.createElement("th");
   modCell = document.createElement("th");
   catCell = document.createElement("th");
 
   // text for cell
   textNode1 = document.createTextNode("Title");
   textNode2 = document.createTextNode("Description");
-  textNode3 = document.createTextNode("Last Modified");
-  textNode4 = document.createTextNode("Category");
+  textNode3 = document.createTextNode("Group/Board");
+  textNode4 = document.createTextNode("Last Modified");
+  textNode5 = document.createTextNode("Category");
 
   // append text to cell
   titleCell.appendChild(textNode1);
   descCell.appendChild(textNode2);
-  modCell.appendChild(textNode3);
-  catCell.appendChild(textNode4);
+  groupCell.appendChild(textNode3);
+  modCell.appendChild(textNode4);
+  catCell.appendChild(textNode5);
+
 
   // append text to row
   row.appendChild(titleCell);
   row.appendChild(descCell);
+  row.appendChild(groupCell);
   row.appendChild(modCell);
   row.appendChild(catCell);
 
@@ -347,6 +362,7 @@ function createTable(tableName, isNewTable) {
 
   titleCell.setAttribute("id", "titleCell");
   descCell.setAttribute("id", "descCell");
+  groupCell.setAttribute("id", "groupCell");
   modCell.setAttribute("id", "modCell");
   catCell.setAttribute("id", "catCell");
 
@@ -510,6 +526,9 @@ function addRow(task, tableName, index) {
   var cat = task.category;
   var capCat = cat.charAt(0).toUpperCase() + cat.substring(1);
 
+  // Get group/board of task
+  var group = task.group;
+
   if(tableName.id != "Unsorted") {
     var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
   }
@@ -521,6 +540,7 @@ function addRow(task, tableName, index) {
   row = document.createElement("tr");
   titleCell = document.createElement("td");
   descCell = document.createElement("td");
+  groupCell = document.createElement("td");
   modCell = document.createElement("td");
   catCell = document.createElement("td");
 
@@ -529,6 +549,7 @@ function addRow(task, tableName, index) {
   row.setAttribute("class", "notFirst");
   titleCell.setAttribute("id", "title");
   descCell.setAttribute("id", "desc");
+  groupCell.setAttribute("id", "group");
   modCell.setAttribute("id", "mod");
   catCell.setAttribute("id", "cat");
 
@@ -539,28 +560,38 @@ function addRow(task, tableName, index) {
 
   var icon = document.createElement("span");
   icon.className = "glyphicon glyphicon-link";
-  
+
   btn.onclick = function() {
-    window.open(task.url, "_blank");
+    if (task.type == 0) { 
+      window.open(task.url, "_blank");
+    }
+    else {
+      var zendURL = ZEN_TICKET_URL + task.id;
+      window.open(zendURL, "_blank");
+    }
+
   };
   btn.appendChild(icon);
 
   // text for cell
   textNode1 = document.createTextNode(title);
   textNode2 = document.createTextNode(shortDesc);
-  textNode3 = document.createTextNode(date);
-  textNode4 = document.createTextNode(capCat);
+  textNode3 = document.createTextNode(group);
+  textNode4 = document.createTextNode(date);
+  textNode5 = document.createTextNode(capCat);
 
   // append text to cell
   titleCell.appendChild(textNode1);
   titleCell.appendChild(btn);
   descCell.appendChild(textNode2);
-  modCell.appendChild(textNode3);
-  catCell.appendChild(textNode4);
+  groupCell.appendChild(textNode3);
+  modCell.appendChild(textNode4);
+  catCell.appendChild(textNode5);
 
   // append text to row
   row.appendChild(titleCell);
   row.appendChild(descCell);
+  row.appendChild(groupCell);
   row.appendChild(modCell);
   row.appendChild(catCell);
 
@@ -679,7 +710,7 @@ $("#reorder").click(function(e) {
   });
 
   // set content
-  modal.setContent('<h3><font color="#A2270C">Reorder Tables</font></h3>');
+  modal.setContent('<h3>Reorder Tables</h3>');
 
   var table = listTables();
   modal.setContent(table);
@@ -689,8 +720,7 @@ $("#reorder").click(function(e) {
 
     var table = document.getElementById("names");
     if(table) {
-      //deleteTable(table);
-      modal.setContent('<h3><font color="#A2270C">Reorder Tables</font></h3>');
+      modal.setContent('<h3>Reorder Tables</h3>');
 
       var table = listTables();
       modal.setContent(table);
@@ -731,9 +761,7 @@ function egg() {
       });
     })
     .addHook(function(){
-      //if("url('js/parrot.gif')") {
-        document.body.style.backgroundImage = "url('js/parrot.gif')";
-      //}
+      document.body.style.backgroundImage = "url('js/parrot.gif')";      
     }).listen();
 }
 
@@ -885,6 +913,7 @@ function setTrelloID() {
 
       .then(function(trelloData) {
         user.trello.id = trelloData.id;
+        user.trello.boardIDs = trelloData.idBoards;
         resolve();
       })
 
@@ -922,7 +951,7 @@ function getCardsAndTickets() {
 function getTrelloCards() {
   return new Promise(function(resolve, reject) {
     getTrelloBoards().then(function(boards) {
-        getCardsFromBoard(getBoardsIDs(boards)).then(function(cards) {
+        getCardsFromBoard(boards).then(function(cards) {
             getUsersCards(cards).then(function(usersCards) {
                 resolve(usersCards);
               })
@@ -946,26 +975,21 @@ function getTrelloBoards() {
 
 }
 
-function getBoardsIDs(boards) {
-  let boardIDs = new Array();
-  for (let i = 0; i < boards.length; i++) {
-    boardIDs.push(boards[i].id);
-  }
-  return boardIDs;
-}
-
-function getCardsFromBoard(boardsIDs) {
+function getCardsFromBoard(boards) {
+  //TODO trevor
   return new Promise(function(resolve, reject) {
     let boardDataPromises = new Array();
-    for (let i = 0; i < boardsIDs.length; i++) {
-      boardDataPromises.push(trelloGet("boards/" + boardsIDs[i] + "/cards"));
+    for (let i = 0; i < boards.length; i++) {
+      boardDataPromises.push(trelloGet("boards/" + boards[i].id + "/cards"));
     }
     Promise.all(boardDataPromises).then(function(cardArrays) {
         let allCards = new Array();
         for (let i = 0; i < cardArrays.length; i++) {
           let singleArray = cardArrays[i];
           for (let j = 0; j < singleArray.length; j++) {
-            allCards.push(singleArray[j]);
+            let card = singleArray[j];
+            card.nameBoard = boards[i].name;
+            allCards.push(card);
           }
         }
         resolve(allCards);
@@ -1005,6 +1029,97 @@ function getZendeskTickets() {
   //return zendeskGet("search.json?query=type:ticket status<solved assignee_id:" + user.zendesk.id);
   return zendeskGet("search.json?query=type:ticket status<solved");
 }
+function addInfoToCardsAndTickets(cardsAndTickets){
+  let trelloCards = cardsAndTickets[0];
+  let zendeskCards = cardsAndTickets[1];
+  return new Promise(function(resolve, reject) {
+      let addInfoTrelloGroup = addTrelloGroups(trelloCards);
+      let addInfoZendeskGroup = addZendeskGroups(zendeskCards);
+      //TODO let addInfoZendeskRequester = zendeskGet("search.json?query=type:user role:end-user");
+
+      Promise.all([addInfoTrelloGroup, addInfoZendeskGroup]).then(function(data){
+        resolve();
+      });
+  });
+}
+
+function addZendeskGroups(zendeskCards){
+  return new Promise(function(resolve, reject){
+    let prom = zendeskGet("groups.json");
+    prom.then(function(groupsData){
+      groupsData = groupsData.groups;
+      for(let i = 0; i < zendeskCards.length; i++){
+        let group = findGroup(zendeskCards[i], groupsData);
+        if(group == null){
+          zendeskCards[i].group = null;
+          continue;
+        }
+        let groupObject = new Object();
+        groupObject.id = group.id;
+        groupObject.name = group.name;
+        zendeskCards[i].group = groupObject;
+      }
+      resolve();
+    });
+  });
+}
+
+function addTrelloGroups(trelloCards){
+  return new Promise(function(resolve, reject){
+    let listPromisesArray = new Array();
+    for(let i = 0; i < user.trello.boardIDs.length; i++){
+      let listPromise = trelloGet("boards/" + user.trello.boardIDs[i] + "/lists");
+      listPromisesArray.push(listPromise);
+    }
+
+    let listPromises = Promise.all(listPromisesArray);
+    listPromises.then(function(listsData){
+      listsData = oneArrayFromMany(listsData);
+      for(let i = 0; i < trelloCards.length; i++){
+        let list = findList(trelloCards[i], listsData);
+        if(list == null){
+          trelloCards[i].list = null;
+          continue;
+        }
+        let listObject = new Object();
+        listObject.id = list.id;
+        listObject.name = list.name;
+        trelloCards[i].list = listObject;
+      }
+      resolve();
+    });
+  });
+
+}
+
+function oneArrayFromMany(arrayOfArrays){
+  let returnArray = new Array();
+  for(let i =0; i < arrayOfArrays.length; i++){
+    for(let j = 0; j < arrayOfArrays[i].length; j++){
+      returnArray.push(arrayOfArrays[i][j]);
+    }
+  }
+  return returnArray;
+}
+
+function findList(card, lists){
+  for(let i = 0; i < lists.length; i++){
+    if(card.idList == lists[i].id){
+      return lists[i];
+    }
+  }
+  return null;
+}
+
+function findGroup(card, groups){
+  for(let i = 0; i < groups.length; i++){
+    if(card.group_id == groups[i].id){
+      return groups[i];
+    }
+  }
+  return null;
+}
+
 
 function createTasksFromCardsAndTickets(cardsAndTickets) {
   let tasks = new Array();
@@ -1396,7 +1511,17 @@ function createTicketCard(cardIndex)
   var cardDesc = task.desc;
   var status = task.category.charAt(0).toUpperCase() + task.category.substring(1);
   var date = formatDate(task.lastModified);
-  var url = task.url;
+  var type = task.type;
+
+  if (type === 1)
+  {
+    var id = task.id;
+    var url = ZEN_TICKET_URL + id;
+  }
+  else
+  {
+    var url = task.url;
+  }
 
   newCard.className = "panel panel-default";
   newCard.id = cardIndex;
@@ -1410,6 +1535,11 @@ function createTicketCard(cardIndex)
     '<strong>Last Modified: </strong> ' + date + ' <br><br>' +
     '<strong>Description</strong> <hr><p>' + cardDesc + '</p>' +
     '</div></div>';
+
+  if (task.requester) {
+    document.getElementsByClassName("panel-body") += '<strong>Requester: </strong>' + task.requester.name + ' <br>'
+      '<strong>Requester Email: </strong>' + task.requester.email + ' <br><br>';
+  }
 
   document.getElementById("card-list").appendChild(newCard);
   $("#" + cardIndex).addClass("animated fadeInRight");

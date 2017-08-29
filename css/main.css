@@ -113,10 +113,15 @@ body.toggled .place {
   font-family: 'Roboto', sans-serif;
 }*/
 
+h3 {
+  font-weight: bold;
+  color:#A2270C;
+}
+
 /* weird placeholder stuff */
 tbody {
   width: 96.25%!important;
-}
+  max-width: inherit;}
 
 table, th {
   width: 100%;
@@ -137,7 +142,7 @@ td, #titleCell {
 }
 
 td, #descCell {
-  width: 55%;
+  width: 45%;
   text-align: center;
 }
 
@@ -151,13 +156,18 @@ td, #catCell {
   text-align: center;
 }
 
+td, #groupCell {
+  width: 10%;
+  text-align: center;
+}
+
 td, #title {
   width: 25%;
   text-align: left;
 }
 
 td, #desc {
-  width: 55%;
+  width: 45%;
   text-align: left;
 }
 
@@ -167,6 +177,11 @@ td, #mod {
 }
 
 td, #cat {
+  width: 10%;
+  text-align: center;
+}
+
+td, #group {
   width: 10%;
   text-align: center;
 }
@@ -182,15 +197,8 @@ td {
   cursor: pointer;
 }
 
-/*.wrapper-header input {
-  border: none;
-  font-size: 150%;
-  margin-top: 1%;
-  width: 95%;
-  display: block;
-}*/
-
 .place {
+  position: absolute;
   display: table;
   height: 69px;
   width:100%;
@@ -206,10 +214,6 @@ td {
   background-color: #A2270C;
   color: #FFF;
 }
-
-/*body {background-image: url("sad_parrot.gif");}*/
-
-
 /* End table CSS*/
 
 #logo {
@@ -693,6 +697,7 @@ select#sortList {
 
 .table-wrapper {
   min-width: 530px;
+  width: 100%;
   font-family: 'Roboto', sans-serif;
   background-color: #fcfcfc;
   box-shadow: 0px 0px 5px gray;
