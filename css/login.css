@@ -24,15 +24,20 @@ body{
 }
 
 #title{
-  padding: 5%;
+  padding: 4%;
 }
 
 #username{
   margin: 1%;
+  text-align: center;
 }
 #password{
   margin: 1%;
+  text-align: center;
 }
 #loginButton{
   margin: 1%;
+  background-color: lightgrey;
+  border: none;
+  width: 15%;
 }

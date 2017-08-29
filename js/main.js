@@ -498,6 +498,10 @@ $(".main").on("click", "#tableTitle", function() {
   $input.one('blur', save).focus();
 });
 
+$(".navbar-toggle").on("focusout", function(){
+  alert("hi");
+});
+
 /* Name: isEmptyString
    Purpose: Tell whether the string is empty or not.
    Description: Runs through the string looking for anything that isn't an empty
