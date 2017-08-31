@@ -479,7 +479,7 @@ $(".main").on("click", "#tableTitle", function() {
 });
 
 $(".navbar-toggle").on("focusout", function(){
-  alert("hi");
+  console.log("Close the links");
 });
 
 /* Name: isEmptyString
@@ -566,7 +566,7 @@ function addRow(task, tableName, index) {
   icon.className = "glyphicon glyphicon-link";
 
   btn.onclick = function() {
-    if (task.type == 0) { 
+    if (task.type == 0) {
       window.open(task.url, "_blank");
     }
     else {
@@ -765,7 +765,7 @@ function egg() {
       });
     })
     .addHook(function(){
-      document.body.style.backgroundImage = "url('js/parrot.gif')";      
+      document.body.style.backgroundImage = "url('js/parrot.gif')";
     }).listen();
 }
 
