@@ -44,7 +44,9 @@ class Task {
       this.lastModified = this.getTimeStampFromString(data.updated_at);
       this.createdAt = this.getTimeStampFromString(data.created_at);
       this.category = data.status;
-      this.group = data.group.name;
+      if(data.group != null){
+        this.group = data.group.name;
+      }
       //this.setRequester(this, data.requester_id)
       this.requester = null;
     }
