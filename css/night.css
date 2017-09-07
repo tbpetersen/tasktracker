@@ -259,6 +259,14 @@ select#sortList {
   display: none;
 }
 
+h2#info-header {
+    color: #ddd;
+}
+
+h3#filters {
+    color: #ddd;
+}
+
 #leftSidebar h3 {
   margin-top: 0px;
   background-color: #B93C3C;
@@ -324,7 +332,7 @@ select#sortList {
   border-radius: 0;
   padding: 0.9em;
   background-color: #c60909;
-  color: #fff;
+  color: #ddd;
 }
 
 #clearBtn:active {

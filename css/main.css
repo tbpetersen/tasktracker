@@ -115,7 +115,15 @@ body.toggled .place {
 
 h3 {
   font-weight: bold;
-  color:#111;
+  color:#A2270C;
+}
+
+h3#filters{
+  color: #222;
+}
+
+h2#info-header {
+    color: #222;
 }
 
 /* weird placeholder stuff */
