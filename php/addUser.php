@@ -12,16 +12,15 @@ Return value: the user's ID in the database or -1 if fail
   /* POST arguments */
   $username = $_POST['username'];
 
-  /*TODO: Check that the given username is not already in the users table */
 
   /* Add the user to the db */
     $stmt = $tasktrackerDB->prepare("INSERT INTO $usersTable (username) VALUES (?)");
     $stmt->bind_param('s', $username);
     $success = $stmt->execute();
     if($success == 1){
-      echo($tasktrackerDB->insert_id);
+      echo("Inserting $username into the database");
     }else{
-      echo(-1);
+      echo("Error inserting $username into the database");
     }
     $tasktrackerDB->close();
 ?>

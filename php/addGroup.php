@@ -21,9 +21,9 @@ Return value: the group's ID in the database or -1 if fail
     $stmt->bind_param('is', $userID, $groupName);
     $success = $stmt->execute();
     if($success == 1){
-      echo($tasktrackerDB->insert_id);
+      //echo($tasktrackerDB->insert_id);
     }else{
-      echo(-1);
+      //echo(-1);
     }
     $tasktrackerDB->close();
 ?>

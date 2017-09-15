@@ -145,6 +145,7 @@ $(document).ready(function() {
 
         createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
           console.log(user.tasks);
+          addUserToDB('p4wilson');
           createFilters();
 
         });
@@ -1679,6 +1680,7 @@ function createFilters(){
   var filters = getFilters();
   var i;
   for(i = 0; i < filters.length; i++){
+    addUserGroupToDB(1, filters[i]);
     createFilterButton(filters[i]);
   }
 }
@@ -1698,7 +1700,6 @@ function getFilters(){//Most likely will change when we implement database
   var categories = [];
   var i;
   if(onPageLoad){
-    //updateFilters();
     var tasks = user.tasks;
     var currentCategory;
     for(i = 0; i < tasks.length; i++)
