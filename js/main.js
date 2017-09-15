@@ -1,5 +1,5 @@
 const ZEN_AUTH_URL = "https://sdsc.zendesk.com/oauth/authorizations/new?response_type=token&client_id=client_services_tool_dev&scope=read%20write";
-const TRE_AUTH_URL = "https://trello.com/1/authorize?name=Zello&key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost";
+const TRE_AUTH_URL = "https://trello.com/1/authorize?name=Zello&key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost&scope=read,account";
 
 const ZEN_API_URL = "https://sdsc.zendesk.com/api/v2/";
 const TRE_API_URL = "https://trello.com/1/";
@@ -138,7 +138,6 @@ $(document).ready(function() {
   setIDs().then(function() {
     getCardsAndTickets().then(function(cardsAndTickets) {
       console.log(cardsAndTickets);
-
 
       addInfoToCardsAndTickets(cardsAndTickets).then(function(){
         user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
@@ -564,7 +563,7 @@ function addRow(task, tableName, index) {
   icon.className = "glyphicon glyphicon-link";
 
   btn.onclick = function() {
-    if (task.type == 0) { 
+    if (task.type == 0) {
       window.open(task.url, "_blank");
     }
     else {
@@ -763,7 +762,7 @@ function egg() {
       });
     })
     .addHook(function(){
-      document.body.style.backgroundImage = "url('js/parrot.gif')";      
+      document.body.style.backgroundImage = "url('js/parrot.gif')";
     }).listen();
 }
 
