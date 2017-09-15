@@ -118,6 +118,14 @@ h3 {
   color:#A2270C;
 }
 
+h3#filters{
+  color: #222;
+}
+
+h2#info-header {
+    color: #222;
+}
+
 /* weird placeholder stuff */
 tbody {
   width: 96.25%!important;
@@ -127,6 +135,11 @@ table, th {
   width: 100%;
   margin-bottom: 5%;
   border-collapse: separate;
+}
+
+tbody
+{
+  max-width: inherit;
 }
 
 th {
@@ -278,7 +291,7 @@ select#sortList {
 
 #leftSidebar h3 {
   margin-top: 0px;
-  background-color: #A2270C;
+  background-color: #c60909;
   height: 55px;
   display: flex;
   align-items: center;
@@ -325,7 +338,7 @@ select#sortList {
 
 #info-header {
   margin: 0;
-  background-color: #A2270C;
+  background-color: #c60909;
   height: 5%;
   width: 100%;
   font-weight: bold;
@@ -341,7 +354,7 @@ select#sortList {
   border-radius: 0;
   padding: 0.9em;
   background-color: #c60909;
-  color: #fff;
+  color: #111;
 }
 
 #clearBtn:active {

@@ -136,7 +136,7 @@ td, #titleCell {
 }
 
 td, #descCell {
-  width: 55%;
+  width: 45%;
   text-align: center;
 }
 
@@ -150,13 +150,18 @@ td, #catCell {
   text-align: center;
 }
 
+td, #groupCell {
+  width: 10%;
+  text-align: center;
+}
+
 td, #title {
   width: 25%;
   text-align: left;
 }
 
 td, #desc {
-  width: 55%;
+  width: 45%;
   text-align: left;
 }
 
@@ -166,6 +171,11 @@ td, #mod {
 }
 
 td, #cat {
+  width: 10%;
+  text-align: center;
+}
+
+td, #group {
   width: 10%;
   text-align: center;
 }
@@ -259,6 +269,14 @@ select#sortList {
   display: none;
 }
 
+h2#info-header {
+    color: #ddd;
+}
+
+h3#filters {
+    color: #ddd;
+}
+
 #leftSidebar h3 {
   margin-top: 0px;
   background-color: #B93C3C;
@@ -324,7 +342,7 @@ select#sortList {
   border-radius: 0;
   padding: 0.9em;
   background-color: #c60909;
-  color: #fff;
+  color: #ddd;
 }
 
 #clearBtn:active {

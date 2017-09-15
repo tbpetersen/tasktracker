@@ -44,7 +44,7 @@ class Task {
       this.lastModified = this.getTimeStampFromString(data.updated_at);
       this.createdAt = this.getTimeStampFromString(data.created_at);
       this.category = data.status;
-      if(data.group != null){
+      if(data.group){
         this.group = data.group.name;
       }
       //this.setRequester(this, data.requester_id)
@@ -144,6 +144,7 @@ $(document).ready(function() {
 
         createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
           console.log(user.tasks);
+          addUserToDB('p4wilson');
           createFilters();
 
         });
@@ -237,7 +238,6 @@ function createNewTable() {
   var tableID = "New_Table_" + tableNumber;
   createTable(tableID, true); // Create a table with a random ID;
   $("#" + tableID).find("tbody").addClass("place");
-  console.log($("#" + tableID).find("tbody").parent());
   updateFilters();
   draggableRows();
   window.scrollTo(0, document.body.scrollHeight);
@@ -479,6 +479,10 @@ $(".main").on("click", "#tableTitle", function() {
   $input.one('blur', save).focus();
 });
 
+$(".navbar-toggle").on("focusout", function(){
+  console.log("Close the links");
+});
+
 /* Name: isEmptyString
    Purpose: Tell whether the string is empty or not.
    Description: Runs through the string looking for anything that isn't an empty
@@ -639,8 +643,9 @@ function makeButtons(tableName) {
 
   var titleCell = table.rows[0].cells[0];
   var descCell = table.rows[0].cells[1];
-  var modCell = table.rows[0].cells[2];
-  var catCell = table.rows[0].cells[3];
+  var groupCell = table.rows[0].cells[2];
+  var modCell = table.rows[0].cells[3];
+  var catCell = table.rows[0].cells[4];
 
   var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
   var button2 = "glyphicon glyphicon-remove";
@@ -648,6 +653,7 @@ function makeButtons(tableName) {
   // Create the sorting buttons
   var titleSort = document.createElement("button");
   var descriptionSort = document.createElement("button");
+  var groupSort = document.createElement("button");
   var modifiedSort = document.createElement("button");
   var categorySort = document.createElement("button");
   var deleteTable = document.createElement("button");
@@ -655,6 +661,7 @@ function makeButtons(tableName) {
   //Assign classes to the sorting buttons
   titleSort.setAttribute("class", button1);
   descriptionSort.setAttribute("class", button1);
+  groupSort.setAttribute("class", button1);
   modifiedSort.setAttribute("class", button1);
   categorySort.setAttribute("class", button1);
   deleteTable.setAttribute("class", button2);
@@ -668,6 +675,10 @@ function makeButtons(tableName) {
     tableName = this.closest("table").id;
     sortAlphabet(tableName, 1);
   }
+  groupSort.onclick = function(groupSort){
+    tableName = this.closest("table").id;
+    sortAlphabet(tableName, 2);
+  }
   modifiedSort.onclick = function(modifiedSort){
     tableName = this.closest("table").id;
     sortLastModified(tableName);
@@ -680,6 +691,7 @@ function makeButtons(tableName) {
   // append buttons to cell
   titleCell.appendChild(titleSort);
   descCell.appendChild(descriptionSort);
+  groupCell.appendChild(groupSort);
   modCell.appendChild(modifiedSort);
   catCell.appendChild(categorySort);
 
@@ -1287,8 +1299,8 @@ function sortCategory(tableName) {
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[3];
-      y = rows[i + 1].getElementsByTagName("TD")[3];
+      x = rows[i].getElementsByTagName("TD")[4];
+      y = rows[i + 1].getElementsByTagName("TD")[4];
       //check if the two rows should switch place:
       if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
@@ -1323,8 +1335,8 @@ function sortCategoryReverse(tableName) {
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[3];
-      y = rows[i + 1].getElementsByTagName("TD")[3];
+      x = rows[i].getElementsByTagName("TD")[4];
+      y = rows[i + 1].getElementsByTagName("TD")[4];
       //check if the two rows should switch place:
       if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
         //if so, mark as a switch and break the loop:
@@ -1369,8 +1381,8 @@ function sortLastModified(tableName) {
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[2];
-      y = rows[i + 1].getElementsByTagName("TD")[2];
+      x = rows[i].getElementsByTagName("TD")[3];
+      y = rows[i + 1].getElementsByTagName("TD")[3];
       //check if the two rows should switch place:
       var month = x.innerHTML.substring(0, 3);
       var month2 = y.innerHTML.substring(0, 3);
@@ -1419,8 +1431,8 @@ function sortlastModifiedReversed(tableName) {
       shouldSwitch = false;
       /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[2];
-      y = rows[i + 1].getElementsByTagName("TD")[2];
+      x = rows[i].getElementsByTagName("TD")[3];
+      y = rows[i + 1].getElementsByTagName("TD")[3];
       //check if the two rows should switch place:
       var month = x.innerHTML.substring(0, 3);
       var month2 = y.innerHTML.substring(0, 3);
@@ -1667,6 +1679,7 @@ function createFilters(){
   var filters = getFilters();
   var i;
   for(i = 0; i < filters.length; i++){
+    addUserGroupToDB(1, filters[i]);
     createFilterButton(filters[i]);
   }
 }
@@ -1686,7 +1699,6 @@ function getFilters(){//Most likely will change when we implement database
   var categories = [];
   var i;
   if(onPageLoad){
-    updateFilters();
     var tasks = user.tasks;
     var currentCategory;
     for(i = 0; i < tasks.length; i++)
