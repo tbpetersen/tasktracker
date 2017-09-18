@@ -8,6 +8,7 @@ const PHP_GET_GROUP = PHP_DIRECTORY_PATH + '/getGroup.php';
 
 const PHP_ADD_ITEM = PHP_DIRECTORY_PATH + '/addItem.php';
 const PHP_GET_ITEM = PHP_DIRECTORY_PATH + '/getItem.php';
+const PHP_GET_ITEMS_IN_GROUP = PHP_DIRECTORY_PATH +'/getAllItemsInGroup.php'
 
 
 
@@ -104,4 +105,30 @@ function addGroupItemsToDB(item, user, group, type, location) {
 
 function checkGroupItemsDB(items) {
 
+}
+
+function getItem(userID, itemID){
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_GET_ITEM, {
+      userID: userID,
+      itemID: itemID
+    }, function(data) {
+      if(data == null){
+        resolve(null);
+      }else{
+        resolve(JSON.parse(data));
+      }
+    });
+  });
+}
+
+function getAllItemsInGroup(userID, groupID){
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_GET_ITEMS_IN_GROUP, {
+      userID: userID,
+      groupID: groupID
+    }, function(data) {
+      resolve(JSON.parse(data));
+    });
+  });
 }
