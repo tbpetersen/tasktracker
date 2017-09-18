@@ -137,10 +137,6 @@ $(document).ready(function() {
 
   setIDs().then(function() {
     getCardsAndTickets().then(function(cardsAndTickets) {
-<<<<<<< HEAD
-=======
-      console.log(cardsAndTickets);
->>>>>>> 49ebb7c23f9883026b3672f0bfe708693172b00d
 
       addInfoToCardsAndTickets(cardsAndTickets).then(function(){
         user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
@@ -161,13 +157,13 @@ $(document).ready(function() {
               {
                 uniqueGroups.push(group);
                 addUserGroupToDB(id, group);
-                return id;
               }
             }
+            return id;
           })
           .then(function(userID){
             for(i in user.tasks){
-              addGroupItemToDB(user.tasks[i], userID);
+              addGroupItemToDB(user.tasks[i], userID, i);
             }
           })
           .catch(function(err) {
@@ -342,9 +338,6 @@ function populatePage() {
       createTable(catName, false);
     }
     populateTable(task, catName, i);
-    //TODO
-    //console.log(task.name, user.zendesk.id, task.category, task.type, i);
-    // addGroupItemsToDB()
   }
 }
 
@@ -960,10 +953,7 @@ function setTrelloID() {
     trelloGet("members/me")
 
       .then(function(trelloData) {
-        console.log(trelloData);
-        console.log(trelloData.email);
         user.trello.email = trelloData.email;
-        console.log(user.trello.email);
 
         user.trello.id = trelloData.id;
         user.trello.boardIDs = trelloData.idBoards;
@@ -1718,20 +1708,10 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 function createFilters(){
   var filters = getFilters();
   var i;
-<<<<<<< HEAD
     for(i = 0; i < filters.length; i++){
       createFilterButton(filters[i]);
     }
 
-=======
-
-  createFilterButton("View All");
-
-  for(i = 0; i < filters.length; i++){
-    addUserGroupToDB(1, filters[i]);
-    createFilterButton(filters[i]);
-  }
->>>>>>> 49ebb7c23f9883026b3672f0bfe708693172b00d
 }
 
 function createFilterButton(filter){

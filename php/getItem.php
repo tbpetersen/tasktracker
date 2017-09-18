@@ -16,14 +16,14 @@ Return value: the user's ID in the database or -1 if fail
   /* GET arguments */
   $itemID   = $_POST['itemID'];
   $userID   = $_POST['userID'];
-  $groupID  = $_POST['groupID'];
-  $itemType = $_POST['itemType'];
-  $position = $_POST['position'];
+  // $groupID  = $_POST['groupID'];
+  // $itemType = $_POST['itemType'];
+  // $position = $_POST['position'];
 
 
   /* Add the user to the db */
     $stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE itemID = (?) && userID = (?) LIMIT 1;");
-    $stmt->bind_param('siiii', $itemID, $userID, $groupID, $itemType, $position);
+  $stmt->bind_param(/*'siiii'*/'si', $itemID, $userID/*, $groupID, $itemType, $position*/);
     $success = $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();

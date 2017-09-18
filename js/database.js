@@ -29,7 +29,7 @@ function getUserID(user) {
 function getGroupID(user, group) {
   return new Promise(function(resolve, reject) {
     $.post(PHP_GET_GROUP_ID, {
-      username: user,
+      userID: user,
       groupName: group
     }, function(data) {
       resolve(data);
@@ -106,46 +106,47 @@ function checkUserGroupDB(user, group) {
   });
 }
 
-function addGroupItemToDB(item, userID /*, user, group, type, location*/ ) {
+function addGroupItemToDB(item, userID, position/*, user, group, type, location*/ ) {
   return checkGroupItemDB(item, userID /*, user, group, type, location*/ )
-  /*.then(function(promise) {
+  .then(function(promise) {
     //If the item doesn't exist, add it
     if (!promise) {
-      return new Promise(function(resolve, reject) {
-        $.post(PHP_ADD_ITEM, {
-          itemID: item,
-          userID: user,
-          groupID: group,
-          itemType: type,
-          position: location
-        }, function(data) {
-          if (data === -1)
-            reject(data);
-          resolve(data);
-        });
+      getGroupID(userID, item.category)
+      .then(function(groupID) {
+        return new Promise(function(resolve, reject) {
+          $.post(PHP_ADD_ITEM, {
+            itemID: item.id,
+            userID: userID,
+            groupID: groupID,
+            itemType: item.type,
+            position: position
+          }, function(data) {
+            if (data === -1)
+              reject(data);
+            resolve(data);
+          });
+        })
       })
     }
   })
   .catch(function(err) {
     console.log("Error: " + err);
-  })*/
-  ;
+  });
 }
 
 function checkGroupItemDB(item, userID, userName) {
   var ID = item.id;
-  var group = item.group;
+  if (item.group == undefined)
+    item.group = "Ungrouped";
+  var group = item.category;
   var type = item.type;
-  var groupid;
-  console.log(ID, group, type, userID);
   return getGroupID(userID, group)
     .then(function(groupID) {
-      console.log(groupID);
       return new Promise(function(resolve, reject) {
         $.post(PHP_GET_ITEM, {
           itemID: ID,
           userID: userID,
-          groupID: 69,
+          groupID: groupID,
           itemType: type,
           position: 1
         }, function(data) {
