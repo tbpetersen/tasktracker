@@ -137,15 +137,38 @@ $(document).ready(function() {
 
   setIDs().then(function() {
     getCardsAndTickets().then(function(cardsAndTickets) {
-      console.log(cardsAndTickets);
-
 
       addInfoToCardsAndTickets(cardsAndTickets).then(function(){
         user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
 
         createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
-          console.log(user.tasks);
-          addUserToDB('p4wilson');
+          //Add the user to the DB
+          var userName = 'p4wilson';
+          addUserToDB(userName)
+          .then(function(promise){
+            return getUserID(userName);
+          })
+          .then(function(id){
+            //Add Groups to the DB
+            var uniqueGroups = [];
+            for(i in user.tasks){
+              var group = user.tasks[i].category;
+              if(!uniqueGroups.includes(group))
+              {
+                uniqueGroups.push(group);
+                addUserGroupToDB(id, group);
+                return id;
+              }
+            }
+          })
+          .then(function(userID){
+            for(i in user.tasks){
+              addGroupItemToDB(user.tasks[i], userID);
+            }
+          })
+          .catch(function(err) {
+            console.log("Error: " + err);
+          });
           createFilters();
 
         });
@@ -303,9 +326,10 @@ function isEmpty(tableName) {
 /* Populating/setting up tables */
 function populatePage() {
   var cat = [];
-
+  var task;
   for (var i = 0; i < user.tasks.length; i++) {
-    var str = user.tasks[i].category.split(" ").join("_");
+    task = user.tasks[i];
+    var str = task.category.split(" ").join("_");
     var catName = str.charAt(0).toUpperCase() + str.substring(1);
     if (!cat.includes(catName)) {
       cat.push(catName);
@@ -313,7 +337,10 @@ function populatePage() {
     if (document.getElementById(catName) == null) {
       createTable(catName, false);
     }
-    populateTable(user.tasks[i], catName, i);
+    populateTable(task, catName, i);
+    //TODO
+    //console.log(task.name, user.zendesk.id, task.category, task.type, i);
+    // addGroupItemsToDB()
   }
 }
 
@@ -359,6 +386,8 @@ function createTable(tableName, isNewTable) {
   // Name elements
   table.setAttribute("id", tableName);
   table.setAttribute("class", "tables");
+  //TODO
+  table.setAttribute("dbID", 1);
   body.setAttribute("class", "sortable");
   row.setAttribute("id", "firstRow");
 
@@ -393,6 +422,7 @@ function createTableWrapper(tableName, isNewTable) {
   header.setAttribute("class", "wrapper-header");
 
   var cat = tableName.split("_").join(" ");
+
   var tableTitle;
   if(isNewTable)
     tableTitle = document.createTextNode("New Table " + tableNumber);
@@ -984,7 +1014,6 @@ function getTrelloCards() {
 }
 
 function getTrelloBoards() {
-  console.log(trelloGet("members/me/boards"));
   return trelloGet("members/me/boards");
 
 }
@@ -1679,10 +1708,10 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 function createFilters(){
   var filters = getFilters();
   var i;
-  for(i = 0; i < filters.length; i++){
-    addUserGroupToDB(1, filters[i]);
-    createFilterButton(filters[i]);
-  }
+    for(i = 0; i < filters.length; i++){
+      createFilterButton(filters[i]);
+    }
+
 }
 
 function createFilterButton(filter){

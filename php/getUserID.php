@@ -1,7 +1,7 @@
 <?php
 /*
-File: getUser.php
-Purpose: gets a user
+File: getUserID.php
+Purpose: gets a user ID
 POST parameters: username - the user's username (String)
 Description: gets the user from the db
 Return value: the user's ID in the database or -1 if fail
@@ -20,6 +20,6 @@ Return value: the user's ID in the database or -1 if fail
     $success = $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-      echo($row['username']);
+      echo($row['userID']);
     $tasktrackerDB->close();
 ?>
