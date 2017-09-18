@@ -1,5 +1,5 @@
 const ZEN_AUTH_URL = "https://sdsc.zendesk.com/oauth/authorizations/new?response_type=token&client_id=client_services_tool_dev&scope=read%20write";
-const TRE_AUTH_URL = "https://trello.com/1/authorize?name=Zello&key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost";
+const TRE_AUTH_URL = "https://trello.com/1/authorize?name=Zello&key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost&scope=read,account";
 
 const ZEN_API_URL = "https://sdsc.zendesk.com/api/v2/";
 const TRE_API_URL = "https://trello.com/1/";
@@ -137,6 +137,10 @@ $(document).ready(function() {
 
   setIDs().then(function() {
     getCardsAndTickets().then(function(cardsAndTickets) {
+<<<<<<< HEAD
+=======
+      console.log(cardsAndTickets);
+>>>>>>> 49ebb7c23f9883026b3672f0bfe708693172b00d
 
       addInfoToCardsAndTickets(cardsAndTickets).then(function(){
         user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
@@ -956,6 +960,11 @@ function setTrelloID() {
     trelloGet("members/me")
 
       .then(function(trelloData) {
+        console.log(trelloData);
+        console.log(trelloData.email);
+        user.trello.email = trelloData.email;
+        console.log(user.trello.email);
+
         user.trello.id = trelloData.id;
         user.trello.boardIDs = trelloData.idBoards;
         resolve();
@@ -1536,6 +1545,7 @@ $("#changeThemeBtn").click(function() {
     $("#main_style").attr("href", mainTheme);
     $("#logo").attr("src", "images/logo.png");
   }
+  filterAll();
   currentTheme = $('#main_style').attr("href");
 });
 
@@ -1708,10 +1718,20 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 function createFilters(){
   var filters = getFilters();
   var i;
+<<<<<<< HEAD
     for(i = 0; i < filters.length; i++){
       createFilterButton(filters[i]);
     }
 
+=======
+
+  createFilterButton("View All");
+
+  for(i = 0; i < filters.length; i++){
+    addUserGroupToDB(1, filters[i]);
+    createFilterButton(filters[i]);
+  }
+>>>>>>> 49ebb7c23f9883026b3672f0bfe708693172b00d
 }
 
 function createFilterButton(filter){
@@ -1754,7 +1774,7 @@ function updateFilters(){
   var currentNode;
   var tables = document.getElementsByTagName("table");
   clearFilters();
-  createFilterButton("View All");
+  // createFilterButton("View All");
   $('.wrapper-header').each(function(){
     currentNode = this.childNodes[0];
     if(currentNode.tagName === "INPUT")
