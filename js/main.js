@@ -925,6 +925,11 @@ function setTrelloID() {
     trelloGet("members/me")
 
       .then(function(trelloData) {
+        console.log(trelloData);
+        console.log(trelloData.email);
+        user.trello.email = trelloData.email;
+        console.log(user.trello.email);
+
         user.trello.id = trelloData.id;
         user.trello.boardIDs = trelloData.idBoards;
         resolve();
@@ -1506,6 +1511,7 @@ $("#changeThemeBtn").click(function() {
     $("#main_style").attr("href", mainTheme);
     $("#logo").attr("src", "images/logo.png");
   }
+  filterAll();
   currentTheme = $('#main_style').attr("href");
 });
 
@@ -1678,6 +1684,9 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 function createFilters(){
   var filters = getFilters();
   var i;
+
+  createFilterButton("View All");
+
   for(i = 0; i < filters.length; i++){
     addUserGroupToDB(1, filters[i]);
     createFilterButton(filters[i]);
@@ -1724,7 +1733,7 @@ function updateFilters(){
   var currentNode;
   var tables = document.getElementsByTagName("table");
   clearFilters();
-  createFilterButton("View All");
+  // createFilterButton("View All");
   $('.wrapper-header').each(function(){
     currentNode = this.childNodes[0];
     if(currentNode.tagName === "INPUT")
