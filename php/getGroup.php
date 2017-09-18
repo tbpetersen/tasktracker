@@ -10,7 +10,7 @@ Return value: the user's ID in the database or -1 if fail
   /* Connect to the server */
   include_once("connectToDB.php");
 
-  /* GET arguments */
+  /* POST arguments */
   $userID = $_POST['userID'];
   $groupName = $_POST['groupName'];
 

@@ -9,7 +9,7 @@ Return value: the user's ID in the database or -1 if fail
   /* Connect to the server */
   include_once("connectToDB.php");
 
-  /* GET arguments */
+  /* POST arguments */
   $username = $_POST['username'];
 
   /*TODO: Check that the given username is not already in the users table */
