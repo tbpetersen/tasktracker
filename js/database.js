@@ -109,9 +109,9 @@ function checkUserGroupDB(user, group) {
 
 function addGroupItemToDB(item, userID, position/*, user, group, type, location*/ ) {
   return checkGroupItemDB(item, userID /*, user, group, type, location*/ )
-  .then(function(promise) {
+  .then(function(itemObj) {
     //If the item doesn't exist, add it
-    if (!promise) {
+    if (!itemObj) {
       getGroupID(userID, item.category)
       .then(function(groupID) {
         return new Promise(function(resolve, reject) {
@@ -143,17 +143,7 @@ function checkGroupItemDB(item, userID, userName) {
   var type = item.type;
   return getGroupID(userID, group)
     .then(function(groupID) {
-      return new Promise(function(resolve, reject) {
-        $.post(PHP_GET_ITEM, {
-          itemID: ID,
-          userID: userID,
-          groupID: groupID,
-          itemType: type,
-          position: 1
-        }, function(data) {
-          resolve(data);
-        });
-      })
+      return getItem(userID, ID);
     })
     .catch(function(err) {
       console.log("Error: " + err);

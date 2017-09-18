@@ -140,10 +140,9 @@ $(document).ready(function() {
 
       addInfoToCardsAndTickets(cardsAndTickets).then(function(){
         user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
-
         createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
           //Add the user to the DB
-          var userName = 'p4wilson';
+          var userName = user.trello.email;
           addUserToDB(userName)
           .then(function(promise){
             return getUserID(userName);
