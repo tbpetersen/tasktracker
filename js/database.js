@@ -7,10 +7,13 @@ const PHP_GET_USER_ID = PHP_DIRECTORY_PATH + '/getUserID.php';
 const PHP_ADD_GROUP = PHP_DIRECTORY_PATH + '/addGroup.php';
 const PHP_GET_GROUP = PHP_DIRECTORY_PATH + '/getGroup.php';
 const PHP_GET_GROUP_ID = PHP_DIRECTORY_PATH + '/getGroupID.php';
+const PHP_UPDATE_GROUP_NAME = PHP_DIRECTORY_PATH + '/updateGroupName.php';
 
 const PHP_ADD_ITEM = PHP_DIRECTORY_PATH + '/addItem.php';
 const PHP_GET_ITEM = PHP_DIRECTORY_PATH + '/getItem.php';
 const PHP_GET_ITEMS_IN_GROUP = PHP_DIRECTORY_PATH +'/getAllItemsInGroup.php'
+const PHP_UPDATE_ITEM_POSITION = PHP_DIRECTORY_PATH + '/updateItemPosition.php';
+const PHP_UPDATE_ITEM_GROUP = PHP_DIRECTORY_PATH + '/updateItemGroup.php';
 
 
 function getDBID(table, user, group) {
@@ -161,6 +164,42 @@ function getItem(userID, itemID){
       }else{
         resolve(JSON.parse(data));
       }
+    });
+  });
+}
+
+function updateGroupName(userID, groupID, newName){
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_UPDATE_GROUP_NAME, {
+      userID: userID,
+      groupID: groupID,
+      newName: newName
+    }, function(data) {
+      resolve(data == 1);
+    });
+  });
+}
+
+function updateItemPosition(userID, itemID, newPosition){
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_UPDATE_ITEM_POSITION, {
+      userID: userID,
+      itemID: itemID,
+      newPosition: newPosition
+    }, function(data) {
+      resolve(data == 1);
+    });
+  });
+}
+
+function updateItemGroup(userID, itemID, newGroupID){
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_UPDATE_ITEM_GROUP, {
+      userID: userID,
+      itemID: itemID,
+      newGroupID: newGroupID
+    }, function(data) {
+      resolve(data == 1);
     });
   });
 }
