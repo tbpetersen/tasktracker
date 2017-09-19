@@ -47,8 +47,7 @@ class Task {
       if(data.group){
         this.group = data.group.name;
       }
-      //this.setRequester(this, data.requester_id)
-      this.requester = null;
+      this.requester = data.requester;
     }
   }
 
@@ -1076,9 +1075,9 @@ function addInfoToCardsAndTickets(cardsAndTickets){
   return new Promise(function(resolve, reject) {
       let addInfoTrelloGroup = addTrelloGroups(trelloCards);
       let addInfoZendeskGroup = addZendeskGroups(zendeskCards);
-      //TODO let addInfoZendeskRequester = zendeskGet("search.json?query=type:user role:end-user");
+      let addInfoZendeskRequester = addZendeskRequester(zendeskCards);
 
-      Promise.all([addInfoTrelloGroup, addInfoZendeskGroup]).then(function(data){
+      Promise.all([addInfoTrelloGroup, addInfoZendeskGroup, addInfoZendeskRequester]).then(function(data){
         resolve();
       });
   });
@@ -1130,7 +1129,40 @@ function addTrelloGroups(trelloCards){
       resolve();
     });
   });
+}
 
+function addZendeskRequester(zendeskCards){
+  return new Promise(function(resolve, reject){
+    let allZendeskUsers = getAllZendeskUsers("users", new Array());
+    allZendeskUsers.then(function(arrayOfUsers){
+      for(let i = 0; i < zendeskCards.length; i++){
+        let task = zendeskCards[i];
+        task.requester = null;
+        for(let j = 0; j < arrayOfUsers.length; j++){
+          let user = arrayOfUsers[j];
+          if(user.id == task.requester_id){
+            task.requester = user.email;
+            break;
+          }
+        }
+      }
+      resolve();
+    });
+  });
+}
+
+function getAllZendeskUsers(url, previousList){
+  let userPromise = zendeskGet(url);
+  return userPromise.then(function(data){
+    previousList.push(data.users);
+    if(data.next_page != null){
+      endingIndex = data.next_page.indexOf(ZEN_API_URL) + ZEN_API_URL.length;
+      newURL = data.next_page.substring(endingIndex);
+      return getAllZendeskUsers(newURL,previousList);
+    }else{
+      return Promise.resolve(oneArrayFromMany(previousList));
+    }
+  });
 }
 
 function oneArrayFromMany(arrayOfArrays){
