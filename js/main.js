@@ -162,12 +162,13 @@ $(document).ready(function() {
           })
           .then(function(userID){
             for(i in user.tasks){
-              addGroupItemToDB(user.tasks[i], userID, i);
+              addGroupItemToDB(user.tasks[i], userID);
             }
           })
           .catch(function(err) {
             console.log("Error: " + err);
           });
+          updateItemPositions();
           createFilters();
 
         });
@@ -178,6 +179,7 @@ $(document).ready(function() {
     });
   });
 });
+
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   Generates and returns a random string ID.*/

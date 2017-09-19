@@ -107,7 +107,7 @@ function checkUserGroupDB(user, group) {
   });
 }
 
-function addGroupItemToDB(item, userID, position/*, user, group, type, location*/ ) {
+function addGroupItemToDB(item, userID/*, user, group, type, location*/ ) {
   return checkGroupItemDB(item, userID /*, user, group, type, location*/ )
   .then(function(itemObj) {
     //If the item doesn't exist, add it
@@ -120,7 +120,7 @@ function addGroupItemToDB(item, userID, position/*, user, group, type, location*
             userID: userID,
             groupID: groupID,
             itemType: item.type,
-            position: position
+            position: -1
           }, function(data) {
             if (data === -1)
               reject(data);
@@ -174,4 +174,30 @@ function getAllItemsInGroup(userID, groupID){
       resolve(JSON.parse(data));
     });
   });
+}
+
+/* Name: updateItemPositions
+   Purpose: Update the DB to have the correct positions of ALL the items inside
+            their respective tables.
+   Parameters: None.
+   Return: None.
+*/
+function updateItemPositions(){
+  var uniqueCategories = [];
+  for(let i in user.tasks){
+    let currentCategory = user.tasks[i].category
+    if(!uniqueCategories.includes(currentCategory))
+      uniqueCategories.push(currentCategory);
+  }
+  var categoriesWithTasks = new Array(uniqueCategories.length);
+  for(let i in uniqueCategories){
+    categoriesWithTasks[i] = new Array();
+  }
+  for(let j = 0; j < user.tasks.length; j++){
+    categoriesWithTasks[uniqueCategories.indexOf(user.tasks[j].category)].push(user.tasks[j]);
+  }
+  for(let i in categoriesWithTasks){
+    for(let j in categoriesWithTasks[i])
+      console.log("Update the Db to have", categoriesWithTasks[i][j].id, "position be", j);
+  }
 }
