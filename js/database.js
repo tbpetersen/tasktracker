@@ -187,6 +187,8 @@ function updateItemPosition(userID, itemID, newPosition){
       itemID: itemID,
       newPosition: newPosition
     }, function(data) {
+      if(itemID === "596e2e409eac57e426b9bbb4")
+        console.log(data);
       resolve(data == 1);
     });
   });
@@ -221,7 +223,7 @@ function getAllItemsInGroup(userID, groupID){
    Parameters: None.
    Return: None.
 */
-function updateItemPositions(){
+function updateItemPositions(userID){
   var uniqueCategories = [];
   for(let i in user.tasks){
     let currentCategory = user.tasks[i].category
@@ -236,7 +238,8 @@ function updateItemPositions(){
     categoriesWithTasks[uniqueCategories.indexOf(user.tasks[j].category)].push(user.tasks[j]);
   }
   for(let i in categoriesWithTasks){
-    for(let j in categoriesWithTasks[i])
-      console.log("Update the Db to have", categoriesWithTasks[i][j].id, "position be", j);
+    for(let j in categoriesWithTasks[i]){
+      updateItemPosition(userID, categoriesWithTasks[i][j].id, j)
+    }
   }
 }

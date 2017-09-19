@@ -164,13 +164,15 @@ $(document).ready(function() {
             for(i in user.tasks){
               addGroupItemToDB(user.tasks[i], userID);
             }
+            return userID
+          })
+          .then(function(userID) {
+            updateItemPositions(userID);
           })
           .catch(function(err) {
             console.log("Error: " + err);
           });
-          updateItemPositions();
           createFilters();
-
         });
         populatePage();
         draggableRows(false);
