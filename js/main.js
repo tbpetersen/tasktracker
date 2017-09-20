@@ -160,9 +160,11 @@ $(document).ready(function() {
           createFilters();
 
         });
-        populatePage();
-        draggableRows(false);
-        egg();
+        populatePage().then(function(){
+          draggableRows(false);
+          egg();
+        })
+
       });
     });
   });
@@ -313,52 +315,57 @@ function isEmpty(tableName) {
 
 /* Populating/setting up tables */
 function populatePage() {
-  var userName = user.trello.email;
+  return new Promise(function(resolve, reject){
+    var userName = user.trello.email;
 
-  getUserID(userName)
-  .then(function(promise) {
-    return promise;
-  })
-  .then(function(id) {
-    return getAllGroups(id);
-  })
-  .then(function(groups) {
-    // console.log(groups);
-    var cat = {};
+    getUserID(userName)
+    .then(function(promise) {
+      return promise;
+    })
+    .then(function(id) {
+      return getAllGroups(id);
+    })
+    .then(function(groups) {
+      // console.log(groups);
+      var cat = {};
 
-    for (var i = 0; i < groups.length; i++) {
-      cat[groups[i].groupName] = groups[i].groupID;
-    }
-
-    var tasks = user.tasks;
-    for (var i = 0; i < tasks.length; i++) {
-      var task = tasks[i];
-      var catID = cat[task.category];
-
-      // Check if category table already exists
-      var wrapperCat = wrapperPrefix + catID;
-      if (document.getElementById(wrapperCat) == null) {
-        createTable(catID, false);
+      for (var i = 0; i < groups.length; i++) {
+        cat[groups[i].groupName] = groups[i].groupID;
       }
-      populateTable(task, catID, i);
-    }
-  })
-  .catch(function(err) {
-    console.log("Error" + err.stack);
+
+      var tasks = user.tasks;
+      for (var i = 0; i < tasks.length; i++) {
+        var task = tasks[i];
+        var catID = cat[task.category];
+
+        // Check if category table already exists
+        var wrapperCat = wrapperPrefix + catID;
+        if (document.getElementById(wrapperCat) == null) {
+          createTable(catID, false);
+        }
+        populateTable(task, catID, i);
+      }
+      resolve();
+    })
+    .catch(function(err) {
+      console.log("Error" + err.stack);
+      reject();
+    });
+
+    // for (var i = 0; i < user.tasks.length; i++) {
+    //   task = user.tasks[i];
+    //   var str = task.category.split(" ").join("_");
+    //   var catName = str.charAt(0).toUpperCase() + str.substring(1);
+    //   if (!cat.includes(catName)) {
+    //     cat.push(catName);
+    //   }
+    //   if (document.getElementById(catName) == null) {
+    //     createTable(catName, false);
+    //   }
+    //   populateTable(task, catName, i);
+    // }
   });
 
-  // for (var i = 0; i < user.tasks.length; i++) {
-  //   task = user.tasks[i];
-  //   var str = task.category.split(" ").join("_");
-  //   var catName = str.charAt(0).toUpperCase() + str.substring(1);
-  //   if (!cat.includes(catName)) {
-  //     cat.push(catName);
-  //   }
-  //   if (document.getElementById(catName) == null) {
-  //     createTable(catName, false);
-  //   }
-  //   populateTable(task, catName, i);
-  // }
 }
 
 function createTable(tableName, isNewTable) {
@@ -681,7 +688,7 @@ function addRow(task, tableName, index) {
 }
 
 function draggableRows(bool) {
-
+  console.log('draggable rows');
   // Prevent rows from shrinking while dragged
   var fixHelper = function(e, ui) {
     ui.children().each(function() {
