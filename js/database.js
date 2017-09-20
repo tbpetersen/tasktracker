@@ -110,12 +110,12 @@ function checkUserGroupDB(user, group) {
   });
 }
 
-function addGroupItemToDB(item, userID/*, user, group, type, location*/ ) {
-  return checkGroupItemDB(item, userID /*, user, group, type, location*/ )
+function addGroupItemToDB(item, userID, position) {
+  return checkGroupItemDB(item, userID)
   .then(function(itemObj) {
     //If the item doesn't exist, add it
     if (!itemObj) {
-      getGroupID(userID, item.category)
+      return getGroupID(userID, item.category)
       .then(function(groupID) {
         return new Promise(function(resolve, reject) {
           $.post(PHP_ADD_ITEM, {
@@ -123,7 +123,7 @@ function addGroupItemToDB(item, userID/*, user, group, type, location*/ ) {
             userID: userID,
             groupID: groupID,
             itemType: item.type,
-            position: -1
+            position: position
           }, function(data) {
             if (data === -1)
               reject(data);
@@ -187,8 +187,6 @@ function updateItemPosition(userID, itemID, newPosition){
       itemID: itemID,
       newPosition: newPosition
     }, function(data) {
-      if(itemID === "596e2e409eac57e426b9bbb4")
-        console.log(data);
       resolve(data == 1);
     });
   });
@@ -201,6 +199,7 @@ function updateItemGroup(userID, itemID, newGroupID){
       itemID: itemID,
       newGroupID: newGroupID
     }, function(data) {
+      console.log(data);
       resolve(data == 1);
     });
   });
@@ -215,6 +214,27 @@ function getAllItemsInGroup(userID, groupID){
       resolve(JSON.parse(data));
     });
   });
+}
+
+/* Name: updateTableItemPositions
+   Purpose: Update the DB to have the correct positions of ALL the items inside
+            their respective tables.
+   Parameters: userID - The ID of the user using Zello.
+               category - The category to have it's tasks' positions updated.
+   Return: None.
+   TODO only update the positions of the tasks after the one that's inserted.
+*/
+function updateTableItemPositions(userID, category){
+  var tasksInCategory = [];
+  //Find the tasks with the category to be updated.
+  for(let i in user.tasks){
+    if(user.tasks[i].category === category)
+      tasksInCategory.push(user.tasks[i]);
+    }
+  //Update the positions.
+  for(let i in tasksInCategory){
+    updateItemPosition(userID, tasksInCategory[i]);
+  }
 }
 
 /* Name: updateItemPositions
@@ -240,6 +260,34 @@ function updateItemPositions(userID){
   for(let i in categoriesWithTasks){
     for(let j in categoriesWithTasks[i]){
       updateItemPosition(userID, categoriesWithTasks[i][j].id, j)
+    }
+  }
+}
+
+/* Name: getItemPosition
+   Purpose: Get the position of a single item.
+   Parameters: userID - The ID of the user that the task is associated with.
+               item - The item to find the position of.
+   Return: The position of the item.
+*/
+function getItemPosition(userID, item){
+  var uniqueCategories = [];
+  for(let i in user.tasks){
+    let currentCategory = user.tasks[i].category
+    if(!uniqueCategories.includes(currentCategory))
+      uniqueCategories.push(currentCategory);
+  }
+  var categoriesWithTasks = new Array(uniqueCategories.length);
+  for(let i in uniqueCategories){
+    categoriesWithTasks[i] = new Array();
+  }
+  for(let j = 0; j < user.tasks.length; j++){
+    categoriesWithTasks[uniqueCategories.indexOf(user.tasks[j].category)].push(user.tasks[j]);
+  }
+  for(let i in categoriesWithTasks){
+    for(let j in categoriesWithTasks[i]){
+      if(item == categoriesWithTasks[i][j])
+        return j;
     }
   }
 }

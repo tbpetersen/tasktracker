@@ -159,15 +159,13 @@ $(document).ready(function() {
               }
             }
             return id;
-          })
+           })
           .then(function(userID){
+            var promiseArray = [];
             for(i in user.tasks){
-              addGroupItemToDB(user.tasks[i], userID);
+              let currentItemPosition = getItemPosition(userID, user.tasks[i]);
+              addGroupItemToDB(user.tasks[i], userID, currentItemPosition);
             }
-            return userID
-          })
-          .then(function(userID) {
-            updateItemPositions(userID);
           })
           .catch(function(err) {
             console.log("Error: " + err);
@@ -182,6 +180,14 @@ $(document).ready(function() {
   });
 });
 
+function delayedPromise(seconds){
+  return new Promise(function(resolve,reject){
+    setTimeout(function(){
+      console.log("Delayed promise" + new Date().getMilliseconds());
+      resolve();
+    }, seconds * 1000);
+  });
+}
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   Generates and returns a random string ID.*/
