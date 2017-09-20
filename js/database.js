@@ -6,12 +6,14 @@ const PHP_GET_USER_ID = PHP_DIRECTORY_PATH + '/getUserID.php';
 
 const PHP_ADD_GROUP = PHP_DIRECTORY_PATH + '/addGroup.php';
 const PHP_GET_GROUP = PHP_DIRECTORY_PATH + '/getGroup.php';
+const PHP_GET_GROUP_NAME = PHP_DIRECTORY_PATH + '/getGroupName.php';
 const PHP_GET_GROUP_ID = PHP_DIRECTORY_PATH + '/getGroupID.php';
+const PHP_GET_GROUPS_FOR_USER = PHP_DIRECTORY_PATH + "/getAllGroups.php";
 const PHP_UPDATE_GROUP_NAME = PHP_DIRECTORY_PATH + '/updateGroupName.php';
 
 const PHP_ADD_ITEM = PHP_DIRECTORY_PATH + '/addItem.php';
 const PHP_GET_ITEM = PHP_DIRECTORY_PATH + '/getItem.php';
-const PHP_GET_ITEMS_IN_GROUP = PHP_DIRECTORY_PATH +'/getAllItemsInGroup.php'
+const PHP_GET_ITEMS_IN_GROUP = PHP_DIRECTORY_PATH + '/getAllItemsInGroup.php'
 const PHP_UPDATE_ITEM_POSITION = PHP_DIRECTORY_PATH + '/updateItemPosition.php';
 const PHP_UPDATE_ITEM_GROUP = PHP_DIRECTORY_PATH + '/updateItemGroup.php';
 
@@ -112,30 +114,30 @@ function checkUserGroupDB(user, group) {
 
 function addGroupItemToDB(item, userID, position) {
   return checkGroupItemDB(item, userID)
-  .then(function(itemObj) {
-    //If the item doesn't exist, add it
-    if (!itemObj) {
-      return getGroupID(userID, item.category)
-      .then(function(groupID) {
-        return new Promise(function(resolve, reject) {
-          $.post(PHP_ADD_ITEM, {
-            itemID: item.id,
-            userID: userID,
-            groupID: groupID,
-            itemType: item.type,
-            position: position
-          }, function(data) {
-            if (data === -1)
-              reject(data);
-            resolve(data);
-          });
-        })
-      })
-    }
-  })
-  .catch(function(err) {
-    console.log("Error: " + err);
-  });
+    .then(function(itemObj) {
+      //If the item doesn't exist, add it
+      if (!itemObj) {
+        return getGroupID(userID, item.category)
+          .then(function(groupID) {
+            return new Promise(function(resolve, reject) {
+              $.post(PHP_ADD_ITEM, {
+                itemID: item.id,
+                userID: userID,
+                groupID: groupID,
+                itemType: item.type,
+                position: position
+              }, function(data) {
+                if (data === -1)
+                  reject(data);
+                resolve(data);
+              });
+            })
+          })
+      }
+    })
+    .catch(function(err) {
+      console.log("Error: " + err);
+    });
 }
 
 function checkGroupItemDB(item, userID, userName) {
@@ -153,22 +155,22 @@ function checkGroupItemDB(item, userID, userName) {
     });
 }
 
-function getItem(userID, itemID){
+function getItem(userID, itemID) {
   return new Promise(function(resolve, reject) {
     $.post(PHP_GET_ITEM, {
       userID: userID,
       itemID: itemID
     }, function(data) {
-      if(data == null){
+      if (data == null) {
         resolve(null);
-      }else{
+      } else {
         resolve(JSON.parse(data));
       }
     });
   });
 }
 
-function updateGroupName(userID, groupID, newName){
+function updateGroupName(userID, groupID, newName) {
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_GROUP_NAME, {
       userID: userID,
@@ -180,7 +182,7 @@ function updateGroupName(userID, groupID, newName){
   });
 }
 
-function updateItemPosition(userID, itemID, newPosition){
+function updateItemPosition(userID, itemID, newPosition) {
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_ITEM_POSITION, {
       userID: userID,
@@ -192,7 +194,7 @@ function updateItemPosition(userID, itemID, newPosition){
   });
 }
 
-function updateItemGroup(userID, itemID, newGroupID){
+function updateItemGroup(userID, itemID, newGroupID) {
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_ITEM_GROUP, {
       userID: userID,
@@ -205,7 +207,7 @@ function updateItemGroup(userID, itemID, newGroupID){
   });
 }
 
-function getAllItemsInGroup(userID, groupID){
+function getAllItemsInGroup(userID, groupID) {
   return new Promise(function(resolve, reject) {
     $.post(PHP_GET_ITEMS_IN_GROUP, {
       userID: userID,
@@ -224,15 +226,15 @@ function getAllItemsInGroup(userID, groupID){
    Return: None.
    TODO only update the positions of the tasks after the one that's inserted.
 */
-function updateTableItemPositions(userID, category){
+function updateTableItemPositions(userID, category) {
   var tasksInCategory = [];
   //Find the tasks with the category to be updated.
-  for(let i in user.tasks){
-    if(user.tasks[i].category === category)
+  for (let i in user.tasks) {
+    if (user.tasks[i].category === category)
       tasksInCategory.push(user.tasks[i]);
-    }
+  }
   //Update the positions.
-  for(let i in tasksInCategory){
+  for (let i in tasksInCategory) {
     updateItemPosition(userID, tasksInCategory[i]);
   }
 }
@@ -243,22 +245,22 @@ function updateTableItemPositions(userID, category){
    Parameters: None.
    Return: None.
 */
-function updateItemPositions(userID){
+function updateItemPositions(userID) {
   var uniqueCategories = [];
-  for(let i in user.tasks){
+  for (let i in user.tasks) {
     let currentCategory = user.tasks[i].category
-    if(!uniqueCategories.includes(currentCategory))
+    if (!uniqueCategories.includes(currentCategory))
       uniqueCategories.push(currentCategory);
   }
   var categoriesWithTasks = new Array(uniqueCategories.length);
-  for(let i in uniqueCategories){
+  for (let i in uniqueCategories) {
     categoriesWithTasks[i] = new Array();
   }
-  for(let j = 0; j < user.tasks.length; j++){
+  for (let j = 0; j < user.tasks.length; j++) {
     categoriesWithTasks[uniqueCategories.indexOf(user.tasks[j].category)].push(user.tasks[j]);
   }
-  for(let i in categoriesWithTasks){
-    for(let j in categoriesWithTasks[i]){
+  for (let i in categoriesWithTasks) {
+    for (let j in categoriesWithTasks[i]) {
       updateItemPosition(userID, categoriesWithTasks[i][j].id, j)
     }
   }
@@ -270,24 +272,44 @@ function updateItemPositions(userID){
                item - The item to find the position of.
    Return: The position of the item.
 */
-function getItemPosition(userID, item){
+function getItemPosition(userID, item) {
   var uniqueCategories = [];
-  for(let i in user.tasks){
+  for (let i in user.tasks) {
     let currentCategory = user.tasks[i].category
-    if(!uniqueCategories.includes(currentCategory))
+    if (!uniqueCategories.includes(currentCategory))
       uniqueCategories.push(currentCategory);
   }
   var categoriesWithTasks = new Array(uniqueCategories.length);
-  for(let i in uniqueCategories){
+  for (let i in uniqueCategories) {
     categoriesWithTasks[i] = new Array();
   }
-  for(let j = 0; j < user.tasks.length; j++){
+  for (let j = 0; j < user.tasks.length; j++) {
     categoriesWithTasks[uniqueCategories.indexOf(user.tasks[j].category)].push(user.tasks[j]);
   }
-  for(let i in categoriesWithTasks){
-    for(let j in categoriesWithTasks[i]){
-      if(item == categoriesWithTasks[i][j])
+  for (let i in categoriesWithTasks) {
+    for (let j in categoriesWithTasks[i]) {
+      if (item == categoriesWithTasks[i][j])
         return j;
     }
   }
-}
+
+  function getAllGroups(userID) {
+    return new Promise(function(resolve, reject) {
+      $.post(PHP_GET_GROUPS_FOR_USER, {
+        userID: userID,
+      }, function(data) {
+        resolve(JSON.parse(data));
+      });
+    });
+  }
+
+  function getGroupName(user, groupID) {
+    return new Promise(function(resolve, reject) {
+      $.post(PHP_GET_GROUP_NAME, {
+        userID: user,
+        groupID: groupID
+      }, function(data) {
+        resolve(data);
+      });
+    })
+  }

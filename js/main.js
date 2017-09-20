@@ -12,7 +12,8 @@ var zendeskToken = "";
 var trelloToken = "";
 var user;
 var isClosed = false;
-const wrapperSuffix = "_table";
+const wrapperPrefix = "wrapper_";
+const tablePrefix = "table_";
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
@@ -47,8 +48,7 @@ class Task {
       if(data.group){
         this.group = data.group.name;
       }
-      //this.setRequester(this, data.requester_id)
-      this.requester = null;
+      this.requester = data.requester;
     }
   }
 
@@ -61,18 +61,7 @@ class Task {
     let date = new Date(timeString);
     return date.getTime();
   }
-
-  setRequester(task, requesterID) {
-    // TODO Get all the list at once and then store that data so you are not making a new request for each card
-    let prom = zendeskGet("users/" + requesterID);
-    Task.prom.push(prom);
-    prom.then(function(requesterData) {
-      task.requester = requesterData.user;
-    })
-  }
 }
-Task.prom = new Array();
-
 
 $(document).ready(function() {
 
@@ -334,20 +323,52 @@ function isEmpty(tableName) {
 
 /* Populating/setting up tables */
 function populatePage() {
-  var cat = [];
-  var task;
-  for (var i = 0; i < user.tasks.length; i++) {
-    task = user.tasks[i];
-    var str = task.category.split(" ").join("_");
-    var catName = str.charAt(0).toUpperCase() + str.substring(1);
-    if (!cat.includes(catName)) {
-      cat.push(catName);
+  var userName = user.trello.email;
+
+  getUserID(userName)
+  .then(function(promise) {
+    return promise;
+  })
+  .then(function(id) {
+    return getAllGroups(id);
+  })
+  .then(function(groups) {
+    // console.log(groups);
+    var cat = {};
+
+    for (var i = 0; i < groups.length; i++) {
+      cat[groups[i].groupName] = groups[i].groupID;
     }
-    if (document.getElementById(catName) == null) {
-      createTable(catName, false);
+
+    var tasks = user.tasks;
+    for (var i = 0; i < tasks.length; i++) {
+      var task = tasks[i];
+      var catID = cat[task.category];
+
+      // Check if category table already exists
+      var wrapperCat = wrapperPrefix + catID;
+      if (document.getElementById(wrapperCat) == null) {
+        createTable(catID, false);
+      }
+      populateTable(task, catID, i);
     }
-    populateTable(task, catName, i);
-  }
+  })
+  .catch(function(err) {
+    console.log("Error" + err.stack);
+  });
+
+  // for (var i = 0; i < user.tasks.length; i++) {
+  //   task = user.tasks[i];
+  //   var str = task.category.split(" ").join("_");
+  //   var catName = str.charAt(0).toUpperCase() + str.substring(1);
+  //   if (!cat.includes(catName)) {
+  //     cat.push(catName);
+  //   }
+  //   if (document.getElementById(catName) == null) {
+  //     createTable(catName, false);
+  //   }
+  //   populateTable(task, catName, i);
+  // }
 }
 
 function createTable(tableName, isNewTable) {
@@ -358,6 +379,7 @@ function createTable(tableName, isNewTable) {
   var body = document.createElement("tbody");
 
   var tableWrapper = createTableWrapper(tableName, isNewTable);
+  var tableID = tablePrefix + tableName;
 
   //create row and cell element
   row = document.createElement("tr");
@@ -390,7 +412,7 @@ function createTable(tableName, isNewTable) {
   row.appendChild(catCell);
 
   // Name elements
-  table.setAttribute("id", tableName);
+  table.setAttribute("id", tableID);
   table.setAttribute("class", "tables");
   //TODO
   table.setAttribute("dbID", 1);
@@ -410,7 +432,7 @@ function createTable(tableName, isNewTable) {
   tableWrapper.appendChild(table);
   mainDiv.appendChild(tableWrapper);
 
-  makeButtons(tableName);
+  makeButtons(tableID);
 }
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
@@ -420,22 +442,41 @@ function createTableWrapper(tableName, isNewTable) {
   var title = document.createElement("h3");
   var divider = document.createElement("hr");
   var header = document.createElement("div");
-  var wrapperName = tableName + wrapperSuffix;
+  var wrapperName = wrapperPrefix + tableName;
 
   tableWrapper.setAttribute("id", wrapperName);
   title.setAttribute("id", "tableTitle");
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
-  var cat = tableName.split("_").join(" ");
+  // var cat = tableName.split("_").join(" ");
 
   var tableTitle;
-  if(isNewTable)
+  if(isNewTable) {
     tableTitle = document.createTextNode("New Table " + tableNumber);
-  else
-    tableTitle = document.createTextNode(cat);
+    title.appendChild(tableTitle);
+  }
+  else {
+    var userName = user.trello.email;
 
-  title.appendChild(tableTitle);
+    getUserID(userName)
+    .then(function(promise) {
+      return promise;
+    })
+    .then(function(id) {
+      return getGroupName(id, tableName);
+    })
+    .then(function(grpName) {
+      var catName = grpName.charAt(0).toUpperCase() + grpName.substring(1);
+      tableTitle = document.createTextNode(catName);
+      title.appendChild(tableTitle);
+    })
+    .catch(function(err) {
+      console.log("Error: " + err);
+    });
+  }
+
+  // title.appendChild(tableTitle);
   header.appendChild(title);
   header.appendChild(divider);
   tableWrapper.appendChild(header);
@@ -492,12 +533,14 @@ $(".main").on("click", "#tableTitle", function() {
 
       if (e.which === 13 || e.which === 27) {
         //Get the name of the table that you are currently working with.
-        var table = this.parentNode.parentNode.id
+        var table = this.parentNode.parentNode.id;
         table = table.substring(0, table.indexOf("_table"));
         table = table.split("_").join(" ");
         //Check if the new table name is the same as others.
-        if (numKeyPress > 1 && getFilters().includes(this.value) && this.value !== table) {
-          alert("Please rename this table as there is already one with the name \"" + this.value + "\"");
+        if (numKeyPress > 1 && getFilters().includes(this.value)
+          && this.value !== table) {
+          alert("Please rename this table as there is already one with the name \""
+            + this.value + "\"");
           this.value = inputText;
         }
         else {
@@ -537,7 +580,7 @@ function isEmptyString(string){
 }
 
 function populateTable(task, tableName, index) {
-  var table = document.getElementById(tableName);
+  var table = document.getElementById(tablePrefix + tableName);
   addRow(task, tableName, index);
 }
 
@@ -571,11 +614,14 @@ function addRow(task, tableName, index) {
   // Get group/board of task
   var group = task.group;
 
-  if(tableName.id != "Unsorted") {
-    var body = document.getElementById(tableName).getElementsByTagName("tbody")[0];
+  var tableID = tablePrefix + tableName;
+  if (tableID != "Unsorted") {
+  // if(tableName.id != "Unsorted") {
+    var body = document.getElementById(tableID).getElementsByTagName("tbody")[0];
   }
   else{
-    var body = tableName.tBodies[0];
+    // var body = tableName.tBodies[0];
+    var body = tableID.tBodies[0];
   }
 
   //create row and cell element
@@ -638,6 +684,9 @@ function addRow(task, tableName, index) {
   row.appendChild(catCell);
 
   // append row to table/body
+  // console.log("Table: " + tableName + "----------------------");
+  // console.log(body);
+  // console.log(row);
   body.appendChild(row);
 }
 
@@ -657,6 +706,7 @@ function draggableRows(bool) {
     //connectWith: ".sortable",
     placeholder: "ui-state-highlight",
     zIndex: 99,
+    update: onTableUpdated,
     stop: function(e,t) {
       if ($(this).children().length == 0) {
           $(this).addClass("place");
@@ -671,6 +721,12 @@ function draggableRows(bool) {
   if(!bool) {
     $(".sortable").sortable({connectWith: ".sortable"});
   }
+}
+
+function onTableUpdated(event, ui){
+  let table = event.target.parentNode;
+  console.log(table);
+  //TODO Paul
 }
 
 function makeButtons(tableName) {
@@ -1086,9 +1142,9 @@ function addInfoToCardsAndTickets(cardsAndTickets){
   return new Promise(function(resolve, reject) {
       let addInfoTrelloGroup = addTrelloGroups(trelloCards);
       let addInfoZendeskGroup = addZendeskGroups(zendeskCards);
-      //TODO let addInfoZendeskRequester = zendeskGet("search.json?query=type:user role:end-user");
+      let addInfoZendeskRequester = addZendeskRequester(zendeskCards);
 
-      Promise.all([addInfoTrelloGroup, addInfoZendeskGroup]).then(function(data){
+      Promise.all([addInfoTrelloGroup, addInfoZendeskGroup, addInfoZendeskRequester]).then(function(data){
         resolve();
       });
   });
@@ -1140,7 +1196,40 @@ function addTrelloGroups(trelloCards){
       resolve();
     });
   });
+}
 
+function addZendeskRequester(zendeskCards){
+  return new Promise(function(resolve, reject){
+    let allZendeskUsers = getAllZendeskUsers("users", new Array());
+    allZendeskUsers.then(function(arrayOfUsers){
+      for(let i = 0; i < zendeskCards.length; i++){
+        let task = zendeskCards[i];
+        task.requester = null;
+        for(let j = 0; j < arrayOfUsers.length; j++){
+          let user = arrayOfUsers[j];
+          if(user.id == task.requester_id){
+            task.requester = user.email;
+            break;
+          }
+        }
+      }
+      resolve();
+    });
+  });
+}
+
+function getAllZendeskUsers(url, previousList){
+  let userPromise = zendeskGet(url);
+  return userPromise.then(function(data){
+    previousList.push(data.users);
+    if(data.next_page != null){
+      endingIndex = data.next_page.indexOf(ZEN_API_URL) + ZEN_API_URL.length;
+      newURL = data.next_page.substring(endingIndex);
+      return getAllZendeskUsers(newURL,previousList);
+    }else{
+      return Promise.resolve(oneArrayFromMany(previousList));
+    }
+  });
 }
 
 function oneArrayFromMany(arrayOfArrays){
@@ -1180,7 +1269,7 @@ function createTasksFromCardsAndTickets(cardsAndTickets) {
     }
     user.tasks = tasks;
   }
-  return Promise.all(Task.prom);
+  return Promise.resolve();
 }
 
 function zendeskGet(url) {
@@ -1717,9 +1806,11 @@ $(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
 function createFilters(){
   var filters = getFilters();
   var i;
-    for(i = 0; i < filters.length; i++){
-      createFilterButton(filters[i]);
-    }
+
+  createFilterButton("View All");
+  for(i = 0; i < filters.length; i++){
+    createFilterButton(filters[i]);
+  }
 
 }
 
@@ -2010,3 +2101,13 @@ $(document).on('click', '.navbar-collapse.in',function(e) {
         $(this).collapse('hide');
     }
 });
+
+function extractGroupID(idAttribute) {
+  var startIndex = idAttribute.indexOf("_");
+
+  if (startIndex === -1)
+    return;
+
+  var groupID = idAttribute.substr(++startIndex);
+  return groupID;
+}
