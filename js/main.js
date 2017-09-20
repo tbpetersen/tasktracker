@@ -60,18 +60,7 @@ class Task {
     let date = new Date(timeString);
     return date.getTime();
   }
-
-  setRequester(task, requesterID) {
-    // TODO Get all the list at once and then store that data so you are not making a new request for each card
-    let prom = zendeskGet("users/" + requesterID);
-    Task.prom.push(prom);
-    prom.then(function(requesterData) {
-      task.requester = requesterData.user;
-    })
-  }
 }
-Task.prom = new Array();
-
 
 $(document).ready(function() {
 
@@ -646,6 +635,7 @@ function draggableRows(bool) {
     //connectWith: ".sortable",
     placeholder: "ui-state-highlight",
     zIndex: 99,
+    update: onTableUpdated,
     stop: function(e,t) {
       if ($(this).children().length == 0) {
           $(this).addClass("place");
@@ -660,6 +650,12 @@ function draggableRows(bool) {
   if(!bool) {
     $(".sortable").sortable({connectWith: ".sortable"});
   }
+}
+
+function onTableUpdated(event, ui){
+  let table = event.target.parentNode;
+  console.log(table);
+  //TODO Paul
 }
 
 function makeButtons(tableName) {
@@ -1202,7 +1198,7 @@ function createTasksFromCardsAndTickets(cardsAndTickets) {
     }
     user.tasks = tasks;
   }
-  return Promise.all(Task.prom);
+  return Promise.resolve();
 }
 
 function zendeskGet(url) {
