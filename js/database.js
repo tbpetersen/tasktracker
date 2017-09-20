@@ -226,16 +226,17 @@ function getAllItemsInGroup(userID, groupID) {
    Return: None.
    TODO only update the positions of the tasks after the one that's inserted.
 */
-function updateTableItemPositions(userID, category) {
-  var tasksInCategory = [];
+function updateTableItemPositions(userID, table) {
+  var tasksInTable = [];
+  // console.log(table.getElementsByTagName("TR"));
   //Find the tasks with the category to be updated.
-  for (let i in user.tasks) {
-    if (user.tasks[i].category === category)
-      tasksInCategory.push(user.tasks[i]);
+  var tableTasks = table.getElementsByTagName("TR")
+  for (let i = 1; i < tableTasks.length; i++) {
+    console.log(table/*tableTasks[i].*/);
   }
   //Update the positions.
-  for (let i in tasksInCategory) {
-    updateItemPosition(userID, tasksInCategory[i]);
+  for (let i in tasksInTable) {
+    updateItemPosition(userID, tasksInTable[i]);
   }
 }
 
@@ -292,24 +293,25 @@ function getItemPosition(userID, item) {
         return j;
     }
   }
+}
 
-  function getAllGroups(userID) {
-    return new Promise(function(resolve, reject) {
-      $.post(PHP_GET_GROUPS_FOR_USER, {
-        userID: userID,
-      }, function(data) {
-        resolve(JSON.parse(data));
-      });
+function getAllGroups(userID) {
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_GET_GROUPS_FOR_USER, {
+      userID: userID,
+    }, function(data) {
+      resolve(JSON.parse(data));
     });
-  }
+  });
+}
 
-  function getGroupName(user, groupID) {
-    return new Promise(function(resolve, reject) {
-      $.post(PHP_GET_GROUP_NAME, {
-        userID: user,
-        groupID: groupID
-      }, function(data) {
-        resolve(data);
-      });
-    })
-  }
+function getGroupName(user, groupID) {
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_GET_GROUP_NAME, {
+      userID: user,
+      groupID: groupID
+    }, function(data) {
+      resolve(data);
+    });
+  })
+}

@@ -725,8 +725,7 @@ function draggableRows(bool) {
 
 function onTableUpdated(event, ui){
   let table = event.target.parentNode;
-  console.log(table);
-  //TODO Paul
+  updateTableItemPositions(user.id, table);
 }
 
 function makeButtons(tableName) {
