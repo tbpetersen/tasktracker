@@ -6,6 +6,7 @@ const PHP_GET_USER_ID = PHP_DIRECTORY_PATH + '/getUserID.php';
 
 const PHP_ADD_GROUP = PHP_DIRECTORY_PATH + '/addGroup.php';
 const PHP_GET_GROUP = PHP_DIRECTORY_PATH + '/getGroup.php';
+const PHP_GET_GROUP_NAME = PHP_DIRECTORY_PATH + '/getGroupName.php';
 const PHP_GET_GROUP_ID = PHP_DIRECTORY_PATH + '/getGroupID.php';
 const PHP_GET_GROUPS_FOR_USER = PHP_DIRECTORY_PATH + "/getAllGroups.php";
 const PHP_UPDATE_GROUP_NAME = PHP_DIRECTORY_PATH + '/updateGroupName.php';
@@ -224,4 +225,15 @@ function getAllGroups(userID){
       resolve(JSON.parse(data));
     });
   });
+}
+
+function getGroupName(user, groupID) {
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_GET_GROUP_NAME, {
+      userID: user,
+      groupID: groupID
+    }, function(data) {
+      resolve(data);
+    });
+  })
 }
