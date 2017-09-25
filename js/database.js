@@ -113,26 +113,30 @@ function checkUserGroupDB(user, group) {
 }
 
 function addGroupItemToDB(item, userID, position) {
-  return checkGroupItemDB(item, userID)
-    .then(function(itemObj) {
+  return getGroupID(userID, item.category)
+  .then(function(groupID){
+    return checkGroupItemDB(item, userID, groupID)
+  })
+  .then(function(itemObj) {
       //If the item doesn't exist, add it
       if (!itemObj) {
         return getGroupID(userID, item.category)
-          .then(function(groupID) {
-            return new Promise(function(resolve, reject) {
-              $.post(PHP_ADD_ITEM, {
-                itemID: item.id,
-                userID: userID,
-                groupID: groupID,
-                itemType: item.type,
-                position: position
-              }, function(data) {
-                if (data === -1)
-                  reject(data);
-                resolve(data);
-              });
-            })
+        .then(function(groupID) {
+          return new Promise(function(resolve, reject) {
+            $.post(PHP_ADD_ITEM, {
+              itemID: item.id,
+              userID: userID,
+              groupID: groupID,
+              itemType: item.type,
+              position: position
+            }, function(data) {
+              console.log(data);
+              if (data === -1)
+                reject(data);
+              resolve(data);
+            });
           })
+        })
       }
     })
     .catch(function(err) {
@@ -140,26 +144,26 @@ function addGroupItemToDB(item, userID, position) {
     });
 }
 
-function checkGroupItemDB(item, userID, userName) {
+function checkGroupItemDB(item, userID, groupID) {
   var ID = item.id;
   if (item.group == undefined)
     item.group = "Ungrouped";
-  var group = item.category;
   var type = item.type;
-  return getGroupID(userID, group)
-    .then(function(groupID) {
-      return getItem(userID, ID);
-    })
-    .catch(function(err) {
-      console.log("Error: " + err);
-    });
+  return getGroupID(userID, item.category)
+  .then(function(groupID) {
+    return getItem(userID, ID, groupID);
+  })
+  .catch(function(err) {
+    console.log("Error: " + err);
+  });
 }
 
-function getItem(userID, itemID) {
+function getItem(userID, itemID, groupID) {
   return new Promise(function(resolve, reject) {
     $.post(PHP_GET_ITEM, {
       userID: userID,
-      itemID: itemID
+      itemID: itemID,
+      groupID: groupID
     }, function(data) {
       if (data == null) {
         resolve(null);
@@ -201,7 +205,6 @@ function updateItemGroup(userID, itemID, newGroupID) {
       itemID: itemID,
       newGroupID: newGroupID
     }, function(data) {
-      console.log(data);
       resolve(data == 1);
     });
   });
@@ -232,11 +235,11 @@ function updateTableItemPositions(userID, table) {
   //Find the tasks with the category to be updated.
   var tableTasks = table.getElementsByTagName("TR")
   for (let i = 1; i < tableTasks.length; i++) {
-    console.log(table/*tableTasks[i].*/);
-  }
-  //Update the positions.
-  for (let i in tasksInTable) {
-    updateItemPosition(userID, tasksInTable[i]);
+    for (let j in user.tasks) {
+      if (user.tasks[j].id == tableTasks[i].id){
+        updateItemPosition(userID, user.tasks[j].id, getItemPosition(userID, user.tasks[j]));
+      }
+    }
   }
 }
 
@@ -274,23 +277,14 @@ function updateItemPositions(userID) {
    Return: The position of the item.
 */
 function getItemPosition(userID, item) {
-  var uniqueCategories = [];
-  for (let i in user.tasks) {
-    let currentCategory = user.tasks[i].category
-    if (!uniqueCategories.includes(currentCategory))
-      uniqueCategories.push(currentCategory);
-  }
-  var categoriesWithTasks = new Array(uniqueCategories.length);
-  for (let i in uniqueCategories) {
-    categoriesWithTasks[i] = new Array();
-  }
-  for (let j = 0; j < user.tasks.length; j++) {
-    categoriesWithTasks[uniqueCategories.indexOf(user.tasks[j].category)].push(user.tasks[j]);
-  }
-  for (let i in categoriesWithTasks) {
-    for (let j in categoriesWithTasks[i]) {
-      if (item == categoriesWithTasks[i][j])
-        return j;
+  var tables = document.getElementsByTagName("table");
+  for (let i = 0; i < tables.length; i++) {
+    var tableRows = tables[i].getElementsByTagName("tr");
+    //Indexes of the table rows
+    for (let j = 1; j < tableRows.length; j++) {
+      if (tableRows[j].id == item.id) {
+        return j - 1;
+      }
     }
   }
 }

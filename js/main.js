@@ -126,14 +126,13 @@ $(document).ready(function() {
 
   setIDs().then(function() {
     getCardsAndTickets().then(function(cardsAndTickets) {
-
       addInfoToCardsAndTickets(cardsAndTickets).then(function(){
         user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
         createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
           //Add the user to the DB
           var userName = user.trello.email;
           addUserToDB(userName)
-          .then(function(promise){
+          .then(function(){
             return getUserID(userName);
           })
           .then(function(id){
@@ -147,15 +146,7 @@ $(document).ready(function() {
                 addUserGroupToDB(id, group);
               }
             }
-            return id;
            })
-          .then(function(userID){
-            var promiseArray = [];
-            for(i in user.tasks){
-              let currentItemPosition = getItemPosition(userID, user.tasks[i]);
-              addGroupItemToDB(user.tasks[i], userID, currentItemPosition);
-            }
-          })
           .catch(function(err) {
             console.log("Error: " + err);
           });
@@ -165,7 +156,15 @@ $(document).ready(function() {
           draggableRows(false);
           egg();
         })
-
+        .then(function(){
+          return getUserID(user.trello.email);
+        })
+        .then(function(userID){
+          for(i in user.tasks){
+            let currentItemPosition = getItemPosition(userID, user.tasks[i]);
+            addGroupItemToDB(user.tasks[i], userID, currentItemPosition);
+          }
+        })
       });
     });
   });
@@ -567,7 +566,7 @@ $(".main").on("click", "#tableTitle", function() {
 });
 
 $(".navbar-toggle").on("focusout", function(){
-  console.log("Close the links");
+  //console.log("Close the links"); TODO
 });
 
 /* Name: isEmptyString
@@ -640,7 +639,7 @@ function addRow(task, tableName, index) {
   catCell = document.createElement("td");
 
   // Name elements
-  row.setAttribute("id", index);
+  row.setAttribute("id", task.id/*index*/);
   row.setAttribute("class", "notFirst");
   titleCell.setAttribute("id", "title");
   descCell.setAttribute("id", "desc");
@@ -698,7 +697,6 @@ function addRow(task, tableName, index) {
 }
 
 function draggableRows(bool) {
-  console.log('draggable rows');
   // Prevent rows from shrinking while dragged
   var fixHelper = function(e, ui) {
     ui.children().each(function() {

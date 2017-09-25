@@ -20,17 +20,29 @@ Return value: the item's ID in the database or -1 if fail
   $itemType = $_POST['itemType'];
   $position = $_POST['position'];
 
-
-  /*TODO: Check that the given userID is a valid user and group ID is valid*/
-
-  /* Add the user to the db */
-    $stmt = $tasktrackerDB->prepare("INSERT INTO $itemsTable (itemID, userID, groupID, itemType, position) VALUES (?,?,?,?,?)");
-    $stmt->bind_param('siiii', $itemID, $userID, $groupID, $itemType, $position);
+  $stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE itemID = (?)");
+  $stmt->bind_param('s', $itemID);
+  $success = $stmt->execute();
+  $result = $stmt->get_result();
+  if($result->num_rows != 0){
+    $stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE groupID = (?)");
+    $stmt->bind_param('i', $groupID);
     $success = $stmt->execute();
-    if($success == 1){
-      echo($itemID);
-    }else{
-      echo(-1);
+    $result = $stmt->get_result();
+    if($result->num_rows == 0){
+      echo("Need to change group item");
+      $tasktrackerDB->close();
     }
-    $tasktrackerDB->close();
+  }
+
+  /* Add the item to the db */
+  $stmt = $tasktrackerDB->prepare("INSERT INTO $itemsTable (itemID, userID, groupID, itemType, position) VALUES (?,?,?,?,?)");
+  $stmt->bind_param('siiii', $itemID, $userID, $groupID, $itemType, $position);
+  $success = $stmt->execute();
+  if($success == 1){
+    echo($itemID);
+  }else{
+    echo(-1);
+  }
+  $tasktrackerDB->close();
 ?>
