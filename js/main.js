@@ -152,59 +152,23 @@ $(document).ready(function() {
   })
 
   .then(function(){
-    //if(user.databaseID == -1){
-    if(true){
-
-      return loadFromAPIandStoreInDB();
+    if(user.databaseID == -1){
+      return loadFromAPI();
     }else{
-      let itemsFromDB;
-      let allCardsAndTickets;
-      return Promise.resolve()
-
-      .then(function(){
-        return getCardsAndTickets();
-      })
-
-      .then(function(cardsAndTickets){
-        allCardsAndTickets = cardsAndTickets;
-        return addInfoToCardsAndTickets(cardsAndTickets);
-      })
-
-      .then(function(){
-        return loadUsersItemsFromDB();
-      })
-
-      .then(function(items){
-        itemsFromDB = items;
-        return createTasksFromDPandAPI(itemsFromDB, allCardsAndTickets);
-      })
-
+      return loadFromDB();
     }
   })
 
   .then(function(){
+    return addDataToDB();
+  })
+
+  .then(function(){
     //createFilters();
-    createBackingTable();
+    //createBackingTable();
     createTablesFromTableObject();
     //return populatePage();
   })
-/*
-  .then(function(cardsAndTickets){
-    return addInfoToCardsAndTickets(cardsAndTickets);
-  })
-
-  .then(function(cardsAndTickets){
-    return createTasksFromCardsAndTickets(cardsAndTickets);
-  })
-
-  .then(function(tasks){
-    user.tasks = tasks;
-    //Add the user to the DB
-    addDataToDB();
-    createFilters();
-    return populatePage();
-  })
-  */
 });
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -236,6 +200,11 @@ $(".main").on("click", "#deleteTableBtn", function(e)
   }
   deleteTablePrompt(table);
 });
+
+function storeDataFromTableObjects(){
+  //TODO
+  return Promise.resolve();
+}
 
 function deleteUnsorted() {
   $('#delUnsorted').modal('show');
@@ -272,7 +241,15 @@ function loadUsersItemsFromDB(){
       promiseArray.push(getAllItemsInGroup(user.databaseID, groupID));
     }
     return Promise.all(promiseArray).then(function(items){
-      return Promise.resolve(oneArrayFromMany(items));
+      let groupsArray = new Array();
+      for(let i = 0; i < groups.length; i++){
+        let groupObj = new Object();
+        groupObj.name = groups[i].groupName;
+        groupObj.id = groups[i].groupID;
+        groupObj.items = items[i];
+        groupsArray.push(groupObj);
+      }
+      return Promise.resolve(groupsArray);
     })
   })
 }
@@ -281,20 +258,68 @@ function createTablesFromTableObject(){
   //TODO Shiva
   let tables = user.tables; // You can iterate over these
   console.log(tables)
-  console.log(user.getTableByID(0)); // access a tables
-  console.log(user.getTableByID(0).getRowByID('592ef0f477a80e3838402ae2'));
-
-
 }
 
 
-function createTasksFromDPandAPI(dbData, apiData){
-  console.log(dbData);
-  console.log(apiData);
+function createTablesFromDPandAPI(dbData, tasks){
+  let tables = createTablesFromGroups(dbData, tasks);
+  user.tables = tables;
   return Promise.resolve();
 }
 
-function loadFromAPIandStoreInDB(){
+function createTablesFromGroups(groups, tasks){
+  let tables = new Array();
+  for(let i = 0; i < groups.length; i++){
+    let group = groups[i];
+    let table = new Table(group.name, group.id);
+
+    for(let j = 0; j < group.items.length; j++){
+      let item = group.items[j];
+      task = getTaskByID(item.itemID)
+      if(task != null){
+        table.addRow(task);
+      }
+    }
+
+    tables.push(table);
+  }
+  let unsortedTable = getUnsortedTable(tasks, groups);
+  tables.push(unsortedTable);
+  return tables;
+}
+
+function getUnsortedTable(tasks, groups){
+  let table = new Table('Unsorted', -1);
+  var clonedTasks = JSON.parse(JSON.stringify(tasks));
+  for(let i = 0; i < groups.length; i++){
+    for(let j = 0; j < groups[i].items.length; j++){
+      for(let k = 0; k < clonedTasks.length; k++){
+        if(clonedTasks[k].id == groups[i].items[j].itemID){
+          clonedTasks.splice(k, 1)
+        }
+      }
+    }
+  }
+  for(let i = 0; i < clonedTasks.length; i++){
+    table.addRow(clonedTasks[i]);
+  }
+  return table;
+}
+
+function getTaskByID(taskID){
+  if(user.tasks == null){
+    return null;
+  }
+
+  for(let i = 0; i < user.tasks.length; i++){
+    if(user.tasks[i].id == taskID){
+      return user.tasks[i];
+    }
+  }
+  return null;
+}
+
+function createTasks(){
   return Promise.resolve()
   .then(function(){
     return getCardsAndTickets();
@@ -310,12 +335,61 @@ function loadFromAPIandStoreInDB(){
 
   .then(function(tasks){
     user.tasks = tasks;
-    //Add the user to the DB
-    return addDataToDB();
+    return Promise.resolve(tasks);
   })
 }
 
+function loadFromAPI(){
+  return Promise.resolve()
+  .then(function(){
+    return createTasks();
+  })
+
+  .then(function(tasks){
+    createGroupsForUser(tasks);
+    return Promise.resolve();
+  })
+
+}
+
+function loadFromDB(){
+  return Promise.resolve()
+
+  .then(function(){
+    return createTasks();
+  })
+
+  .then(function(tasks){
+    user.tasks = tasks;
+    return loadUsersItemsFromDB();
+  })
+
+  .then(function(itemsFromDB){
+    return createTablesFromDPandAPI(itemsFromDB, user.tasks);
+  })
+}
+
+function createGroupsForUser(tasks){
+  let cat = {};
+  for (var i = 0; i < tasks.length; i++) {
+    var task = tasks[i];
+    var catID = task.category;
+
+    // Check if category table already exists
+    if ( cat[catID] == null) {
+      user.tables.push(new Table(task.category, catID));
+      cat[catID] = catID;
+    }
+    user.getTableByID(catID).addRow(task);
+  }
+
+  for(let i = 0; i < user.tables.length; i++){
+    user.tables[i].id = -1;
+  }
+}
+
 function addDataToDB(){
+  //TODO Paul: User user.tables to add to DB
   return new Promise(function(resolve, reject){
     var userName = user.trello.email;
     addUserToDB(userName)
