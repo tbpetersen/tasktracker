@@ -94,6 +94,8 @@ function addUserGroupToDB(user, group) {
             resolve(data);
           });
         })
+      }else{
+        return Promise.resolve();
       }
     })
     .catch(function(err) {

@@ -16,7 +16,17 @@ const wrapperPrefix = "wrapper_";
 const tablePrefix = "table_";
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
+class Table{
+  constructor(name, id){
+    this.name = name;
+    this.id = id;
+    this.rows = new Array();
+  }
 
+  addRow(task) {
+    this.rows.push(task)
+  }
+}
 class Task {
   /*
     Member variables:
@@ -124,50 +134,69 @@ $(document).ready(function() {
   // Allocate tables for Zendesk and Trello
   setupPage();
 
-  setIDs().then(function() {
-    getCardsAndTickets().then(function(cardsAndTickets) {
+  Promise.resolve()
 
-      addInfoToCardsAndTickets(cardsAndTickets).then(function(){
-        user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
-        createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
-          //Add the user to the DB
-          var userName = user.trello.email;
-          addUserToDB(userName)
-          .then(function(promise){
-            return getUserID(userName);
-          })
-          .then(function(id){
-            //Add Groups to the DB
-            var uniqueGroups = [];
-            for(i in user.tasks){
-              var group = user.tasks[i].category;
-              if(!uniqueGroups.includes(group))
-              {
-                uniqueGroups.push(group);
-                addUserGroupToDB(id, group);
-              }
-            }
-            return id;
-          })
-          .then(function(userID){
-            for(i in user.tasks){
-              addGroupItemToDB(user.tasks[i], userID, i);
-            }
-          })
-          .catch(function(err) {
-            console.log("Error: " + err);
-          });
-          createFilters();
+  .then(function(){
+    return setIDs()
+  })
 
-        });
-        populatePage().then(function(){
-          draggableRows(false);
-          egg();
-        })
+  .then(function(){
+    //if(user.databaseID == -1){
+    if(true){
+      return loadFromAPIandStoreInDB();
+    }else{
+      let itemsFromDB;
+      let allCardsAndTickets;
+      return Promise.resolve()
 
-      });
-    });
-  });
+      .then(function(){
+        return getCardsAndTickets();
+      })
+
+      .then(function(cardsAndTickets){
+        return addInfoToCardsAndTickets(cardsAndTickets);
+      })
+
+      .then(function(cardsAndTickets){
+        allCardsAndTickets = cardsAndTickets;
+        return Promise.resolve();
+      })
+
+      .then(function(){
+        return loadUsersItemsFromDB();
+      })
+
+      .then(function(items){
+        itemsFromDB = items;
+        return createTasksFromDPandAPI(itemsFromDB, allCardsAndTickets);
+      })
+
+    }
+  })
+
+  .then(function(){
+    createFilters();
+    createBackingTable();
+    createTablesFromTableObject();
+    //return populatePage();
+  })
+/*
+  .then(function(cardsAndTickets){
+    return addInfoToCardsAndTickets(cardsAndTickets);
+  })
+
+  .then(function(cardsAndTickets){
+    return createTasksFromCardsAndTickets(cardsAndTickets);
+  })
+
+  .then(function(tasks){
+    user.tasks = tasks;
+    //Add the user to the DB
+    addDataToDB();
+    createFilters();
+    return populatePage();
+  })
+  */
 });
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -211,6 +240,120 @@ function deleteUnsorted() {
       $('#confirm').click();
     }
   });
+}
+
+function createBackingTable(){
+  user.tables[0] = new Table("Test 0", 0);
+  user.tables[1] = new Table("Test 1", 1);
+  for(let i = 0; i < user.tasks.length; i++){
+    user.tables[i%2].addRow(user.tasks[i]);
+  }
+}
+
+function loadUsersItemsFromDB(){
+  return Promise.resolve()
+
+  .then(function(){
+    return getAllGroups(user.databaseID);
+  })
+
+  .then(function(groups){
+    let promiseArray = new Array();
+    for(let i = 0; i < groups.length; i++){
+      let groupID = groups[i].groupID;
+      promiseArray.push(getAllItemsInGroup(user.databaseID, groupID));
+    }
+    return Promise.all(promiseArray).then(function(items){
+      return Promise.resolve(oneArrayFromMany(items));
+    })
+  })
+}
+
+function createTablesFromTableObject(){
+  //TODO Shiva
+  let tables = user.tables;
+  console.log(tables)
+
+}
+
+
+function createTasksFromDPandAPI(dbData, apiData){
+  console.log(dbData);
+  console.log(apiData);
+  return Promise.resolve();
+}
+
+function loadFromAPIandStoreInDB(){
+  return Promise.resolve()
+  .then(function(){
+    return getCardsAndTickets();
+  })
+
+  .then(function(cardsAndTickets){
+    return addInfoToCardsAndTickets(cardsAndTickets);
+  })
+
+  .then(function(cardsAndTickets){
+    return createTasksFromCardsAndTickets(cardsAndTickets);
+  })
+
+  .then(function(tasks){
+    user.tasks = tasks;
+    //Add the user to the DB
+    return addDataToDB();
+  })
+}
+
+function addDataToDB(){
+  return new Promise(function(resolve, reject){
+    var userName = user.trello.email;
+    addUserToDB(userName)
+    .then(function(promise){
+      return getUserID(userName);
+    })
+    .then(function(id){
+
+      //Add Groups to the DB
+      let groupPromises = new Array();
+      var uniqueGroups = [];
+      for(i in user.tasks){
+        var group = user.tasks[i].category;
+        if(!uniqueGroups.includes(group))
+        {
+          uniqueGroups.push(group);
+          groupPromises.push(addUserGroupToDB(id, group));
+        }
+      }
+      return Promise.all(groupPromises).then(function(){
+        return Promise.resolve(id);
+      });
+    })
+    .then(function(userID){
+      let itemPromises = new Array();
+      for(i in user.tasks){
+        itemPromises.push(addGroupItemToDB(user.tasks[i], userID, i));
+      }
+        Promise.all(itemPromises).then(function(){
+          resolve();
+        });
+    })
+    .catch(function(err) {
+      console.log("Error: " + err);
+      reject(err);
+    });
+  });
+}
+
+function getTrelloAndZendeskCardData(items){
+  let proimseArray = new Array();
+  for(let i = 0; i < items.length; i++){
+    let item = items[i];
+    if(item.itemType == 0 /* Trello */){
+      promiseArray.push();
+    }else /* Zendesk */{
+      promiseArray.push();
+    }
+  }
 }
 
 function deleteTablePrompt(tableName) {
@@ -345,6 +488,7 @@ function populatePage() {
         }
         populateTable(task, catID, i);
       }
+      draggableRows(false);
       resolve();
     })
     .catch(function(err) {
@@ -688,7 +832,6 @@ function addRow(task, tableName, index) {
 }
 
 function draggableRows(bool) {
-  console.log('draggable rows');
   // Prevent rows from shrinking while dragged
   var fixHelper = function(e, ui) {
     ui.children().each(function() {
@@ -933,6 +1076,7 @@ function instantiateUser() {
   user = new Object();
   user.trello = new Object();
   user.zendesk = new Object();
+  user.tables = new Object();
 }
 
 function redirectToHTTPS() {
@@ -1004,10 +1148,22 @@ function redirectToZendeskLogin() {
 }
 
 function setIDs() {
-  let setIDTre = setTrelloID();
-  let setIDZen = setZendeskID();
+  return new Promise(function(resolve, reject){
+    let setIDTre = setTrelloID();
+    let setIDZen = setZendeskID();
 
-  return Promise.all(new Array(setIDTre, setIDZen));
+    Promise.all(new Array(setIDTre, setIDZen)).then(function(){
+      getUserID(user.trello.email)
+      .then(function(userID){
+        user.databaseID = userID;
+        resolve();
+      })
+      .catch(function(error){
+        reject(error);
+      });
+    });
+  });
+
 }
 
 function setTrelloID() {
@@ -1142,7 +1298,7 @@ function addInfoToCardsAndTickets(cardsAndTickets){
       let addInfoZendeskRequester = addZendeskRequester(zendeskCards);
 
       Promise.all([addInfoTrelloGroup, addInfoZendeskGroup, addInfoZendeskRequester]).then(function(data){
-        resolve();
+        resolve(cardsAndTickets);
       });
   });
 }
@@ -1264,9 +1420,8 @@ function createTasksFromCardsAndTickets(cardsAndTickets) {
     for (let j = 0; j < cardsAndTickets[i].length; j++) {
       tasks.push(new Task(cardsAndTickets[i][j], i));
     }
-    user.tasks = tasks;
   }
-  return Promise.resolve();
+  return Promise.resolve(tasks);
 }
 
 function zendeskGet(url) {

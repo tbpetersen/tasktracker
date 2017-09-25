@@ -19,7 +19,12 @@ Return value: the user's ID in the database or -1 if fail
     $stmt->bind_param('s', $username);
     $success = $stmt->execute();
     $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    if($result->num_rows == 0){
+      echo(-1);
+    }else{
+      $row = $result->fetch_assoc();
       echo($row['userID']);
+    }
+
     $tasktrackerDB->close();
 ?>
