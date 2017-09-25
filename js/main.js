@@ -26,6 +26,17 @@ class Table{
   addRow(task) {
     this.rows.push(task)
   }
+
+  getRowByID(rowID) {
+    for (let i = 0; i < this.rows.length; i++){
+      let row = this.rows[i];
+      if(row.id == rowID){
+        return row;
+      }
+    }
+    return null;
+  }
+
 }
 class Task {
   /*
@@ -143,6 +154,7 @@ $(document).ready(function() {
   .then(function(){
     //if(user.databaseID == -1){
     if(true){
+
       return loadFromAPIandStoreInDB();
     }else{
       let itemsFromDB;
@@ -154,12 +166,8 @@ $(document).ready(function() {
       })
 
       .then(function(cardsAndTickets){
-        return addInfoToCardsAndTickets(cardsAndTickets);
-      })
-
-      .then(function(cardsAndTickets){
         allCardsAndTickets = cardsAndTickets;
-        return Promise.resolve();
+        return addInfoToCardsAndTickets(cardsAndTickets);
       })
 
       .then(function(){
@@ -175,7 +183,7 @@ $(document).ready(function() {
   })
 
   .then(function(){
-    createFilters();
+    //createFilters();
     createBackingTable();
     createTablesFromTableObject();
     //return populatePage();
@@ -271,8 +279,11 @@ function loadUsersItemsFromDB(){
 
 function createTablesFromTableObject(){
   //TODO Shiva
-  let tables = user.tables;
+  let tables = user.tables; // You can iterate over these
   console.log(tables)
+  console.log(user.getTableByID(0)); // access a tables
+  console.log(user.getTableByID(0).getRowByID('592ef0f477a80e3838402ae2'));
+
 
 }
 
@@ -1076,7 +1087,17 @@ function instantiateUser() {
   user = new Object();
   user.trello = new Object();
   user.zendesk = new Object();
-  user.tables = new Object();
+  user.tables = new Array();
+
+  user.getTableByID = function(tableID){
+    for(let i = 0; i < user.tables.length; i++){
+      let table = user.tables[i];
+      if(table.id == tableID){
+        return table;
+      }
+    }
+    return null;
+  }
 }
 
 function redirectToHTTPS() {
