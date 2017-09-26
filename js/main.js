@@ -238,6 +238,7 @@ function loadUsersItemsFromDB(){
   })
 
   .then(function(groups){
+    sortByPosition(groups);
     let promiseArray = new Array();
     for(let i = 0; i < groups.length; i++){
       let groupID = groups[i].groupID;
@@ -258,7 +259,6 @@ function loadUsersItemsFromDB(){
 }
 
 function createTablesFromTableObject(){
-  //TODO Shiva
   let tables = user.tables; // You can iterate over these
   console.log(tables);
 
@@ -274,6 +274,13 @@ function createTablesFromTableObject(){
     }
     draggableRows(ITEM_SORTABLE_CLASS);
   }
+}
+
+function sortByPosition(array){
+  let compare = function(a,b){
+    return a.position - b.position;
+  }
+  array.sort(compare);
 }
 
 
@@ -294,8 +301,10 @@ function createTablesFromGroups(groups, tasks){
       let item = group.items[j];
       task = getTaskByID(item.itemID);
       if(task != null){
+        task.position = item.position;
         table.addRow(task);
       }
+      sortByPosition(table.rows);
     }
 
     tables.push(table);
