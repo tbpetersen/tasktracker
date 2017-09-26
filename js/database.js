@@ -212,12 +212,12 @@ function getItem(userID, itemID){
   });
 }
 
-function updateGroupName(userID, groupID, newName){
+function updateGroupName(userID, table){
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_GROUP_NAME, {
       userID: userID,
-      groupID: groupID,
-      newName: newName
+      groupID: table.id,
+      newName: table.name
     }, function(data) {
       resolve(data == 1);
     });

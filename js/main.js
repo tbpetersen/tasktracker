@@ -165,7 +165,6 @@ $(document).ready(function() {
 
   .then(function(){
     //createFilters();
-    //createBackingTable();
     createTablesFromTableObject();
     //return populatePage();
   })
@@ -439,7 +438,7 @@ function deleteTablePrompt(tableName) {
 
 /*Creates a new table with a random ID, as it cannot be coded to have it
   dynamically created if it isn"t random.*/
-var tableNumber = 1;
+var tableNumber = -1;
 function createNewTable() {
   $.notify({
     icon: "glyphicon glyphicon-plus-sign",
@@ -449,12 +448,22 @@ function createNewTable() {
   });
 
   var tableID = "New_Table_" + tableNumber;
-  createTable(tableID, true); // Create a table with a random ID;
-  $("#" + tableID).find("tbody").addClass("place");
-  updateFilters();
-  draggableRows();
-  window.scrollTo(0, document.body.scrollHeight);
-  tableNumber++;
+  let tableObject = new Table(tableID, -1/*, user.tables.length*/);
+  user.tables.push(tableObject);
+  addUserGroupToDB(user.databaseID, tableObject).then(function(){
+    tableObject.name = "New_Table_" + tableObject.id;
+    updateGroupName(user.databaseID, tableObject).then(function(){
+      tableID = tableObject.name;
+      console.log(tableObject)
+      createTable(tableObject.name, true); // Create a table with a random ID;
+      $("#" + tableID).find("tbody").addClass("place");
+      updateFilters();
+      draggableRows();
+      window.scrollTo(0, document.body.scrollHeight);
+      tableNumber--;
+    });
+  });
+
 }
 
 function deleteTable(tableName) {
@@ -634,7 +643,6 @@ function createTable(tableName, isNewTable) {
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
 function createTableWrapper(tableName, isNewTable) {
-
   var tableWrapper = document.createElement("div");
   var title = document.createElement("h3");
   var divider = document.createElement("hr");
