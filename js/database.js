@@ -17,6 +17,7 @@ const PHP_GET_ITEMS_IN_GROUP = PHP_DIRECTORY_PATH + '/getAllItemsInGroup.php'
 const PHP_UPDATE_ITEM_POSITION = PHP_DIRECTORY_PATH + '/updateItemPosition.php';
 const PHP_UPDATE_ITEM_GROUP = PHP_DIRECTORY_PATH + '/updateItemGroup.php';
 
+const unsortedID = -2;
 
 function getDBID(table, user, group) {
   return checkUserGroupDB(user, group)
@@ -41,6 +42,42 @@ function getGroupID(user, group) {
       resolve(data);
     });
   })
+}
+
+function addDataToDB(){
+  return new Promise(function(resolve, reject){
+    var userName = user.trello.email;
+    addUserToDB(userName)
+    .then(function(promise){
+      return getUserID(userName);
+    })
+    .then(function(id){
+      //Add Groups to the DB
+      var tables = user.tables;
+      let groupPromises = new Array();
+      for(let i in user.tables){
+        if(tables[i].id !== unsortedID)
+          groupPromises.push(addUserGroupToDB(id, tables[i]));
+      }
+      return Promise.all(groupPromises)
+      .then(function(){
+        return Promise.resolve(id);
+      });
+    })
+    .then(function(userID){
+      let itemPromises = new Array();
+      for(i in user.tasks){
+        itemPromises.push(addGroupItemToDB(user.tasks[i], userID, i));
+      }
+        Promise.all(itemPromises).then(function(){
+          resolve();
+        });
+    })
+    .catch(function(err) {
+      console.log("Error: " + err);
+      reject(err);
+    });
+  });
 }
 
 function addUserToDB(user) {
@@ -79,26 +116,31 @@ function checkUserDB(user) {
   });
 }
 
-function addUserGroupToDB(user, group) {
-  return checkUserGroupDB(user, group)
-    .then(function(promise) {
-      //If the group doesn't exist, add it
-      if (!promise) {
-        return new Promise(function(resolve, reject) {
-          $.post(PHP_ADD_GROUP, {
-            userID: user,
-            groupName: group
-          }, function(data) {
-            if (data === -1)
-              reject(data);
-            resolve(data);
-          });
-        })
-      }
-    })
-    .catch(function(err) {
-      console.log("Error: " + err);
-    });
+function addUserGroupToDB(user, table) {
+  return checkUserGroupDB(user, table.name)
+  .then(function(promise) {
+    //If the group doesn't exist, add it
+    if (!promise) {
+      return new Promise(function(resolve, reject) {
+        $.post(PHP_ADD_GROUP, {
+          userID: user,
+          groupName: table.name,
+          groupID: table.id,
+          position: table.position
+        }, function(data) {
+          if (data === -1)
+            reject(data);
+          table.id = data;
+          resolve(data);
+        });
+      })
+    }else{
+      return Promise.resolve();
+    }
+  })
+  .catch(function(err) {
+    console.log("Error: " + err);
+  });
 }
 
 function checkUserGroupDB(user, group) {
@@ -173,12 +215,12 @@ function getItem(userID, itemID, groupID) {
   });
 }
 
-function updateGroupName(userID, groupID, newName) {
+function updateGroupName(userID, table, newName){
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_GROUP_NAME, {
       userID: userID,
-      groupID: groupID,
-      newName: newName
+      groupID: table.id,
+      newName: table.name
     }, function(data) {
       resolve(data == 1);
     });

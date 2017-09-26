@@ -26,8 +26,8 @@ $success = $stmt->execute();
 $result = $stmt->get_result();
 if($result->num_rows != 0){
   //TODO Modify table
-  $stmt = $tasktrackerDB->prepare("UPDATE $itemsTable SET userID = (?) && groupID = (?) && itemType = (?) && position = (?) WHERE itemID = (?);");
-  $stmt->bind_param('iiii', $userID, $groupID, $itemType, $position);
+  $stmt = $tasktrackerDB->prepare("UPDATE $itemsTable SET userID = (?), groupID = (?), itemType = (?), position = (?) WHERE itemID = (?);");
+  $stmt->bind_param('iiiis', $userID, $groupID, $itemType, $position, $itemID);
   $success = $stmt->execute();
   $tasktrackerDB->close();
   exit($itemID);

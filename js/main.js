@@ -16,7 +16,29 @@ const wrapperPrefix = "wrapper_";
 const tablePrefix = "table_";
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
+class Table{
+  constructor(name, id, position){
+    this.name = name;
+    this.id = id;
+    this.position = position
+    this.rows = new Array();
+  }
 
+  addRow(task) {
+    this.rows.push(task)
+  }
+
+  getRowByID(rowID) {
+    for (let i = 0; i < this.rows.length; i++){
+      let row = this.rows[i];
+      if(row.id == rowID){
+        return row;
+      }
+    }
+    return null;
+  }
+
+}
 class Task {
   /*
     Member variables:
@@ -124,50 +146,29 @@ $(document).ready(function() {
   // Allocate tables for Zendesk and Trello
   setupPage();
 
-  setIDs().then(function() {
-    getCardsAndTickets().then(function(cardsAndTickets) {
-      addInfoToCardsAndTickets(cardsAndTickets).then(function(){
-        user.tasks = createTasksFromCardsAndTickets(cardsAndTickets);
-        createTasksFromCardsAndTickets(cardsAndTickets).then(function() {
-          //Add the user to the DB
-          var userName = user.trello.email;
-          addUserToDB(userName)
-          .then(function(){
-            return getUserID(userName);
-          })
-          .then(function(id){
-            //Add Groups to the DB
-            var uniqueGroups = [];
-            for(i in user.tasks){
-              var group = user.tasks[i].category;
-              if(!uniqueGroups.includes(group))
-              {
-                uniqueGroups.push(group);
-                addUserGroupToDB(id, group);
-              }
-            }
-           })
-          .catch(function(err) {
-            console.log("Error: " + err);
-          });
-          createFilters();
-        });
-        populatePage().then(function(){
-          draggableRows(false);
-          egg();
-        })
-        .then(function(){
-          return getUserID(user.trello.email);
-        })
-        .then(function(userID){
-          for(i in user.tasks){
-            let currentItemPosition = getItemPosition(userID, user.tasks[i]);
-            addGroupItemToDB(user.tasks[i], userID, currentItemPosition);
-          }
-        })
-      });
-    });
-  });
+  Promise.resolve()
+
+  .then(function(){
+    return setIDs()
+  })
+
+  .then(function(){
+    if(user.databaseID == -1){
+      return loadFromAPI();
+    }else{
+      return loadFromDB();
+    }
+  })
+
+  .then(function(){
+    return addDataToDB();
+  })
+
+  .then(function(){
+    //createFilters();
+    createTablesFromTableObject();
+    //return populatePage();
+  })
 });
 
 function delayedPromise(seconds){
@@ -209,6 +210,11 @@ $(".main").on("click", "#deleteTableBtn", function(e)
   deleteTablePrompt(table);
 });
 
+function storeDataFromTableObjects(){
+  //TODO
+  return Promise.resolve();
+}
+
 function deleteUnsorted() {
   $('#delUnsorted').modal('show');
   $('#confirm').unbind('click');
@@ -220,6 +226,195 @@ function deleteUnsorted() {
       $('#confirm').click();
     }
   });
+}
+
+function loadUsersItemsFromDB(){
+  return Promise.resolve()
+
+  .then(function(){
+    return getAllGroups(user.databaseID);
+  })
+
+  .then(function(groups){
+    let promiseArray = new Array();
+    for(let i = 0; i < groups.length; i++){
+      let groupID = groups[i].groupID;
+      promiseArray.push(getAllItemsInGroup(user.databaseID, groupID));
+    }
+    return Promise.all(promiseArray).then(function(items){
+      let groupsArray = new Array();
+      for(let i = 0; i < groups.length; i++){
+        let groupObj = new Object();
+        groupObj.name = groups[i].groupName;
+        groupObj.id = groups[i].groupID;
+        groupObj.items = items[i];
+        groupsArray.push(groupObj);
+      }
+      return Promise.resolve(groupsArray);
+    })
+  })
+}
+
+function createTablesFromTableObject(){
+  //TODO Shiva
+  let tables = user.tables; // You can iterate over these
+  console.log(tables);
+
+  // create each table by iterating through tables list
+  for(i = 0; i < tables.length; i++) {
+    var table = tables[i];
+    createTable(table, false);
+    //createTable(table.id, false);
+
+   // populate each table by accessing rows in each table
+    for(j = 0; j < table.rows.length; j++) {
+      populateTable(table.rows[j], table.id, j);
+    }
+    draggableRows(false);
+  }
+}
+
+
+function createTablesFromDPandAPI(dbData, tasks){
+  let tables = createTablesFromGroups(dbData, tasks);
+  user.tables = tables;
+  return Promise.resolve();
+}
+
+function createTablesFromGroups(groups, tasks){
+  let tables = new Array();
+  user.tables = tables;
+  for(let i = 0; i < groups.length; i++){
+    let group = groups[i];
+    let table = new Table(group.name, group.id, i);
+
+    for(let j = 0; j < group.items.length; j++){
+      let item = group.items[j];
+      task = getTaskByID(item.itemID);
+      if(task != null){
+        table.addRow(task);
+      }
+    }
+
+    tables.push(table);
+  }
+  let unsortedTable = getUnsortedTable(tasks, groups);
+  tables.push(unsortedTable);
+  return tables;
+}
+
+function getUnsortedTable(tasks, groups){
+  let table = new Table('Unsorted', unsortedID, user.tables.length);
+  var clonedTasks = JSON.parse(JSON.stringify(tasks));
+  for(let i = 0; i < groups.length; i++){
+    for(let j = 0; j < groups[i].items.length; j++){
+      for(let k = 0; k < clonedTasks.length; k++){
+        if(clonedTasks[k].id == groups[i].items[j].itemID){
+          clonedTasks.splice(k, 1)
+        }
+      }
+    }
+  }
+  for(let i = 0; i < clonedTasks.length; i++){
+    table.addRow(clonedTasks[i]);
+  }
+  return table;
+}
+
+function getTaskByID(taskID){
+  if(user.tasks == null){
+    return null;
+  }
+
+  for(let i = 0; i < user.tasks.length; i++){
+    if(user.tasks[i].id == taskID){
+      return user.tasks[i];
+    }
+  }
+  return null;
+}
+
+function createTasks(){
+  return Promise.resolve()
+  .then(function(){
+    return getCardsAndTickets();
+  })
+
+  .then(function(cardsAndTickets){
+    return addInfoToCardsAndTickets(cardsAndTickets);
+  })
+
+  .then(function(cardsAndTickets){
+    return createTasksFromCardsAndTickets(cardsAndTickets);
+  })
+
+  .then(function(tasks){
+    user.tasks = tasks;
+    return Promise.resolve(tasks);
+  })
+}
+
+function loadFromAPI(){
+  return Promise.resolve()
+  .then(function(){
+    return createTasks();
+  })
+
+  .then(function(tasks){
+    createGroupsForUser(tasks);
+    return Promise.resolve();
+  })
+
+}
+
+function loadFromDB(){
+  return Promise.resolve()
+
+  .then(function(){
+    return createTasks();
+  })
+
+  .then(function(tasks){
+    user.tasks = tasks;
+    return loadUsersItemsFromDB();
+  })
+
+  .then(function(itemsFromDB){
+    return createTablesFromDPandAPI(itemsFromDB, user.tasks);
+  })
+}
+
+function createGroupsForUser(tasks){
+  let cat = {};
+  let groupCounter = 0;
+  for (var i = 0; i < tasks.length; i++) {
+    var task = tasks[i];
+    var catID = task.category;
+
+    // Check if category table already exists
+    if ( cat[catID] == null) {
+      user.tables.push(new Table(task.category, catID, groupCounter));
+      groupCounter++;
+      cat[catID] = catID;
+    }
+    user.getTableByID(catID).addRow(task);
+  }
+
+  for(let i = 0; i < user.tables.length; i++){
+    user.tables[i].id = -1;
+  }
+}
+
+function getTrelloAndZendeskCardData(items){
+  let proimseArray = new Array();
+  for(let i = 0; i < items.length; i++){
+    let item = items[i];
+    if(item.itemType == 0 /* Trello */){
+      promiseArray.push();
+    }else /* Zendesk */{
+      promiseArray.push();
+    }
+  }
 }
 
 function deleteTablePrompt(tableName) {
@@ -249,7 +444,7 @@ function deleteTablePrompt(tableName) {
 
 /*Creates a new table with a random ID, as it cannot be coded to have it
   dynamically created if it isn"t random.*/
-var tableNumber = 1;
+var tableNumber = -1;
 function createNewTable() {
   $.notify({
     icon: "glyphicon glyphicon-plus-sign",
@@ -259,12 +454,21 @@ function createNewTable() {
   });
 
   var tableID = "New_Table_" + tableNumber;
-  createTable(tableID, true); // Create a table with a random ID;
-  $("#" + tableID).find("tbody").addClass("place");
-  updateFilters();
-  draggableRows();
-  window.scrollTo(0, document.body.scrollHeight);
-  tableNumber++;
+  let tableObject = new Table(tableID, -1/*, user.tables.length*/);
+  user.tables.push(tableObject);
+  addUserGroupToDB(user.databaseID, tableObject).then(function(){
+    tableObject.name = "New_Table_" + tableObject.id;
+    updateGroupName(user.databaseID, tableObject).then(function(){
+      tableID = tableObject.name;
+      createTable(tableObject, true); // Create a table with a random ID;
+      $("#" + tableID).find("tbody").addClass("place");
+      updateFilters();
+      draggableRows();
+      window.scrollTo(0, document.body.scrollHeight);
+      tableNumber--;
+    });
+  });
+
 }
 
 function deleteTable(tableName) {
@@ -354,6 +558,7 @@ function populatePage() {
         }
         populateTable(task, catID, i);
       }
+      draggableRows(false);
       resolve();
     })
     .catch(function(err) {
@@ -377,14 +582,19 @@ function populatePage() {
 
 }
 
-function createTable(tableName, isNewTable) {
+// function createTable(tableName, isNewTable) {
+  function createTable(tableObj, isNewTable) {
+
+  // console.log(table);
+  var tableName = tableObj.id;
+
   // Create table structure
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  var tableWrapper = createTableWrapper(tableName, isNewTable);
+  var tableWrapper = createTableWrapper(tableObj, isNewTable);
   var tableID = tablePrefix + tableName;
 
   //create row and cell element
@@ -442,7 +652,8 @@ function createTable(tableName, isNewTable) {
 }
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
-function createTableWrapper(tableName, isNewTable) {
+function createTableWrapper(tableObj, isNewTable) {
+  var tableName = tableObj.id;
 
   var tableWrapper = document.createElement("div");
   var title = document.createElement("h3");
@@ -455,34 +666,17 @@ function createTableWrapper(tableName, isNewTable) {
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
-  // var cat = tableName.split("_").join(" ");
-
   var tableTitle;
   if(isNewTable) {
-    tableTitle = document.createTextNode("New Table " + tableNumber);
-    title.appendChild(tableTitle);
+    tableTitle = document.createTextNode(tableObj.name);
   }
   else {
-    var userName = user.trello.email;
-
-    getUserID(userName)
-    .then(function(promise) {
-      return promise;
-    })
-    .then(function(id) {
-      return getGroupName(id, tableName);
-    })
-    .then(function(grpName) {
-      var catName = grpName.charAt(0).toUpperCase() + grpName.substring(1);
-      tableTitle = document.createTextNode(catName);
-      title.appendChild(tableTitle);
-    })
-    .catch(function(err) {
-      console.log("Error: " + err);
-    });
+    var catName = tableObj.name.charAt(0).toUpperCase()
+      + tableObj.name.substring(1);
+    tableTitle = document.createTextNode(catName);
   }
 
-  // title.appendChild(tableTitle);
+  title.appendChild(tableTitle);
   header.appendChild(title);
   header.appendChild(divider);
   tableWrapper.appendChild(header);
@@ -621,8 +815,8 @@ function addRow(task, tableName, index) {
   var group = task.group;
 
   var tableID = tablePrefix + tableName;
-  if (tableID != "Unsorted") {
-  // if(tableName.id != "Unsorted") {
+  var unsortedID = tablePrefix + unsortedID;
+  if (tableID != unsortedID) {
     var body = document.getElementById(tableID).getElementsByTagName("tbody")[0];
   }
   else{
@@ -940,6 +1134,17 @@ function instantiateUser() {
   user = new Object();
   user.trello = new Object();
   user.zendesk = new Object();
+  user.tables = new Array();
+
+  user.getTableByID = function(tableID){
+    for(let i = 0; i < user.tables.length; i++){
+      let table = user.tables[i];
+      if(table.id == tableID){
+        return table;
+      }
+    }
+    return null;
+  }
 }
 
 function redirectToHTTPS() {
@@ -1011,10 +1216,22 @@ function redirectToZendeskLogin() {
 }
 
 function setIDs() {
-  let setIDTre = setTrelloID();
-  let setIDZen = setZendeskID();
+  return new Promise(function(resolve, reject){
+    let setIDTre = setTrelloID();
+    let setIDZen = setZendeskID();
 
-  return Promise.all(new Array(setIDTre, setIDZen));
+    Promise.all(new Array(setIDTre, setIDZen)).then(function(){
+      getUserID(user.trello.email)
+      .then(function(userID){
+        user.databaseID = userID;
+        resolve();
+      })
+      .catch(function(error){
+        reject(error);
+      });
+    });
+  });
+
 }
 
 function setTrelloID() {
@@ -1149,7 +1366,7 @@ function addInfoToCardsAndTickets(cardsAndTickets){
       let addInfoZendeskRequester = addZendeskRequester(zendeskCards);
 
       Promise.all([addInfoTrelloGroup, addInfoZendeskGroup, addInfoZendeskRequester]).then(function(data){
-        resolve();
+        resolve(cardsAndTickets);
       });
   });
 }
@@ -1271,9 +1488,8 @@ function createTasksFromCardsAndTickets(cardsAndTickets) {
     for (let j = 0; j < cardsAndTickets[i].length; j++) {
       tasks.push(new Task(cardsAndTickets[i][j], i));
     }
-    user.tasks = tasks;
   }
-  return Promise.resolve();
+  return Promise.resolve(tasks);
 }
 
 function zendeskGet(url) {
