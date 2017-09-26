@@ -17,6 +17,7 @@ const PHP_GET_ITEMS_IN_GROUP = PHP_DIRECTORY_PATH +'/getAllItemsInGroup.php'
 const PHP_UPDATE_ITEM_POSITION = PHP_DIRECTORY_PATH + '/updateItemPosition.php';
 const PHP_UPDATE_ITEM_GROUP = PHP_DIRECTORY_PATH + '/updateItemGroup.php';
 
+const unsortedID = -2;
 
 function getDBID(table, user, group) {
   return checkUserGroupDB(user, group)
@@ -41,6 +42,40 @@ function getGroupID(user, group) {
       resolve(data);
     });
   })
+}
+
+function addDataToDB(){
+  return new Promise(function(resolve, reject){
+    var userName = user.trello.email;
+    addUserToDB(userName)
+    .then(function(promise){
+      return getUserID(userName);
+    })
+    .then(function(id){
+      //Add Groups to the DB
+      var tables = user.tables;
+      let groupPromises = new Array();
+      for(let i in user.tables)
+        groupPromises.push(addUserGroupToDB(id, tables[i]['name']));
+      return Promise.all(groupPromises)
+      .then(function(){
+        return Promise.resolve(id);
+      });
+    })
+    .then(function(userID){
+      let itemPromises = new Array();
+      for(i in user.tasks){
+        itemPromises.push(addGroupItemToDB(user.tasks[i], userID, i));
+      }
+        Promise.all(itemPromises).then(function(){
+          resolve();
+        });
+    })
+    .catch(function(err) {
+      console.log("Error: " + err);
+      reject(err);
+    });
+  });
 }
 
 function addUserToDB(user) {

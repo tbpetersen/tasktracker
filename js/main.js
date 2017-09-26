@@ -388,47 +388,6 @@ function createGroupsForUser(tasks){
   }
 }
 
-function addDataToDB(){
-  //TODO Paul: User user.tables to add to DB
-  return new Promise(function(resolve, reject){
-    var userName = user.trello.email;
-    addUserToDB(userName)
-    .then(function(promise){
-      return getUserID(userName);
-    })
-    .then(function(id){
-
-      //Add Groups to the DB
-      let groupPromises = new Array();
-      var uniqueGroups = [];
-      for(i in user.tasks){
-        var group = user.tasks[i].category;
-        if(!uniqueGroups.includes(group))
-        {
-          uniqueGroups.push(group);
-          groupPromises.push(addUserGroupToDB(id, group));
-        }
-      }
-      return Promise.all(groupPromises).then(function(){
-        return Promise.resolve(id);
-      });
-    })
-    .then(function(userID){
-      let itemPromises = new Array();
-      for(i in user.tasks){
-        itemPromises.push(addGroupItemToDB(user.tasks[i], userID, i));
-      }
-        Promise.all(itemPromises).then(function(){
-          resolve();
-        });
-    })
-    .catch(function(err) {
-      console.log("Error: " + err);
-      reject(err);
-    });
-  });
-}
-
 function getTrelloAndZendeskCardData(items){
   let proimseArray = new Array();
   for(let i = 0; i < items.length; i++){
