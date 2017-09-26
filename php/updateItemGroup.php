@@ -18,7 +18,7 @@ Return value: 1 for success of -1 for failure
 
   /* Add the user to the db */
     $stmt = $tasktrackerDB->prepare("UPDATE $itemsTable SET groupID = (?) WHERE userID = (?) && itemID = (?);");
-    $stmt->bind_param('iii', $newGroupID, $userID, $itemID);
+    $stmt->bind_param('iis', $newGroupID, $userID, $itemID);
     $success = $stmt->execute();
 
     if($success){
