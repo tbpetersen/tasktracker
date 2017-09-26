@@ -640,7 +640,6 @@ function populatePage() {
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
 function createTableWrapper(tableObj, isNewTable) {
-  console.log(tableObj);
   var tableName = tableObj.id;
 
   var tableWrapper = document.createElement("div");
@@ -1005,7 +1004,7 @@ $("#reorder").click(function(e) {
   // set content
   modal.setContent('<h3>Reorder Tables</h3>');
 
-  var table = listTables();
+  var table = listTables(0);
   modal.setContent(table);
 
   $("#addTable").click(function(e) {
@@ -1028,15 +1027,30 @@ $("#reorder").click(function(e) {
 
   // SAVE: reorder tables
   modal.addFooterBtn('Save', 'tingle-btn tingle-btn--danger', function() {
-    var table = document.getElementById("names");
+    var table = listTables(1);
 
-    for(var i = 1; i < table.rows.length - 1; i++) {
-      var id = (table.rows[i].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
-      var id2 = (table.rows[i + 1].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
+    var id = "wrapper_50";
+    var id2 = "wrapper_49";
 
-      $("#" + id).after($("#" + id2));
-      draggableRows(true);
-    }
+    $("#" + id).after($("#" + id2));
+
+    //console.log(table);
+    // for(i = 0; i < table.length; i++) {
+    //   console.log(wrapperPrefix + table[i]);
+    // }
+
+    // for(var i = 1; i < table.length - 1; i++) {
+    //   var id = wrapperPrefix + (table[i]);
+    //   var id2 = wrapperPrefix + (table[i + 1]);
+    //   console.log(document.getElementById(id));
+    //   //console.log(id);
+    //   //console.log(id2)
+
+    //   //$('#wrapper_50').after($('#wrapper_49'));
+    //   //$('#' + id).after($('#' + id2));
+    //   $(id2).after($(id));
+    //   draggableRows(true);
+    // }
     modal.close();
     updateFilters();
   });
@@ -1044,6 +1058,8 @@ $("#reorder").click(function(e) {
   // open modal
   modal.open();
 });
+
+ // $('.main').on("click", "#wrapper_50", function() {console.log("here")});
 
 function egg() {
   var egg = new Egg();
@@ -1058,13 +1074,25 @@ function egg() {
     }).listen();
 }
 
-function listTables() {
+function listTables(bool) {
 
   // Get the names of all tables
-  var tables = document.getElementsByClassName('tables');
+  //var tables = document.getElementsByClassName('tables');
+  
   var tableNames = [];
-  for(var i = 0; i < tables.length; i++) {
-    tableNames.push(tables[i].id);
+  if(bool == 0) {
+    for(var i = 0; i < user.tables.length; i++) {
+      var name = user.tables[i].name;
+      name = name.charAt(0).toUpperCase() + name.substring(1);
+      tableNames.push(name);
+    }
+  }
+  if(bool == 1) {
+    for(var i = 0; i < user.tables.length; i++) {
+      var id = user.tables[i].id;
+      tableNames.push(id);
+    }   
+    return tableNames;
   }
 
   // Create table structure
@@ -1089,7 +1117,7 @@ function listTables() {
   // append row to table/body
   head.appendChild(row);
   table.appendChild(head);
-  table.appendChild(body)
+  table.appendChild(body);
 
   for(var j = 0; j < tableNames.length; j++) {
 
@@ -1102,8 +1130,8 @@ function listTables() {
     titleCell.setAttribute("id", "titleCell");
 
     // text for cell
-    var str = (tableNames[j]).split("_").join(" ");
-    textNode1 = document.createTextNode(str);
+    //var str = (tableNames[j]).split("_").join(" ");
+    textNode1 = document.createTextNode(tableNames[j]);
     titleCell.appendChild(textNode1);
     row.appendChild(titleCell);
     body.appendChild(row);
@@ -1930,11 +1958,17 @@ function createTicketCard(cardIndex)
   newCard.scrollIntoView();
 }
 
+// TODO Flip arrows
+// $(".main").on("click", ".sortButton", function(e) {
+//   e.preventDefault();
+//   $(".sortButton").toggleClass("glyphicon-triangle-bottom glyphicon-triangle-top");
+// });
+
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
 $(".main").on("click", "table > tbody > tr", function(e)
 {
-  event.preventDefault();
+  e.preventDefault();
   var isClosed = true;
 
   if (isClosed == true)
