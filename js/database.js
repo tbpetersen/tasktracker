@@ -66,8 +66,12 @@ function addDataToDB(){
     })
     .then(function(userID){
       let itemPromises = new Array();
-      for(i in user.tasks){
-        itemPromises.push(addGroupItemToDB(user.tasks[i], userID, i));
+      let tables = user.tables;
+      for(let i in tables){
+        for(let j in tables[i].rows){
+          console.log(j);
+          itemPromises.push(addGroupItemToDB(tables[i].rows[j], userID, j));
+        }
       }
         Promise.all(itemPromises).then(function(){
           resolve();
