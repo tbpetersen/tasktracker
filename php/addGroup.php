@@ -23,7 +23,7 @@ $success = $stmt->execute();
 $result = $stmt->get_result();
 if($groupID > -1){
   //TODO Modify table
-  $stmt = $tasktrackerDB->prepare("UPDATE $itemsTable SET userID = (?), groupName = (?), position = (?) WHERE groupID = (?);");
+  $stmt = $tasktrackerDB->prepare("UPDATE $groupsTable SET userID = (?), groupName = (?), position = (?) WHERE groupID = (?);");
   $stmt->bind_param('isii', $userID, $groupName, $position, $groupID);
   $success = $stmt->execute();
   $tasktrackerDB->close();
