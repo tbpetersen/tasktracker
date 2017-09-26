@@ -127,7 +127,6 @@ function addUserGroupToDB(user, table) {
           groupName: table.name,
           groupID: table.id
         }, function(data) {
-          console.log(data);
           if (data === -1)
             reject(data);
           table.id = data;
