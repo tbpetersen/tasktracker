@@ -17,9 +17,10 @@ const tablePrefix = "table_";
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 class Table{
-  constructor(name, id){
+  constructor(name, id, position){
     this.name = name;
     this.id = id;
+    this.position = position
     this.rows = new Array();
   }
 
@@ -165,7 +166,6 @@ $(document).ready(function() {
 
   .then(function(){
     //createFilters();
-    //createBackingTable();
     createTablesFromTableObject();
     //return populatePage();
   })
@@ -219,14 +219,6 @@ function deleteUnsorted() {
   });
 }
 
-function createBackingTable(){
-  user.tables[0] = new Table("Test 0", 0);
-  user.tables[1] = new Table("Test 1", 1);
-  for(let i = 0; i < user.tasks.length; i++){
-    user.tables[i%2].addRow(user.tasks[i]);
-  }
-}
-
 function loadUsersItemsFromDB(){
   return Promise.resolve()
 
@@ -262,7 +254,7 @@ function createTablesFromTableObject(){
   // create each table by iterating through tables list
   for(i = 0; i < tables.length; i++) {
     var table = tables[i];
-    createTable(table, false);   
+    createTable(table, false);
     //createTable(table.id, false);
 
    // populate each table by accessing rows in each table
@@ -282,13 +274,14 @@ function createTablesFromDPandAPI(dbData, tasks){
 
 function createTablesFromGroups(groups, tasks){
   let tables = new Array();
+  user.tables = tables;
   for(let i = 0; i < groups.length; i++){
     let group = groups[i];
-    let table = new Table(group.name, group.id);
+    let table = new Table(group.name, group.id, i);
 
     for(let j = 0; j < group.items.length; j++){
       let item = group.items[j];
-      task = getTaskByID(item.itemID)
+      task = getTaskByID(item.itemID);
       if(task != null){
         table.addRow(task);
       }
@@ -302,7 +295,7 @@ function createTablesFromGroups(groups, tasks){
 }
 
 function getUnsortedTable(tasks, groups){
-  let table = new Table('Unsorted', unsortedID);
+  let table = new Table('Unsorted', unsortedID, user.tables.length);
   var clonedTasks = JSON.parse(JSON.stringify(tasks));
   for(let i = 0; i < groups.length; i++){
     for(let j = 0; j < groups[i].items.length; j++){
@@ -384,13 +377,15 @@ function loadFromDB(){
 
 function createGroupsForUser(tasks){
   let cat = {};
+  let groupCounter = 0;
   for (var i = 0; i < tasks.length; i++) {
     var task = tasks[i];
     var catID = task.category;
 
     // Check if category table already exists
     if ( cat[catID] == null) {
-      user.tables.push(new Table(task.category, catID));
+      user.tables.push(new Table(task.category, catID, groupCounter));
+      groupCounter++;
       cat[catID] = catID;
     }
     user.getTableByID(catID).addRow(task);
@@ -440,7 +435,7 @@ function deleteTablePrompt(tableName) {
 
 /*Creates a new table with a random ID, as it cannot be coded to have it
   dynamically created if it isn"t random.*/
-var tableNumber = 1;
+var tableNumber = -1;
 function createNewTable() {
   $.notify({
     icon: "glyphicon glyphicon-plus-sign",
@@ -450,12 +445,21 @@ function createNewTable() {
   });
 
   var tableID = "New_Table_" + tableNumber;
-  createTable(tableID, true); // Create a table with a random ID;
-  $("#" + tableID).find("tbody").addClass("place");
-  updateFilters();
-  draggableRows();
-  window.scrollTo(0, document.body.scrollHeight);
-  tableNumber++;
+  let tableObject = new Table(tableID, -1/*, user.tables.length*/);
+  user.tables.push(tableObject);
+  addUserGroupToDB(user.databaseID, tableObject).then(function(){
+    tableObject.name = "New_Table_" + tableObject.id;
+    updateGroupName(user.databaseID, tableObject).then(function(){
+      tableID = tableObject.name;
+      createTable(tableObject, true); // Create a table with a random ID;
+      $("#" + tableID).find("tbody").addClass("place");
+      updateFilters();
+      draggableRows();
+      window.scrollTo(0, document.body.scrollHeight);
+      tableNumber--;
+    });
+  });
+
 }
 
 function deleteTable(tableName) {
@@ -571,7 +575,7 @@ function populatePage() {
 
 // function createTable(tableName, isNewTable) {
   function createTable(tableObj, isNewTable) {
-  
+
   // console.log(table);
   var tableName = tableObj.id;
 
@@ -655,7 +659,7 @@ function createTableWrapper(tableObj, isNewTable) {
 
   var tableTitle;
   if(isNewTable) {
-    tableTitle = document.createTextNode("New Table " + tableNumber);
+    tableTitle = document.createTextNode(tableObj.name);
   }
   else {
     var catName = tableObj.name.charAt(0).toUpperCase()
