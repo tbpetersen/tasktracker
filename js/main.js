@@ -14,6 +14,8 @@ var user;
 var isClosed = false;
 const wrapperPrefix = "wrapper_";
 const tablePrefix = "table_";
+const GROUP_SORTABLE_CLASS = 'sortable-group'
+const ITEM_SORTABLE_CLASS = 'sortable-item'
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 class Table{
@@ -270,7 +272,7 @@ function createTablesFromTableObject(){
     for(j = 0; j < table.rows.length; j++) {
       populateTable(table.rows[j], table.id, j);
     }
-    draggableRows(false);
+    draggableRows(ITEM_SORTABLE_CLASS);
   }
 }
 
@@ -463,7 +465,7 @@ function createNewTable() {
       createTable(tableObject, true); // Create a table with a random ID;
       $("#" + tableID).find("tbody").addClass("place");
       updateFilters();
-      draggableRows();
+      draggableRows(ITEM_SORTABLE_CLASS);
       window.scrollTo(0, document.body.scrollHeight);
       tableNumber--;
     });
@@ -499,7 +501,7 @@ function deleteTable(tableName) {
       var unsortedTable = document.getElementById("Unsorted");
       addRow(task, unsortedTable, task.id);
     }
-    draggableRows(false);
+    draggableRows(ITEM_SORTABLE_CLASS);
   }
 
   // Delete wrapper and table
@@ -558,7 +560,7 @@ function populatePage() {
         }
         populateTable(task, catID, i);
       }
-      draggableRows(false);
+      draggableRows(ITEM_SORTABLE_CLASS);
       resolve();
     })
     .catch(function(err) {
@@ -632,7 +634,7 @@ function populatePage() {
   table.setAttribute("class", "tables");
   //TODO
   table.setAttribute("dbID", 1);
-  body.setAttribute("class", "sortable");
+  body.setAttribute("class", ITEM_SORTABLE_CLASS);
   row.setAttribute("id", "firstRow");
 
   titleCell.setAttribute("id", "titleCell");
@@ -890,7 +892,7 @@ function addRow(task, tableName, index) {
   body.appendChild(row);
 }
 
-function draggableRows(bool) {
+function draggableRows(className) {
   // Prevent rows from shrinking while dragged
   var fixHelper = function(e, ui) {
     ui.children().each(function() {
@@ -899,13 +901,20 @@ function draggableRows(bool) {
     return ui;
   };
 
-  $(".sortable").sortable({
+  let updateListener;
+  if(className == ITEM_SORTABLE_CLASS){
+    updateListener = onTableUpdated;
+  }else{
+    updateListener = onTablePositionUpdated;
+  }
+
+  $("." + className).sortable({
     axis: 'y',
     helper: fixHelper,
-    //connectWith: ".sortable",
+    connectWith: "." + className,
     placeholder: "ui-state-highlight",
     zIndex: 99,
-    update: onTableUpdated,
+    update: updateListener,
     stop: function(e,t) {
       if ($(this).children().length == 0) {
           $(this).addClass("place");
@@ -916,15 +925,21 @@ function draggableRows(bool) {
     }
   });
   $("#sortable").disableSelection();
-
-  if(!bool) {
-    $(".sortable").sortable({connectWith: ".sortable"});
-  }
 }
 
 function onTableUpdated(event, ui){
+  let htmlTable = event.target.parentNode;
+  let tableID = extractGroupID(htmlTable.id);
+
+  console.log(htmlTable)
+  //let table = user.getTableByID(tableID);
+
   let table = event.target.parentNode;
   updateTableItemPositions(user.id, table);
+}
+
+function onTablePositionUpdated(event, ui){
+  console.log('here');
 }
 
 function makeButtons(tableName) {
@@ -1002,7 +1017,7 @@ $("#reorder").click(function(e) {
     closeLabel: "Close",
     //cssClass: ['custom-class-1', 'custom-class-2'],
     onOpen: function() {
-      draggableRows(true);
+      draggableRows(GROUP_SORTABLE_CLASS);
       $('#reorder').prop('disabled', true);
     },
     onClose: function() {
@@ -1028,7 +1043,7 @@ $("#reorder").click(function(e) {
 
       var table = listTables();
       modal.setContent(table);
-      draggableRows(true);
+      draggableRows(GROUP_SORTABLE_CLASS);
     }
   });
 
@@ -1046,7 +1061,7 @@ $("#reorder").click(function(e) {
       var id2 = (table.rows[i + 1].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
 
       $("#" + id).after($("#" + id2));
-      draggableRows(true);
+      draggableRows(GROUP_SORTABLE_CLASS);
     }
     modal.close();
     updateFilters();
@@ -1093,7 +1108,7 @@ function listTables() {
 
   // Name elements
   table.setAttribute("id", "names");
-  body.setAttribute("class", "sortable");
+  body.setAttribute("class", GROUP_SORTABLE_CLASS);
   row.setAttribute("id", "firstRow");
   titleCell.setAttribute("id", "titleCell");
 
