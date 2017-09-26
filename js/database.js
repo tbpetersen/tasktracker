@@ -125,7 +125,8 @@ function addUserGroupToDB(user, table) {
         $.post(PHP_ADD_GROUP, {
           userID: user,
           groupName: table.name,
-          groupID: table.id
+          groupID: table.id,
+          position: table.position
         }, function(data) {
           if (data === -1)
             reject(data);
@@ -210,6 +211,7 @@ function getItem(userID, itemID){
     });
   });
 }
+
 
 function updateGroupName(userID, groupID, newName){
   return new Promise(function(resolve, reject) {

@@ -17,9 +17,10 @@ const tablePrefix = "table_";
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 class Table{
-  constructor(name, id){
+  constructor(name, id, position){
     this.name = name;
     this.id = id;
+    this.position = position
     this.rows = new Array();
   }
 
@@ -219,14 +220,6 @@ function deleteUnsorted() {
   });
 }
 
-function createBackingTable(){
-  user.tables[0] = new Table("Test 0", 0);
-  user.tables[1] = new Table("Test 1", 1);
-  for(let i = 0; i < user.tasks.length; i++){
-    user.tables[i%2].addRow(user.tasks[i]);
-  }
-}
-
 function loadUsersItemsFromDB(){
   return Promise.resolve()
 
@@ -269,13 +262,14 @@ function createTablesFromDPandAPI(dbData, tasks){
 
 function createTablesFromGroups(groups, tasks){
   let tables = new Array();
+  user.tables = tables;
   for(let i = 0; i < groups.length; i++){
     let group = groups[i];
-    let table = new Table(group.name, group.id);
+    let table = new Table(group.name, group.id, i);
 
     for(let j = 0; j < group.items.length; j++){
       let item = group.items[j];
-      task = getTaskByID(item.itemID)
+      task = getTaskByID(item.itemID);
       if(task != null){
         table.addRow(task);
       }
@@ -289,7 +283,7 @@ function createTablesFromGroups(groups, tasks){
 }
 
 function getUnsortedTable(tasks, groups){
-  let table = new Table('Unsorted', unsortedID);
+  let table = new Table('Unsorted', unsortedID, user.tables.length);
   var clonedTasks = JSON.parse(JSON.stringify(tasks));
   for(let i = 0; i < groups.length; i++){
     for(let j = 0; j < groups[i].items.length; j++){
@@ -371,13 +365,15 @@ function loadFromDB(){
 
 function createGroupsForUser(tasks){
   let cat = {};
+  let groupCounter = 0;
   for (var i = 0; i < tasks.length; i++) {
     var task = tasks[i];
     var catID = task.category;
 
     // Check if category table already exists
     if ( cat[catID] == null) {
-      user.tables.push(new Table(task.category, catID));
+      user.tables.push(new Table(task.category, catID, groupCounter));
+      groupCounter++;
       cat[catID] = catID;
     }
     user.getTableByID(catID).addRow(task);
