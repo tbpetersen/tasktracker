@@ -160,12 +160,14 @@ $(document).ready(function() {
   })
 
   .then(function(){
+    for(let i = 0; i < user.tables.length; i++){
+      console.log(user.tables[i].rows.length);
+    }
     return addDataToDB();
   })
 
   .then(function(){
     //createFilters();
-    //createBackingTable();
     createTablesFromTableObject();
     //return populatePage();
   })
@@ -274,6 +276,7 @@ function loadUsersItemsFromDB(){
 }
 
 function createTablesFromTableObject(){
+  console.log("Creating tables");
   //TODO Shiva
   let tables = user.tables; // You can iterate over these
   console.log(tables);
@@ -321,7 +324,7 @@ function createTablesFromGroups(groups, tasks){
 }
 
 function getUnsortedTable(tasks, groups){
-  let table = new Table('Unsorted', -1);
+  let table = new Table('Unsorted', unsortedID);
   var clonedTasks = JSON.parse(JSON.stringify(tasks));
   for(let i = 0; i < groups.length; i++){
     for(let j = 0; j < groups[i].items.length; j++){
@@ -418,47 +421,6 @@ function createGroupsForUser(tasks){
   for(let i = 0; i < user.tables.length; i++){
     user.tables[i].id = -1;
   }
-}
-
-function addDataToDB(){
-  //TODO Paul: User user.tables to add to DB
-  return new Promise(function(resolve, reject){
-    var userName = user.trello.email;
-    addUserToDB(userName)
-    .then(function(promise){
-      return getUserID(userName);
-    })
-    .then(function(id){
-
-      //Add Groups to the DB
-      let groupPromises = new Array();
-      var uniqueGroups = [];
-      for(i in user.tasks){
-        var group = user.tasks[i].category;
-        if(!uniqueGroups.includes(group))
-        {
-          uniqueGroups.push(group);
-          groupPromises.push(addUserGroupToDB(id, group));
-        }
-      }
-      return Promise.all(groupPromises).then(function(){
-        return Promise.resolve(id);
-      });
-    })
-    .then(function(userID){
-      let itemPromises = new Array();
-      for(i in user.tasks){
-        itemPromises.push(addGroupItemToDB(user.tasks[i], userID, i));
-      }
-        Promise.all(itemPromises).then(function(){
-          resolve();
-        });
-    })
-    .catch(function(err) {
-      console.log("Error: " + err);
-      reject(err);
-    });
-  });
 }
 
 function getTrelloAndZendeskCardData(items){
