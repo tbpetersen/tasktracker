@@ -17,6 +17,7 @@ const PHP_GET_ITEMS_IN_GROUP = PHP_DIRECTORY_PATH +'/getAllItemsInGroup.php'
 const PHP_UPDATE_ITEM_POSITION = PHP_DIRECTORY_PATH + '/updateItemPosition.php';
 const PHP_UPDATE_ITEM_GROUP = PHP_DIRECTORY_PATH + '/updateItemGroup.php';
 
+const unsortedID = -2;
 
 function getDBID(table, user, group) {
   return checkUserGroupDB(user, group)
