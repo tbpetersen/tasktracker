@@ -289,7 +289,7 @@ function createTablesFromGroups(groups, tasks){
 }
 
 function getUnsortedTable(tasks, groups){
-  let table = new Table('Unsorted', -1);
+  let table = new Table('Unsorted', unsortedID);
   var clonedTasks = JSON.parse(JSON.stringify(tasks));
   for(let i = 0; i < groups.length; i++){
     for(let j = 0; j < groups[i].items.length; j++){
