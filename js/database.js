@@ -130,7 +130,6 @@ function addGroupItemToDB(item, userID, position) {
               itemType: item.type,
               position: position
             }, function(data) {
-              console.log(data);
               if (data === -1)
                 reject(data);
               resolve(data);

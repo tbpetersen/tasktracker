@@ -24,16 +24,20 @@ Return value: the item's ID in the database or -1 if fail
   $stmt->bind_param('s', $itemID);
   $success = $stmt->execute();
   $result = $stmt->get_result();
-  if($result->num_rows != 0){
+  /*if($result->num_rows != 0){
     $stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE groupID = (?)");
     $stmt->bind_param('i', $groupID);
     $success = $stmt->execute();
     $result = $stmt->get_result();
     if($result->num_rows == 0){
-      echo("Need to change group item");
+      //TODO have the groupID be accurate of the updated groupID
+      $stmt = $tasktrackerDB->prepare("UPDATE $itemsTable SET groupID = (?) WHERE itemID = (?);");
+      $stmt->bind_param('s', $itemID);
+      $success = $stmt->execute();
       $tasktrackerDB->close();
+      exit();
     }
-  }
+  }*/
 
   /* Add the item to the db */
   $stmt = $tasktrackerDB->prepare("INSERT INTO $itemsTable (itemID, userID, groupID, itemType, position) VALUES (?,?,?,?,?)");
