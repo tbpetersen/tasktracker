@@ -262,7 +262,8 @@ function createTablesFromTableObject(){
   // create each table by iterating through tables list
   for(i = 0; i < tables.length; i++) {
     var table = tables[i];
-    createTable(table.id, false);
+    createTable(table, false);   
+    //createTable(table.id, false);
 
    // populate each table by accessing rows in each table
     for(j = 0; j < table.rows.length; j++) {
@@ -568,14 +569,19 @@ function populatePage() {
 
 }
 
-function createTable(tableName, isNewTable) {
+// function createTable(tableName, isNewTable) {
+  function createTable(tableObj, isNewTable) {
+  
+  // console.log(table);
+  var tableName = tableObj.id;
+
   // Create table structure
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  var tableWrapper = createTableWrapper(tableName, isNewTable);
+  var tableWrapper = createTableWrapper(tableObj, isNewTable);
   var tableID = tablePrefix + tableName;
 
   //create row and cell element
@@ -633,7 +639,9 @@ function createTable(tableName, isNewTable) {
 }
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
-function createTableWrapper(tableName, isNewTable) {
+function createTableWrapper(tableObj, isNewTable) {
+  console.log(tableObj);
+  var tableName = tableObj.id;
 
   var tableWrapper = document.createElement("div");
   var title = document.createElement("h3");
@@ -646,34 +654,17 @@ function createTableWrapper(tableName, isNewTable) {
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
-  // var cat = tableName.split("_").join(" ");
-
   var tableTitle;
   if(isNewTable) {
     tableTitle = document.createTextNode("New Table " + tableNumber);
-    title.appendChild(tableTitle);
   }
   else {
-    var userName = user.trello.email;
-
-    getUserID(userName)
-    .then(function(promise) {
-      return promise;
-    })
-    .then(function(id) {
-      return getGroupName(id, tableName);
-    })
-    .then(function(grpName) {
-      var catName = grpName.charAt(0).toUpperCase() + grpName.substring(1);
-      tableTitle = document.createTextNode(catName);
-      title.appendChild(tableTitle);
-    })
-    .catch(function(err) {
-      console.log("Error: " + err);
-    });
+    var catName = tableObj.name.charAt(0).toUpperCase()
+      + tableObj.name.substring(1);
+    tableTitle = document.createTextNode(catName);
   }
 
-  // title.appendChild(tableTitle);
+  title.appendChild(tableTitle);
   header.appendChild(title);
   header.appendChild(divider);
   tableWrapper.appendChild(header);
@@ -812,8 +803,8 @@ function addRow(task, tableName, index) {
   var group = task.group;
 
   var tableID = tablePrefix + tableName;
-  if (tableID != "Unsorted") {
-  // if(tableName.id != "Unsorted") {
+  var unsortedID = tablePrefix + unsortedID;
+  if (tableID != unsortedID) {
     var body = document.getElementById(tableID).getElementsByTagName("tbody")[0];
   }
   else{
