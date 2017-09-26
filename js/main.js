@@ -257,7 +257,19 @@ function loadUsersItemsFromDB(){
 function createTablesFromTableObject(){
   //TODO Shiva
   let tables = user.tables; // You can iterate over these
-  console.log(tables)
+  console.log(tables);
+
+  // create each table by iterating through tables list
+  for(i = 0; i < tables.length; i++) {
+    var table = tables[i];
+    createTable(table.id, false);
+
+   // populate each table by accessing rows in each table
+    for(j = 0; j < table.rows.length; j++) {
+      populateTable(table.rows[j], table.id, j);
+    }
+    draggableRows(false);
+  }
 }
 
 
