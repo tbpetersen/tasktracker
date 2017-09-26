@@ -284,12 +284,13 @@ function createTablesFromTableObject(){
   // create each table by iterating through tables list
   for(i = 0; i < tables.length; i++) {
     var table = tables[i];
-    createTable(tables[i].id, false);
+    createTable(table, false);   
+    //createTable(table.id, false);
 
-     // populate each table by accessing rows in each table
-     for(j = 0; j < table.rows.length; j++) {
-        populateTable(table.rows[j], table.id, j);
-      }
+   // populate each table by accessing rows in each table
+    for(j = 0; j < table.rows.length; j++) {
+      populateTable(table.rows[j], table.id, j);
+    }
     draggableRows(false);
   }
 }
@@ -605,15 +606,19 @@ function populatePage() {
 
 }
 
-// Param: tableName - table ID number, not the string name
-function createTable(tableName, isNewTable) {
+// function createTable(tableName, isNewTable) {
+function createTable(tableObj, isNewTable) {
+  
+  // console.log(table);
+  var tableName = tableObj.id;
+
   // Create table structure
   var table = document.createElement("TABLE");
   var mainDiv = document.getElementById("main-container");
   var head = document.createElement("thead");
   var body = document.createElement("tbody");
 
-  var tableWrapper = createTableWrapper(tableName, isNewTable);
+  var tableWrapper = createTableWrapper(tableObj, isNewTable);
   var tableID = tablePrefix + tableName;
 
   //create row and cell element
@@ -671,7 +676,8 @@ function createTable(tableName, isNewTable) {
 }
 
 /* Helper function for createTable to create div wrappers to encapsulate tables */
-function createTableWrapper(tableName, isNewTable) {
+function createTableWrapper(tableObj, isNewTable) {
+  var tableName = tableObj.id;
 
   var tableWrapper = document.createElement("div");
   var title = document.createElement("h3");
@@ -684,34 +690,17 @@ function createTableWrapper(tableName, isNewTable) {
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
-  // var cat = tableName.split("_").join(" ");
-
   var tableTitle;
   if(isNewTable) {
     tableTitle = document.createTextNode("New Table " + tableNumber);
-    title.appendChild(tableTitle);
   }
   else {
-    var userName = user.trello.email;
-
-    getUserID(userName)
-    .then(function(promise) {
-      return promise;
-    })
-    .then(function(id) {
-      return getGroupName(id, tableName);
-    })
-    .then(function(grpName) {
-      var catName = grpName.charAt(0).toUpperCase() + grpName.substring(1);
-      tableTitle = document.createTextNode(catName);
-      title.appendChild(tableTitle);
-    })
-    .catch(function(err) {
-      console.log("Error: " + err);
-    });
+    var catName = tableObj.name.charAt(0).toUpperCase()
+      + tableObj.name.substring(1);
+    tableTitle = document.createTextNode(catName);
   }
 
-  // title.appendChild(tableTitle);
+  title.appendChild(tableTitle);
   header.appendChild(title);
   header.appendChild(divider);
   tableWrapper.appendChild(header);
@@ -853,8 +842,8 @@ function addRow(task, tableName, index) {
   var group = task.group;
 
   var tableID = tablePrefix + tableName;
-  if (tableID != "Unsorted") {
-  // if(tableName.id != "Unsorted") {
+  var unsortedID = tablePrefix + unsortedID;
+  if (tableID != unsortedID) {
     var body = document.getElementById(tableID).getElementsByTagName("tbody")[0];
   }
   else{
@@ -1051,7 +1040,7 @@ $("#reorder").click(function(e) {
   // set content
   modal.setContent('<h3>Reorder Tables</h3>');
 
-  var table = listTables();
+  var table = listTables(0);
   modal.setContent(table);
 
   $("#addTable").click(function(e) {
@@ -1074,15 +1063,30 @@ $("#reorder").click(function(e) {
 
   // SAVE: reorder tables
   modal.addFooterBtn('Save', 'tingle-btn tingle-btn--danger', function() {
-    var table = document.getElementById("names");
+    var table = listTables(1);
 
-    for(var i = 1; i < table.rows.length - 1; i++) {
-      var id = (table.rows[i].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
-      var id2 = (table.rows[i + 1].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
+    var id = "wrapper_50";
+    var id2 = "wrapper_49";
 
-      $("#" + id).after($("#" + id2));
-      draggableRows(true);
-    }
+    $("#" + id).after($("#" + id2));
+
+    //console.log(table);
+    // for(i = 0; i < table.length; i++) {
+    //   console.log(wrapperPrefix + table[i]);
+    // }
+
+    // for(var i = 1; i < table.length - 1; i++) {
+    //   var id = wrapperPrefix + (table[i]);
+    //   var id2 = wrapperPrefix + (table[i + 1]);
+    //   console.log(document.getElementById(id));
+    //   //console.log(id);
+    //   //console.log(id2)
+
+    //   //$('#wrapper_50').after($('#wrapper_49'));
+    //   //$('#' + id).after($('#' + id2));
+    //   $(id2).after($(id));
+    //   draggableRows(true);
+    // }
     modal.close();
     updateFilters();
   });
@@ -1090,6 +1094,8 @@ $("#reorder").click(function(e) {
   // open modal
   modal.open();
 });
+
+ // $('.main').on("click", "#wrapper_50", function() {console.log("here")});
 
 function egg() {
   var egg = new Egg();
@@ -1104,13 +1110,25 @@ function egg() {
     }).listen();
 }
 
-function listTables() {
+function listTables(bool) {
 
   // Get the names of all tables
-  var tables = document.getElementsByClassName('tables');
+  //var tables = document.getElementsByClassName('tables');
+  
   var tableNames = [];
-  for(var i = 0; i < tables.length; i++) {
-    tableNames.push(tables[i].id);
+  if(bool == 0) {
+    for(var i = 0; i < user.tables.length; i++) {
+      var name = user.tables[i].name;
+      name = name.charAt(0).toUpperCase() + name.substring(1);
+      tableNames.push(name);
+    }
+  }
+  if(bool == 1) {
+    for(var i = 0; i < user.tables.length; i++) {
+      var id = user.tables[i].id;
+      tableNames.push(id);
+    }   
+    return tableNames;
   }
 
   // Create table structure
@@ -1135,7 +1153,7 @@ function listTables() {
   // append row to table/body
   head.appendChild(row);
   table.appendChild(head);
-  table.appendChild(body)
+  table.appendChild(body);
 
   for(var j = 0; j < tableNames.length; j++) {
 
@@ -1148,8 +1166,8 @@ function listTables() {
     titleCell.setAttribute("id", "titleCell");
 
     // text for cell
-    var str = (tableNames[j]).split("_").join(" ");
-    textNode1 = document.createTextNode(str);
+    //var str = (tableNames[j]).split("_").join(" ");
+    textNode1 = document.createTextNode(tableNames[j]);
     titleCell.appendChild(textNode1);
     row.appendChild(titleCell);
     body.appendChild(row);
@@ -1976,11 +1994,17 @@ function createTicketCard(cardIndex)
   newCard.scrollIntoView();
 }
 
+// TODO Flip arrows
+// $(".main").on("click", ".sortButton", function(e) {
+//   e.preventDefault();
+//   $(".sortButton").toggleClass("glyphicon-triangle-bottom glyphicon-triangle-top");
+// });
+
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
 $(".main").on("click", "table > tbody > tr", function(e)
 {
-  event.preventDefault();
+  e.preventDefault();
   var isClosed = true;
 
   if (isClosed == true)
