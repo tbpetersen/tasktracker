@@ -231,6 +231,7 @@ function updateGroupName(userID, table, newName){
 }
 
 function updateItemPosition(userID, itemID, newPosition) {
+  console.log(user.tables);
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_ITEM_POSITION, {
       userID: userID,
@@ -274,8 +275,6 @@ function getAllItemsInGroup(userID, groupID) {
    TODO only update the positions of the tasks after the one that's inserted.
 */
 function updateTableItemPositions(userID, table) {
-  var tasksInTable = [];
-  // console.log(table.getElementsByTagName("TR"));
   //Find the tasks with the category to be updated.
   var tableTasks = table.getElementsByTagName("TR")
   for (let i = 1; i < tableTasks.length; i++) {
@@ -287,7 +286,7 @@ function updateTableItemPositions(userID, table) {
   }
 }
 
-/* Name: updateItemPositions
+/* Name: updateItemPositions //TODO Redo with the table object.
    Purpose: Update the DB to have the correct positions of ALL the items inside
             their respective tables.
    Parameters: None.

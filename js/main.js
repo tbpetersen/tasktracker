@@ -931,12 +931,14 @@ function onTableUpdated(event, ui){
   let htmlTable = event.target.parentNode;
   let tableID = extractGroupID(htmlTable.id);
 
-  console.log(htmlTable)
+  let items = htmlTable.getElementsByTagName("tr");
+  //UPDATE ROWS IN TABLE ARRAW
   //let table = user.getTableByID(tableID);
 
   let table = event.target.parentNode;
-  updateTableItemPositions(user.id, table);
+  updateTableItemPositions(user.databaseID, table);
 }
+
 
 function onTablePositionUpdated(event, ui){
   console.log('here');
