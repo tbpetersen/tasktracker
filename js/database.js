@@ -69,7 +69,6 @@ function addDataToDB(){
       let tables = user.tables;
       for(let i in tables){
         for(let j in tables[i].rows){
-          console.log(j);
           itemPromises.push(addGroupItemToDB(tables[i].rows[j], userID, j));
         }
       }
