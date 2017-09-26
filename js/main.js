@@ -136,6 +136,9 @@ $(document).ready(function() {
             return getUserID(userName);
           })
           .then(function(id){
+            // Add unsorted group
+            addUserGroupToDB(id, "Unsorted");
+
             //Add Groups to the DB
             var uniqueGroups = [];
             for(i in user.tasks){
@@ -152,6 +155,7 @@ $(document).ready(function() {
           });
           createFilters();
         });
+
         populatePage().then(function(){
           draggableRows(false);
           egg();
@@ -194,19 +198,29 @@ function makeID() {
 $(".main").on("click", "#deleteTableBtn", function(e)
 {
   // Find the parent, table-wrapper, and get table
-  var table = $(this).parent().next();
+  var $table = $(this).parent().next();
+  var userName = user.trello.email;
 
-  if((table[0].id === "Unsorted") && !(isEmpty(table))) {
-    deleteUnsorted();
-    return;
-  }
-
-  if (isEmpty(table))
-  {
-    deleteTable(table);
-    return;
-  }
-  deleteTablePrompt(table);
+  getUserID(userName)
+  .then(function(id) {
+    return getGroupID(id, "Unsorted");
+  })
+  .then(function(grpID) {
+    var unsortedTable = tablePrefix + grpID;
+    if(($table[0].id === unsortedTable) && !(isEmpty($table))) {
+      deleteUnsorted();
+      return;
+    }
+    else if (isEmpty($table))
+    {
+      deleteTable($table);
+      return;
+    }
+    deleteTablePrompt($table);
+  })
+  .catch(function(err) {
+    console.log("Error: " + err);
+  });
 });
 
 function deleteUnsorted() {
@@ -258,44 +272,71 @@ function createNewTable() {
     type: "info",
   });
 
-  var tableID = "New_Table_" + tableNumber;
-  createTable(tableID, true); // Create a table with a random ID;
-  $("#" + tableID).find("tbody").addClass("place");
-  updateFilters();
-  draggableRows();
-  window.scrollTo(0, document.body.scrollHeight);
-  tableNumber++;
+  // var tableID = "New_Table_" + tableNumber;
+  
+  var userName = user.trello.email;
+  var tableName = "New Table " + tableNumber;
+  getUserID(userName)
+  .then(function(id) {
+    addUserGroupToDB(id, tableName);
+    return getGroupID(id, tableName);
+  })
+  .then(function(grpID) {
+    var table = tablePrefix + grpID;
+
+    createTable(grpID, true); // Create a table with a random ID;
+    $("#" + table).find("tbody").addClass("place");
+    updateFilters();
+    draggableRows();
+    window.scrollTo(0, document.body.scrollHeight);
+    tableNumber++;
+  })
+  .catch(function(err) {
+    console.log("Error: " + err);
+  });
 }
 
 function deleteTable(tableName) {
+  var userName = user.trello.email;
 
   if(!isEmpty(tableName)) {
 
     // If unsorted table doesn't already exist, create it
-    if(document.getElementById("Unsorted") == null) {
-      createTable("Unsorted", false);
-    }
+    getUserID(userName)
+    .then(function(id) {
+      return getGroupID(id, "Unsorted");
+    })
+    .then(function(grpID) {
+      var unsortedWrapper = wrapperPrefix + grpID;
 
-    // For when unsorted table is empty but still exists & table being deleted
-    // is not empty, remove 'place' class before adding new rows
-    $("#Unsorted").find("tbody").removeClass("place");
-
-    // For each row, make a new Task and create a row for it in the unsorted table
-    var info = tableName[0].tBodies[0].rows;
-    for(var i = 0; i < info.length; i++) {
-      var task = {
-        name: info[i].cells[0].innerHTML,
-        desc: info[i].cells[1].innerHTML,
-        lastModified: info[i].cells[2].innerHTML,
-        category: info[i].cells[3].innerHTML,
-        id: info[i].id
+      if (document.getElementById(unsortedWrapper) == null) {
+        createTable(grpID, false);
       }
 
-      // Make row
-      var unsortedTable = document.getElementById("Unsorted");
-      addRow(task, unsortedTable, task.id);
-    }
-    draggableRows(false);
+      // For when unsorted table is empty but still exists & table being deleted
+      // is not empty, remove 'place' class before adding new rows
+      $(unsortedWrapper).find("tbody").removeClass("place");
+
+      // For each row, make a new Task and create a row for it in the unsorted table
+      var info = tableName[0].tBodies[0].rows;
+      for(var i = 0; i < info.length; i++) {
+        var task = {
+          name: info[i].cells[0].innerText,
+          desc: info[i].cells[1].innerHTML,
+          group: info[i].cells[2].innerHTML,
+          lastModified: info[i].cells[3].innerHTML,
+          category: info[i].cells[4].innerHTML,
+          id: info[i].id
+        }
+
+        // Make row
+        addRow(task, grpID, task.id);
+      }
+      draggableRows(false);
+    })
+    .catch(function(err) {
+      console.log("Error" + err.stack);
+    });
   }
 
   // Delete wrapper and table
@@ -360,23 +401,11 @@ function populatePage() {
       console.log("Error" + err.stack);
       reject();
     });
-
-    // for (var i = 0; i < user.tasks.length; i++) {
-    //   task = user.tasks[i];
-    //   var str = task.category.split(" ").join("_");
-    //   var catName = str.charAt(0).toUpperCase() + str.substring(1);
-    //   if (!cat.includes(catName)) {
-    //     cat.push(catName);
-    //   }
-    //   if (document.getElementById(catName) == null) {
-    //     createTable(catName, false);
-    //   }
-    //   populateTable(task, catName, i);
-    // }
   });
 
 }
 
+// Param: tableName - table ID number, not the string name
 function createTable(tableName, isNewTable) {
   // Create table structure
   var table = document.createElement("TABLE");
@@ -498,6 +527,7 @@ $(".main").on("click", "#tableTitle", function() {
   var inputText;
   var $input = $('<input/>').val( $title.text() );
   var numKeyPress = 0;
+
   //Only allow changing of names for tables that arent Unsorted.
   if(this.innerHTML !== "Unsorted"){
     $input.focus(function() { this.select(); });  // Selects all text
@@ -512,7 +542,9 @@ $(".main").on("click", "#tableTitle", function() {
       if(!this.value || isEmptyString(this.value))
         this.value = inputText;
       updateFilters();
-      filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay selected but the buttons become unhighlighted. Temp fix implemented to filter all when focus out.
+      filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay 
+                  // selected but the buttons become unhighlighted. Temp fix implemented
+                  // to filter all when focus out.
     });
 
     $input.on("input", function(){
@@ -690,9 +722,6 @@ function addRow(task, tableName, index) {
   row.appendChild(catCell);
 
   // append row to table/body
-  // console.log("Table: " + tableName + "----------------------");
-  // console.log(body);
-  // console.log(row);
   body.appendChild(row);
 }
 
