@@ -164,9 +164,9 @@ $(document).ready(function() {
   })
 
   .then(function(){
-    for(let i = 0; i < user.tables.length; i++){
-      console.log(user.tables[i].rows.length);
-    }
+    // for(let i = 0; i < user.tables.length; i++){
+    //   console.log(user.tables[i].rows.length);
+    // }
     return addDataToDB();
   })
 
@@ -204,32 +204,22 @@ function makeID() {
   return text;
 }
 
-$(".main").on("click", "#deleteTableBtn", function(e)
-{
-  // Find the parent, table-wrapper, and get table
+$(".main").on("click", "#deleteTableBtn", function(e) {
+  // Find the parent - table-wrapper - and get table
   var $table = $(this).parent().next();
-  var userName = user.trello.email;
+  var unsortedTable = tablePrefix + unsortedID;
 
-  getUserID(userName)
-  .then(function(id) {
-    return getGroupID(id, "Unsorted");
-  })
-  .then(function(grpID) {
-    var unsortedTable = tablePrefix + grpID;
-    if(($table[0].id === unsortedTable) && !(isEmpty($table))) {
-      deleteUnsorted();
-      return;
-    }
-    else if (isEmpty($table))
-    {
-      deleteTable($table);
-      return;
-    }
-    deleteTablePrompt($table);
-  })
-  .catch(function(err) {
-    console.log("Error: " + err);
-  });
+  if(($table[0].id === unsortedTable) && !(isEmpty($table))) {
+    deleteUnsorted();
+    return;
+  }
+  else if (isEmpty($table))
+  {
+    deleteTable($table);
+    return;
+  }
+
+  deleteTablePrompt($table);
 });
 
 function storeDataFromTableObjects(){
@@ -279,8 +269,6 @@ function loadUsersItemsFromDB(){
 }
 
 function createTablesFromTableObject(){
-  console.log("Creating tables");
-
   //TODO Shiva
   let tables = user.tables; // You can iterate over these
   console.log(tables);
@@ -289,12 +277,19 @@ function createTablesFromTableObject(){
   for(i = 0; i < tables.length; i++) {
     var table = tables[i];
     createTable(table, false);
-    //createTable(table.id, false);
 
-   // populate each table by accessing rows in each table
+    // populate each table by accessing rows in each table
+    var tableRows = table.rows.length;
+    if (tableRows == 0) {
+      var id = table.id;
+      var tableID = tablePrefix + id;
+      $("#" + tableID).find("tbody").addClass("place");
+    }
+
     for(j = 0; j < table.rows.length; j++) {
       populateTable(table.rows[j], table.id, j);
     }
+
     draggableRows(ITEM_SORTABLE_CLASS);
   }
 }
@@ -518,7 +513,6 @@ function createNewTable() {
 function deleteTable(tableName) {
 
   if(!isEmpty(tableName)) {
-
     // If unsorted table doesn't already exist, create it
     if(document.getElementById("Unsorted") == null) {
       createTable("Unsorted", false);
