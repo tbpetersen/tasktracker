@@ -266,10 +266,6 @@ function loadUsersItemsFromDB(){
 }
 
 function createTablesFromTableObject(){
-<<<<<<< HEAD
-  //TODO Shiva
-=======
->>>>>>> a90e47c7802088f2c18c670c24cc3b386a0bcef5
   let tables = user.tables; // You can iterate over these
   console.log(tables);
 
