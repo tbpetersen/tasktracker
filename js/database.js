@@ -45,8 +45,6 @@ function getGroupID(user, group) {
 }
 
 function addDataToDB(){
-  console.log("Adding to database");
-
   return new Promise(function(resolve, reject){
     var userName = user.trello.email;
     addUserToDB(userName)
@@ -68,8 +66,11 @@ function addDataToDB(){
     })
     .then(function(userID){
       let itemPromises = new Array();
-      for(i in user.tasks){
-        itemPromises.push(addGroupItemToDB(user.tasks[i], userID, i));
+      let tables = user.tables;
+      for(let i in tables){
+        for(let j in tables[i].rows){
+          itemPromises.push(addGroupItemToDB(tables[i].rows[j], userID, j));
+        }
       }
         Promise.all(itemPromises).then(function(){
           resolve();
@@ -127,9 +128,9 @@ function addUserGroupToDB(user, table) {
         $.post(PHP_ADD_GROUP, {
           userID: user,
           groupName: table.name,
-          groupID: table.id
+          groupID: table.id,
+          position: table.position
         }, function(data) {
-          console.log(data);
           if (data === -1)
             reject(data);
           table.id = data;
@@ -157,7 +158,10 @@ function checkUserGroupDB(user, group) {
 }
 
 function addGroupItemToDB(item, userID, position) {
-  return checkGroupItemDB(item, userID)
+  return getGroupID(userID, item.category)
+  .then(function(groupID){
+    return checkGroupItemDB(item, userID, groupID)
+  })
   .then(function(itemObj) {
       //If the item doesn't exist, add it
       if (!itemObj) {
@@ -214,12 +218,12 @@ function getItem(userID, itemID, groupID) {
   });
 }
 
-function updateGroupName(userID, groupID, newName) {
+function updateGroupName(userID, table, newName){
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_GROUP_NAME, {
       userID: userID,
-      groupID: groupID,
-      newName: newName
+      groupID: table.id,
+      newName: table.name
     }, function(data) {
       resolve(data == 1);
     });
@@ -227,6 +231,12 @@ function updateGroupName(userID, groupID, newName) {
 }
 
 function updateItemPosition(userID, itemID, newPosition) {
+  let task = getTaskByID(itemID);
+  let currentTable = getUserTableFromItemID(itemID);
+  task.position = newPosition;
+  currentTable.rows.push(task);
+  sortByPosition(currentTable.rows);
+  currentTable.rows = removeDuplicates(currentTable.rows);
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_ITEM_POSITION, {
       userID: userID,
@@ -236,6 +246,20 @@ function updateItemPosition(userID, itemID, newPosition) {
       resolve(data == 1);
     });
   });
+}
+
+/* Name: removeDuplicates
+   Purpose: Removes the duplicate indexes in an array.
+   Parameters: Array - array.
+   Return: The array with only unique indeces.
+*/
+function removeDuplicates(array){
+  let uniqueArray = [];
+  for(i in array){
+    if(!uniqueArray.includes(array[i]))
+      uniqueArray.push(array[i]);
+  }
+  return uniqueArray;
 }
 
 function updateItemGroup(userID, itemID, newGroupID) {
@@ -270,8 +294,6 @@ function getAllItemsInGroup(userID, groupID) {
    TODO only update the positions of the tasks after the one that's inserted.
 */
 function updateTableItemPositions(userID, table) {
-  var tasksInTable = [];
-  // console.log(table.getElementsByTagName("TR"));
   //Find the tasks with the category to be updated.
   var tableTasks = table.getElementsByTagName("TR")
   for (let i = 1; i < tableTasks.length; i++) {
@@ -283,7 +305,14 @@ function updateTableItemPositions(userID, table) {
   }
 }
 
-/* Name: updateItemPositions
+function getTableFromHTML(htmlTable){
+  htmlTableItems = htmlTable.getElementsByTagName("tr");
+  if(htmlTableItems <= 1)
+    return;
+  return getUserTableFromItemID(htmlTableItems[1].id);
+}
+
+/* Name: updateItemPositions //TODO Redo with the table object.
    Purpose: Update the DB to have the correct positions of ALL the items inside
             their respective tables.
    Parameters: None.

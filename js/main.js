@@ -14,12 +14,15 @@ var user;
 var isClosed = false;
 const wrapperPrefix = "wrapper_";
 const tablePrefix = "table_";
+const GROUP_SORTABLE_CLASS = 'sortable-group'
+const ITEM_SORTABLE_CLASS = 'sortable-item'
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 class Table{
-  constructor(name, id){
+  constructor(name, id, position){
     this.name = name;
     this.id = id;
+    this.position = position
     this.rows = new Array();
   }
 
@@ -240,14 +243,6 @@ function deleteUnsorted() {
   });
 }
 
-function createBackingTable(){
-  user.tables[0] = new Table("Test 0", 0);
-  user.tables[1] = new Table("Test 1", 1);
-  for(let i = 0; i < user.tasks.length; i++){
-    user.tables[i%2].addRow(user.tasks[i]);
-  }
-}
-
 function loadUsersItemsFromDB(){
   return Promise.resolve()
 
@@ -256,6 +251,7 @@ function loadUsersItemsFromDB(){
   })
 
   .then(function(groups){
+    sortByPosition(groups);
     let promiseArray = new Array();
     for(let i = 0; i < groups.length; i++){
       let groupID = groups[i].groupID;
@@ -277,6 +273,7 @@ function loadUsersItemsFromDB(){
 
 function createTablesFromTableObject(){
   console.log("Creating tables");
+
   //TODO Shiva
   let tables = user.tables; // You can iterate over these
   console.log(tables);
@@ -284,15 +281,22 @@ function createTablesFromTableObject(){
   // create each table by iterating through tables list
   for(i = 0; i < tables.length; i++) {
     var table = tables[i];
-    createTable(table, false);   
+    createTable(table, false);
     //createTable(table.id, false);
 
    // populate each table by accessing rows in each table
     for(j = 0; j < table.rows.length; j++) {
       populateTable(table.rows[j], table.id, j);
     }
-    draggableRows(false);
+    draggableRows(ITEM_SORTABLE_CLASS);
   }
+}
+
+function sortByPosition(array){
+  let compare = function(a,b){
+    return a.position - b.position;
+  }
+  array.sort(compare);
 }
 
 
@@ -304,19 +308,21 @@ function createTablesFromDPandAPI(dbData, tasks){
 
 function createTablesFromGroups(groups, tasks){
   let tables = new Array();
+  user.tables = tables;
   for(let i = 0; i < groups.length; i++){
     console.log(groups[i]);
     let group = groups[i];
-    let table = new Table(group.name, group.id);
+    let table = new Table(group.name, group.id, i);
 
     for(let j = 0; j < group.items.length; j++){
       let item = group.items[j];
-      task = getTaskByID(item.itemID)
+      task = getTaskByID(item.itemID);
       if(task != null){
+        task.position = item.position;
         table.addRow(task);
       }
+      sortByPosition(table.rows);
     }
-
     tables.push(table);
   }
   let unsortedTable = getUnsortedTable(tasks, groups);
@@ -324,8 +330,19 @@ function createTablesFromGroups(groups, tasks){
   return tables;
 }
 
+function getUserTableFromItemID(itemID){
+  let task = getTaskByID(itemID);
+  for(let i in user.tables){
+    for(let j in user.tables[i].rows){
+      if(task === user.tables[i].rows[j]){
+        return user.tables[i];
+      }
+    }
+  }
+}
+
 function getUnsortedTable(tasks, groups){
-  let table = new Table('Unsorted', unsortedID);
+  let table = new Table('Unsorted', unsortedID, user.tables.length);
   var clonedTasks = JSON.parse(JSON.stringify(tasks));
   for(let i = 0; i < groups.length; i++){
     for(let j = 0; j < groups[i].items.length; j++){
@@ -407,13 +424,15 @@ function loadFromDB(){
 
 function createGroupsForUser(tasks){
   let cat = {};
+  let groupCounter = 0;
   for (var i = 0; i < tasks.length; i++) {
     var task = tasks[i];
     var catID = task.category;
 
     // Check if category table already exists
     if ( cat[catID] == null) {
-      user.tables.push(new Table(task.category, catID));
+      user.tables.push(new Table(task.category, catID, groupCounter));
+      groupCounter++;
       cat[catID] = catID;
     }
     user.getTableByID(catID).addRow(task);
@@ -463,7 +482,7 @@ function deleteTablePrompt(tableName) {
 
 /*Creates a new table with a random ID, as it cannot be coded to have it
   dynamically created if it isn"t random.*/
-var tableNumber = 1;
+var tableNumber = -1;
 function createNewTable() {
   $.notify({
     icon: "glyphicon glyphicon-plus-sign",
@@ -472,71 +491,52 @@ function createNewTable() {
     type: "info",
   });
 
-  // var tableID = "New_Table_" + tableNumber;
-  
-  var userName = user.trello.email;
-  var tableName = "New Table " + tableNumber;
-  getUserID(userName)
-  .then(function(id) {
-    addUserGroupToDB(id, tableName);
-    return getGroupID(id, tableName);
-  })
-  .then(function(grpID) {
-    var table = tablePrefix + grpID;
-
-    createTable(grpID, true); // Create a table with a random ID;
-    $("#" + table).find("tbody").addClass("place");
-    updateFilters();
-    draggableRows();
-    window.scrollTo(0, document.body.scrollHeight);
-    tableNumber++;
-  })
-  .catch(function(err) {
-    console.log("Error: " + err);
+  var tableID = "New_Table_" + tableNumber;
+  let tableObject = new Table(tableID, -1, user.tables.length);
+  user.tables.push(tableObject);
+  addUserGroupToDB(user.databaseID, tableObject).then(function(){
+    tableObject.name = "New_Table_" + tableObject.id;
+    updateGroupName(user.databaseID, tableObject).then(function(){
+      tableID = tableObject.name;
+      createTable(tableObject, true); // Create a table with a random ID;
+      $("#" + tableID).find("tbody").addClass("place");
+      updateFilters();
+      draggableRows(ITEM_SORTABLE_CLASS);
+      window.scrollTo(0, document.body.scrollHeight);
+      tableNumber--;
+    });
   });
 }
 
 function deleteTable(tableName) {
-  var userName = user.trello.email;
 
   if(!isEmpty(tableName)) {
 
     // If unsorted table doesn't already exist, create it
-    getUserID(userName)
-    .then(function(id) {
-      return getGroupID(id, "Unsorted");
-    })
-    .then(function(grpID) {
-      var unsortedWrapper = wrapperPrefix + grpID;
+    if(document.getElementById("Unsorted") == null) {
+      createTable("Unsorted", false);
+    }
 
-      if (document.getElementById(unsortedWrapper) == null) {
-        createTable(grpID, false);
+    // For when unsorted table is empty but still exists & table being deleted
+    // is not empty, remove 'place' class before adding new rows
+    $("#Unsorted").find("tbody").removeClass("place");
+
+    // For each row, make a new Task and create a row for it in the unsorted table
+    var info = tableName[0].tBodies[0].rows;
+    for(var i = 0; i < info.length; i++) {
+      var task = {
+        name: info[i].cells[0].innerHTML,
+        desc: info[i].cells[1].innerHTML,
+        lastModified: info[i].cells[2].innerHTML,
+        category: info[i].cells[3].innerHTML,
+        id: info[i].id
       }
 
-      // For when unsorted table is empty but still exists & table being deleted
-      // is not empty, remove 'place' class before adding new rows
-      $(unsortedWrapper).find("tbody").removeClass("place");
-
-      // For each row, make a new Task and create a row for it in the unsorted table
-      var info = tableName[0].tBodies[0].rows;
-      for(var i = 0; i < info.length; i++) {
-        var task = {
-          name: info[i].cells[0].innerText,
-          desc: info[i].cells[1].innerHTML,
-          group: info[i].cells[2].innerHTML,
-          lastModified: info[i].cells[3].innerHTML,
-          category: info[i].cells[4].innerHTML,
-          id: info[i].id
-        }
-
-        // Make row
-        addRow(task, grpID, task.id);
-      }
-      draggableRows(false);
-    })
-    .catch(function(err) {
-      console.log("Error" + err.stack);
-    });
+      // Make row
+      var unsortedTable = document.getElementById("Unsorted");
+      addRow(task, unsortedTable, task.id);
+    }
+    draggableRows(ITEM_SORTABLE_CLASS);
   }
 
   // Delete wrapper and table
@@ -595,7 +595,7 @@ function populatePage() {
         }
         populateTable(task, catID, i);
       }
-      draggableRows(false);
+      draggableRows(ITEM_SORTABLE_CLASS);
       resolve();
     })
     .catch(function(err) {
@@ -606,9 +606,7 @@ function populatePage() {
 
 }
 
-// function createTable(tableName, isNewTable) {
 function createTable(tableObj, isNewTable) {
-  
   // console.log(table);
   var tableName = tableObj.id;
 
@@ -656,7 +654,7 @@ function createTable(tableObj, isNewTable) {
   table.setAttribute("class", "tables");
   //TODO
   table.setAttribute("dbID", 1);
-  body.setAttribute("class", "sortable");
+  body.setAttribute("class", ITEM_SORTABLE_CLASS);
   row.setAttribute("id", "firstRow");
 
   titleCell.setAttribute("id", "titleCell");
@@ -692,7 +690,7 @@ function createTableWrapper(tableObj, isNewTable) {
 
   var tableTitle;
   if(isNewTable) {
-    tableTitle = document.createTextNode("New Table " + tableNumber);
+    tableTitle = document.createTextNode(tableObj.name);
   }
   else {
     var catName = tableObj.name.charAt(0).toUpperCase()
@@ -914,7 +912,7 @@ function addRow(task, tableName, index) {
   body.appendChild(row);
 }
 
-function draggableRows(bool) {
+function draggableRows(className) {
   // Prevent rows from shrinking while dragged
   var fixHelper = function(e, ui) {
     ui.children().each(function() {
@@ -923,13 +921,20 @@ function draggableRows(bool) {
     return ui;
   };
 
-  $(".sortable").sortable({
+  let updateListener;
+  if(className == ITEM_SORTABLE_CLASS){
+    updateListener = onTableUpdated;
+  }else{
+    updateListener = onTablePositionUpdated;
+  }
+
+  $("." + className).sortable({
     axis: 'y',
     helper: fixHelper,
-    //connectWith: ".sortable",
+    connectWith: "." + className,
     placeholder: "ui-state-highlight",
     zIndex: 99,
-    update: onTableUpdated,
+    update: updateListener,
     stop: function(e,t) {
       if ($(this).children().length == 0) {
           $(this).addClass("place");
@@ -940,15 +945,23 @@ function draggableRows(bool) {
     }
   });
   $("#sortable").disableSelection();
-
-  if(!bool) {
-    $(".sortable").sortable({connectWith: ".sortable"});
-  }
 }
 
 function onTableUpdated(event, ui){
+  let htmlTable = event.target.parentNode;
+  let tableID = extractGroupID(htmlTable.id);
+
+  let items = htmlTable.getElementsByTagName("tr");
+  //UPDATE ROWS IN TABLE ARRAW
+  //let table = user.getTableByID(tableID);
+
   let table = event.target.parentNode;
-  updateTableItemPositions(user.id, table);
+  updateTableItemPositions(user.databaseID, table);
+}
+
+
+function onTablePositionUpdated(event, ui){
+  console.log('here');
 }
 
 function makeButtons(tableName) {
@@ -1026,7 +1039,7 @@ $("#reorder").click(function(e) {
     closeLabel: "Close",
     //cssClass: ['custom-class-1', 'custom-class-2'],
     onOpen: function() {
-      draggableRows(true);
+      draggableRows(GROUP_SORTABLE_CLASS);
       $('#reorder').prop('disabled', true);
     },
     onClose: function() {
@@ -1052,7 +1065,7 @@ $("#reorder").click(function(e) {
 
       var table = listTables();
       modal.setContent(table);
-      draggableRows(true);
+      draggableRows(GROUP_SORTABLE_CLASS);
     }
   });
 
@@ -1070,7 +1083,7 @@ $("#reorder").click(function(e) {
 
     $("#" + id).after($("#" + id2));
 
-    //console.log(table);
+    // console.log(table);
     // for(i = 0; i < table.length; i++) {
     //   console.log(wrapperPrefix + table[i]);
     // }
@@ -1085,8 +1098,9 @@ $("#reorder").click(function(e) {
     //   //$('#wrapper_50').after($('#wrapper_49'));
     //   //$('#' + id).after($('#' + id2));
     //   $(id2).after($(id));
-    //   draggableRows(true);
+    //   draggableRows(GROUP_SORTABLE_CLASS);
     // }
+
     modal.close();
     updateFilters();
   });
@@ -1146,7 +1160,7 @@ function listTables(bool) {
 
   // Name elements
   table.setAttribute("id", "names");
-  body.setAttribute("class", "sortable");
+  body.setAttribute("class", GROUP_SORTABLE_CLASS);
   row.setAttribute("id", "firstRow");
   titleCell.setAttribute("id", "titleCell");
 
@@ -1580,8 +1594,6 @@ function trelloGet(url) {
 ////////////////////////////////////////////////////////////////////////////////
 
 /* ------------------ SORT FILTERS ------------------ */
-/*Sorting is done using bubble sort. Hopefully implement a better algorithm in
-  the future.*/
 
 /*Sort the data alphabetically*/
 var alphabetForwards = false;

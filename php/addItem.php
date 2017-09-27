@@ -12,45 +12,12 @@ Return value: the item's ID in the database or -1 if fail
 */
 /* Connect to the server */
 include_once("connectToDB.php");
-
 /* POST arguments */
 $itemID   = $_POST['itemID'];
 $userID   = $_POST['userID'];
 $groupID  = $_POST['groupID'];
 $itemType = $_POST['itemType'];
 $position = $_POST['position'];
-
-<<<<<<< HEAD
-  $stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE itemID = (?)");
-  $stmt->bind_param('s', $itemID);
-  $success = $stmt->execute();
-  $result = $stmt->get_result();
-  /*if($result->num_rows != 0){
-    $stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE groupID = (?)");
-    $stmt->bind_param('i', $groupID);
-    $success = $stmt->execute();
-    $result = $stmt->get_result();
-    if($result->num_rows == 0){
-      //TODO have the groupID be accurate of the updated groupID
-      $stmt = $tasktrackerDB->prepare("UPDATE $itemsTable SET groupID = (?) WHERE itemID = (?);");
-      $stmt->bind_param('s', $itemID);
-      $success = $stmt->execute();
-      $tasktrackerDB->close();
-      exit();
-    }
-  }*/
-
-  /* Add the item to the db */
-  $stmt = $tasktrackerDB->prepare("INSERT INTO $itemsTable (itemID, userID, groupID, itemType, position) VALUES (?,?,?,?,?)");
-  $stmt->bind_param('siiii', $itemID, $userID, $groupID, $itemType, $position);
-  $success = $stmt->execute();
-  if($success == 1){
-    echo($itemID);
-  }else{
-    echo(-1);
-  }
-  $tasktrackerDB->close();
-=======
 $stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE itemID = (?)");
 $stmt->bind_param('s', $itemID);
 $success = $stmt->execute();
@@ -76,7 +43,6 @@ else{
   $tasktrackerDB->close();
   exit();
 }*/
-
 /* Add the item to the db */
 $stmt = $tasktrackerDB->prepare("INSERT INTO $itemsTable (itemID, userID, groupID, itemType, position) VALUES (?,?,?,?,?)");
 $stmt->bind_param('siiii', $itemID, $userID, $groupID, $itemType, $position);
@@ -88,5 +54,4 @@ if($success == 1){
 }
 $tasktrackerDB->close();
 }
->>>>>>> 93314b6a7c61339a740e3ceefe722529a0e6f34e
 ?>
