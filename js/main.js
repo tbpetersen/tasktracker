@@ -18,6 +18,7 @@ const GROUP_SORTABLE_CLASS = 'sortable-group'
 const ITEM_SORTABLE_CLASS = 'sortable-item'
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
+
 class Table{
   constructor(name, id, position){
     this.name = name;
@@ -184,6 +185,12 @@ function delayedPromise(seconds){
     }, seconds * 1000);
   });
 }
+
+function refreshGroupUI(tableObj) {
+  // TODO
+}
+
+// Maybe another function - refreshAllGroupUI
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   Generates and returns a random string ID.*/

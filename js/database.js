@@ -378,3 +378,15 @@ function getGroupName(user, groupID) {
     });
   })
 }
+
+function deleteItem(userID, itemID) {
+  // TODO
+}
+
+function deleteItemsFromUserGroup(userID, tableObj) {
+  // TODO
+}
+
+function deleteUserGroup(userID, tableObj) {
+  // TODO
+}
