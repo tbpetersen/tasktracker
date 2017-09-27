@@ -276,9 +276,6 @@ function loadUsersItemsFromDB(){
 }
 
 function createTablesFromTableObject(){
-  console.log("Creating tables");
-
-  //TODO Shiva
   let tables = user.tables; // You can iterate over these
   console.log(tables);
 
