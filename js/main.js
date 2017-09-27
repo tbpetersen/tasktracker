@@ -168,7 +168,7 @@ $(document).ready(function() {
   })
 
   .then(function(){
-    //createFilters();
+    createFilters();
     createTablesFromTableObject();
     //return populatePage();
   })
@@ -276,7 +276,6 @@ function loadUsersItemsFromDB(){
 }
 
 function createTablesFromTableObject(){
-  console.log("Creating tables");
 
   //TODO Shiva
   let tables = user.tables; // You can iterate over these
@@ -956,14 +955,18 @@ function onTableUpdated(event, ui){
   let table = user.getTableByID(tableID);
   let newRows = [];
   let items = htmlTable.getElementsByTagName("tr");
+  let userID = user.databaseID
   for (let i = 1; i < items.length; i++) {
     let task = getTaskByID(items[i].id);
     task.position = i - 1;
-    updateItemPosition(user.databaseID, task);
-    updateItemGroup(user.databaseID, task.id, table.id);
+    updateItemPosition(userID, task);
+    updateItemGroup(userID, task.id, table.id);
     newRows.push(task);
+    if(table.id === unsortedID)
+      deleteItem(userID, task.id);
   }
   table.rows = newRows;
+
 }
 
 
@@ -2129,6 +2132,7 @@ function createFilterButton(filter){
   newFilter.innerText = filter;
   leftSidebar.appendChild(newFilter);
 }
+
 var onPageLoad = true;
 function getFilters(){//Most likely will change when we implement database
   var categories = [];
@@ -2277,10 +2281,9 @@ function filterAll() {
 }
 
 function filterIn(tableIDReal, button){
-  //Remove underscores
-  var tableID = tableIDReal.split("_").join(" ");
   //Hide unwanted tables.
-  if(!isGrey(tableID) && tableID !== button.innerHTML){
+  let tableName = getTableNameFromID(tableIDReal)
+  if(!isGrey(tableIDReal) && tableName !== button.innerHTML){
       filterOutTable(tableIDReal);
     }
   //Show wanted tables.
@@ -2290,10 +2293,9 @@ function filterIn(tableIDReal, button){
 }
 
 function filterOut(tableIDReal, button){
-  //Remove underscores.
-  var tableID = tableIDReal.split("_").join(" ");
   //Show wanted tables.
-  if(isGrey(tableID) && tableID !== button.innerHTML){
+  let tableName = getTableNameFromID(tableIDReal)
+  if(isGrey(tableIDReal) && tableName !== button.innerHTML){
       filterInTable(tableIDReal);
     }
   //Hide uwanted tables.
@@ -2303,29 +2305,39 @@ function filterOut(tableIDReal, button){
 }
 
 
-function filterOutTable(tableID){
+function filterOutTable(table){
+  let tableID = table.slice(6);
   //Loop through each row and hide it.
-  $('#' + tableID + ' > tbody  > tr').each(function(){
+  $('#' + table + ' > tbody > tr').each(function(){
     $(this).hide();
   });
 }
 
-function filterInTable(tableID){
+function filterInTable(table){
+  let tableID = table.slice(6);
   //Show the current table.
-  document.getElementById(tableID + "_table").style.display = "block";
+  document.getElementById("wrapper_" + tableID).style.display = "block";
   //Loop through each row and show it.
-  $('#' + tableID + ' > tbody  > tr').each(function(){
+  $('#' + table + ' > tbody > tr').each(function(){
     $(this).show();
   });
 }
 
-function isGrey(table){
+function isGrey(tableID){
+  let table = getTableNameFromID(tableID);
+  if(table == "Unsorted")
+    return false;
   //Get the background color of the row.
   var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
   //Is the background ofthe button grey?
   if(buttonColor == "lightgrey" || buttonColor == "rgb(23, 23, 23)")
     return true;
   return false;
+}
+
+function getTableNameFromID(tableID){
+  let newID = document.getElementById(tableID).id.slice(6);
+  return document.getElementById("wrapper_" + newID).firstChild.firstChild.innerHTML;
 }
 /*-----------------------------End of Filtering-------------------------------*/
 /*---------------------------------Search-------------------------------------*/
@@ -2371,7 +2383,7 @@ function hideTables(){
 
   //Go through each table, if it's elements are hidden, hide it. If not, show.
   for(var i = 0; i < tables.length; i++){
-    wrapperID ="#" + $(tables[i]).attr("id") + wrapperSuffix;
+    wrapperID ="#wrapper_" + $(tables[i]).attr("id").slice(6);
 
     if(isTableHidden(tables[i])) {
       $(wrapperID).hide();
