@@ -231,7 +231,12 @@ function updateGroupName(userID, table, newName){
 }
 
 function updateItemPosition(userID, itemID, newPosition) {
-  console.log(user.tables);
+  let task = getTaskByID(itemID);
+  let currentTable = getUserTableFromItemID(itemID);
+  task.position = newPosition;
+  currentTable.rows.push(task);
+  sortByPosition(currentTable.rows);
+  currentTable.rows = removeDuplicates(currentTable.rows);
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_ITEM_POSITION, {
       userID: userID,
@@ -241,6 +246,20 @@ function updateItemPosition(userID, itemID, newPosition) {
       resolve(data == 1);
     });
   });
+}
+
+/* Name: removeDuplicates
+   Purpose: Removes the duplicate indexes in an array.
+   Parameters: Array - array.
+   Return: The array with only unique indeces.
+*/
+function removeDuplicates(array){
+  let uniqueArray = [];
+  for(i in array){
+    if(!uniqueArray.includes(array[i]))
+      uniqueArray.push(array[i]);
+  }
+  return uniqueArray;
 }
 
 function updateItemGroup(userID, itemID, newGroupID) {
@@ -284,6 +303,13 @@ function updateTableItemPositions(userID, table) {
       }
     }
   }
+}
+
+function getTableFromHTML(htmlTable){
+  htmlTableItems = htmlTable.getElementsByTagName("tr");
+  if(htmlTableItems <= 1)
+    return;
+  return getUserTableFromItemID(htmlTableItems[1].id);
 }
 
 /* Name: updateItemPositions //TODO Redo with the table object.

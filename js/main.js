@@ -306,12 +306,22 @@ function createTablesFromGroups(groups, tasks){
       }
       sortByPosition(table.rows);
     }
-
     tables.push(table);
   }
   let unsortedTable = getUnsortedTable(tasks, groups);
   tables.push(unsortedTable);
   return tables;
+}
+
+function getUserTableFromItemID(itemID){
+  let task = getTaskByID(itemID);
+  for(let i in user.tables){
+    for(let j in user.tables[i].rows){
+      if(task === user.tables[i].rows[j]){
+        return user.tables[i];
+      }
+    }
+  }
 }
 
 function getUnsortedTable(tasks, groups){
@@ -465,7 +475,7 @@ function createNewTable() {
   });
 
   var tableID = "New_Table_" + tableNumber;
-  let tableObject = new Table(tableID, -1/*, user.tables.length*/);
+  let tableObject = new Table(tableID, -1, user.tables.length);
   user.tables.push(tableObject);
   addUserGroupToDB(user.databaseID, tableObject).then(function(){
     tableObject.name = "New_Table_" + tableObject.id;
@@ -1553,8 +1563,6 @@ function trelloGet(url) {
 ////////////////////////////////////////////////////////////////////////////////
 
 /* ------------------ SORT FILTERS ------------------ */
-/*Sorting is done using bubble sort. Hopefully implement a better algorithm in
-  the future.*/
 
 /*Sort the data alphabetically*/
 var alphabetForwards = false;
