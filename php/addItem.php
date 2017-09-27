@@ -12,14 +12,12 @@ Return value: the item's ID in the database or -1 if fail
 */
 /* Connect to the server */
 include_once("connectToDB.php");
-
 /* POST arguments */
 $itemID   = $_POST['itemID'];
 $userID   = $_POST['userID'];
 $groupID  = $_POST['groupID'];
 $itemType = $_POST['itemType'];
 $position = $_POST['position'];
-
 $stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE itemID = (?)");
 $stmt->bind_param('s', $itemID);
 $success = $stmt->execute();
@@ -45,7 +43,6 @@ else{
   $tasktrackerDB->close();
   exit();
 }*/
-
 /* Add the item to the db */
 $stmt = $tasktrackerDB->prepare("INSERT INTO $itemsTable (itemID, userID, groupID, itemType, position) VALUES (?,?,?,?,?)");
 $stmt->bind_param('siiii', $itemID, $userID, $groupID, $itemType, $position);

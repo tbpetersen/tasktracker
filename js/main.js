@@ -18,6 +18,7 @@ const GROUP_SORTABLE_CLASS = 'sortable-group'
 const ITEM_SORTABLE_CLASS = 'sortable-item'
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
+
 class Table{
   constructor(name, id, position){
     this.name = name;
@@ -182,6 +183,12 @@ function delayedPromise(seconds){
   });
 }
 
+function refreshGroupUI(tableObj) {
+  // TODO
+}
+
+// Maybe another function - refreshAllGroupUI
+
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   Generates and returns a random string ID.*/
 function makeID() {
@@ -197,19 +204,29 @@ function makeID() {
 $(".main").on("click", "#deleteTableBtn", function(e)
 {
   // Find the parent, table-wrapper, and get table
-  var table = $(this).parent().next();
+  var $table = $(this).parent().next();
+  var userName = user.trello.email;
 
-  if((table[0].id === "Unsorted") && !(isEmpty(table))) {
-    deleteUnsorted();
-    return;
-  }
-
-  if (isEmpty(table))
-  {
-    deleteTable(table);
-    return;
-  }
-  deleteTablePrompt(table);
+  getUserID(userName)
+  .then(function(id) {
+    return getGroupID(id, "Unsorted");
+  })
+  .then(function(grpID) {
+    var unsortedTable = tablePrefix + grpID;
+    if(($table[0].id === unsortedTable) && !(isEmpty($table))) {
+      deleteUnsorted();
+      return;
+    }
+    else if (isEmpty($table))
+    {
+      deleteTable($table);
+      return;
+    }
+    deleteTablePrompt($table);
+  })
+  .catch(function(err) {
+    console.log("Error: " + err);
+  });
 });
 
 function storeDataFromTableObjects(){
@@ -259,6 +276,9 @@ function loadUsersItemsFromDB(){
 }
 
 function createTablesFromTableObject(){
+  console.log("Creating tables");
+
+  //TODO Shiva
   let tables = user.tables; // You can iterate over these
   console.log(tables);
 
@@ -489,7 +509,6 @@ function createNewTable() {
       tableNumber--;
     });
   });
-
 }
 
 function deleteTable(tableName) {
@@ -586,26 +605,11 @@ function populatePage() {
       console.log("Error" + err.stack);
       reject();
     });
-
-    // for (var i = 0; i < user.tasks.length; i++) {
-    //   task = user.tasks[i];
-    //   var str = task.category.split(" ").join("_");
-    //   var catName = str.charAt(0).toUpperCase() + str.substring(1);
-    //   if (!cat.includes(catName)) {
-    //     cat.push(catName);
-    //   }
-    //   if (document.getElementById(catName) == null) {
-    //     createTable(catName, false);
-    //   }
-    //   populateTable(task, catName, i);
-    // }
   });
 
 }
 
-// function createTable(tableName, isNewTable) {
-  function createTable(tableObj, isNewTable) {
-
+function createTable(tableObj, isNewTable) {
   // console.log(table);
   var tableName = tableObj.id;
 
@@ -713,6 +717,7 @@ $(".main").on("click", "#tableTitle", function() {
   var inputText;
   var $input = $('<input/>').val( $title.text() );
   var numKeyPress = 0;
+
   //Only allow changing of names for tables that arent Unsorted.
   if(this.innerHTML !== "Unsorted"){
     $input.focus(function() { this.select(); });  // Selects all text
@@ -727,7 +732,9 @@ $(".main").on("click", "#tableTitle", function() {
       if(!this.value || isEmptyString(this.value))
         this.value = inputText;
       updateFilters();
-      filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay selected but the buttons become unhighlighted. Temp fix implemented to filter all when focus out.
+      filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay
+                  // selected but the buttons become unhighlighted. Temp fix implemented
+                  // to filter all when focus out.
     });
 
     $input.on("input", function(){
@@ -905,9 +912,6 @@ function addRow(task, tableName, index) {
   row.appendChild(catCell);
 
   // append row to table/body
-  // console.log("Table: " + tableName + "----------------------");
-  // console.log(body);
-  // console.log(row);
   body.appendChild(row);
 }
 
@@ -964,7 +968,18 @@ function onTableUpdated(event, ui){
 
 
 function onTablePositionUpdated(event, ui){
-  console.log('here');
+  let htmlTable = $(event.target.parentNode);
+  let htmlTableBody = htmlTable.find('tbody')[0];
+
+  let groups = htmlTableBody.children;
+  let newTablesArray = new Array();
+  for(let i = 0; i < groups.length; i++){
+    let currentGroup = groups[i];
+    let groupID = currentGroup.getAttribute('databaseID');
+    let table = user.getTableByID(groupID);
+    newTablesArray.push(table);
+  }
+  user.tempTables = newTablesArray;
 }
 
 function makeButtons(tableName) {
@@ -1056,7 +1071,7 @@ $("#reorder").click(function(e) {
   // set content
   modal.setContent('<h3>Reorder Tables</h3>');
 
-  var table = listTables();
+  var table = listTables(0);
   modal.setContent(table);
 
   $("#addTable").click(function(e) {
@@ -1074,20 +1089,23 @@ $("#reorder").click(function(e) {
 
   // CANCEL
   modal.addFooterBtn('Cancel', 'tingle-btn tingle-btn--primary', function() {
+    user.tempTables = new Array();
     modal.close();
   });
 
   // SAVE: reorder tables
   modal.addFooterBtn('Save', 'tingle-btn tingle-btn--danger', function() {
-    var table = document.getElementById("names");
+    finalizeTempTable();
+    var tableIDsNewOrder = listTables(1);
 
-    for(var i = 1; i < table.rows.length - 1; i++) {
-      var id = (table.rows[i].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
-      var id2 = (table.rows[i + 1].cells[0].innerHTML).split(" ").join("_") + wrapperSuffix;
-
+    let tables = user.tables;
+    for(let i = 0; i < tables.length - 1; i++){
+      let id = wrapperPrefix + (tables[i].id);
+      let id2 = wrapperPrefix + (tables[i + 1].id);
       $("#" + id).after($("#" + id2));
-      draggableRows(GROUP_SORTABLE_CLASS);
+      updateGroupPosition(user.databaseID, tables[i]);
     }
+    draggableRows(GROUP_SORTABLE_CLASS);
     modal.close();
     updateFilters();
   });
@@ -1095,6 +1113,15 @@ $("#reorder").click(function(e) {
   // open modal
   modal.open();
 });
+
+ // $('.main').on("click", "#wrapper_50", function() {console.log("here")});
+function finalizeTempTable(){
+  for(let i = 0; i < user.tempTables.length; i++){
+    user.tempTables[i].position = i;
+  }
+  user.tables = user.tempTables;
+  user.tempTables = new Array();
+}
 
 function egg() {
   var egg = new Egg();
@@ -1109,13 +1136,25 @@ function egg() {
     }).listen();
 }
 
-function listTables() {
+function listTables(bool) {
 
   // Get the names of all tables
-  var tables = document.getElementsByClassName('tables');
+  //var tables = document.getElementsByClassName('tables');
+
   var tableNames = [];
-  for(var i = 0; i < tables.length; i++) {
-    tableNames.push(tables[i].id);
+  if(bool == 0) {
+    for(var i = 0; i < user.tables.length; i++) {
+      var name = user.tables[i].name;
+      name = name.charAt(0).toUpperCase() + name.substring(1);
+      tableNames.push(name);
+    }
+  }
+  if(bool == 1) {
+    for(var i = 0; i < user.tables.length; i++) {
+      var id = user.tables[i].id;
+      tableNames.push(id);
+    }
+    return tableNames;
   }
 
   // Create table structure
@@ -1140,7 +1179,7 @@ function listTables() {
   // append row to table/body
   head.appendChild(row);
   table.appendChild(head);
-  table.appendChild(body)
+  table.appendChild(body);
 
   for(var j = 0; j < tableNames.length; j++) {
 
@@ -1150,11 +1189,12 @@ function listTables() {
 
     // Name elements
     row.setAttribute("class", "notFirst");
+    row.setAttribute("databaseID", user.tables[j].id);
     titleCell.setAttribute("id", "titleCell");
 
     // text for cell
-    var str = (tableNames[j]).split("_").join(" ");
-    textNode1 = document.createTextNode(str);
+    //var str = (tableNames[j]).split("_").join(" ");
+    textNode1 = document.createTextNode(tableNames[j]);
     titleCell.appendChild(textNode1);
     row.appendChild(titleCell);
     body.appendChild(row);
@@ -1175,6 +1215,7 @@ function instantiateUser() {
   user.trello = new Object();
   user.zendesk = new Object();
   user.tables = new Array();
+  user.tempTables = new Array();
 
   user.getTableByID = function(tableID){
     for(let i = 0; i < user.tables.length; i++){
@@ -1979,11 +2020,17 @@ function createTicketCard(cardIndex)
   newCard.scrollIntoView();
 }
 
+// TODO Flip arrows
+// $(".main").on("click", ".sortButton", function(e) {
+//   e.preventDefault();
+//   $(".sortButton").toggleClass("glyphicon-triangle-bottom glyphicon-triangle-top");
+// });
+
 /* Clicking on table rows will open ticket panel view
    and creates a ticket card */
 $(".main").on("click", "table > tbody > tr", function(e)
 {
-  event.preventDefault();
+  e.preventDefault();
   var isClosed = true;
 
   if (isClosed == true)
