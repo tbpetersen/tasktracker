@@ -19,6 +19,12 @@ const PHP_GET_ITEMS_IN_GROUP = PHP_DIRECTORY_PATH + '/getAllItemsInGroup.php'
 const PHP_UPDATE_ITEM_POSITION = PHP_DIRECTORY_PATH + '/updateItemPosition.php';
 const PHP_UPDATE_ITEM_GROUP = PHP_DIRECTORY_PATH + '/updateItemGroup.php';
 
+const PHP_GENERIC_DELETE = PHP_DIRECTORY_PATH + '/genericDelete.php';
+
+const USERS_TABLE  = "users";
+const GROUPS_TABLE = "user_groups";
+const ITEMS_TABLE  = "group_items";
+
 const unsortedID = -2;
 
 function getDBID(table, user, group) {
@@ -367,17 +373,29 @@ function getGroupName(user, groupID) {
     }, function(data) {
       resolve(data);
     });
-  })
+  });
 }
 
 function deleteItem(userID, itemID) {
-  // TODO
+  return genericDelete(ITEMS_TABLE, userID, itemID);
 }
 
 function deleteItemsFromUserGroup(userID, tableObj) {
-  // TODO
+  let promises = new Array();
+  for(let i = 0; i < tableObj.rows.length; i++){
+    promises.push(deleteItem(user.databaseID, tableObj.rows[i].id));
+  }
+  return Promise.all(promises);
 }
 
 function deleteUserGroup(userID, tableObj) {
-  // TODO
+  return genericDelete(GROUPS_TABLE, userID, tableObj.id)
+}
+
+function genericDelete(databaseTableName, userID, columnValue){
+  return $.post(PHP_GENERIC_DELETE, {
+    tableName: databaseTableName,
+    userID: userID,
+    columnValue: columnValue
+  });
 }
