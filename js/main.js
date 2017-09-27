@@ -511,7 +511,6 @@ function createNewTable() {
 }
 
 function deleteTable(tableName) {
-
   if(!isEmpty(tableName)) {
     // If unsorted table doesn't already exist, create it
     if(document.getElementById("Unsorted") == null) {
@@ -819,7 +818,6 @@ function formatDate(date) {
 }
 
 function addRow(task, tableName, index) {
-
   // Get title of task
   var title = task.name;
 
@@ -859,7 +857,8 @@ function addRow(task, tableName, index) {
   catCell = document.createElement("td");
 
   // Name elements
-  row.setAttribute("id", task.id/*index*/);
+  // row.setAttribute("id", task.id/*index*/);
+  row.setAttribute("id", index);
   row.setAttribute("class", "notFirst");
   titleCell.setAttribute("id", "title");
   descCell.setAttribute("id", "desc");
@@ -1425,6 +1424,7 @@ function getZendeskTickets() {
   //return zendeskGet("search.json?query=type:ticket status<solved assignee_id:" + user.zendesk.id);
   return zendeskGet("search.json?query=type:ticket status<solved");
 }
+
 function addInfoToCardsAndTickets(cardsAndTickets){
   let trelloCards = cardsAndTickets[0];
   let zendeskCards = cardsAndTickets[1];
@@ -1928,20 +1928,19 @@ $("#changeThemeBtn").click(function() {
 /* ------------------ TICKET PANEL ------------------ */
 
 /* Helper method that creates the card div */
-function createTicketCard(cardIndex)
+function createTicketCard(task)
 {
   var newCard = document.createElement("div");
-  var task = user.tasks[cardIndex];
   var cardTitle = task.name;
   var cardDesc = task.desc;
+  var cardIndex = task.id;
   var status = task.category.charAt(0).toUpperCase() + task.category.substring(1);
   var date = formatDate(task.lastModified);
   var type = task.type;
 
   if (type === 1)
   {
-    var id = task.id;
-    var url = ZEN_TICKET_URL + id;
+    var url = ZEN_TICKET_URL + task.id;
   }
   else
   {
@@ -2029,7 +2028,11 @@ $(".main").on("click", "table > tbody > tr", function(e)
   }
 
   // Check if card id exists in set
-  if (cardsCreated.has(this.id)) {
+  var $groupID = extractGroupID($(this).closest("table").attr("id"));
+  var ticketGroup = getTableObject($groupID);
+  var task = ticketGroup.rows[this.id];
+  var taskID = task.id;
+  if (cardsCreated.has(taskID)) {
     $.notify({
       icon: "fa fa-exclamation-triangle",
       message: "Ticket already queued."
@@ -2040,8 +2043,8 @@ $(".main").on("click", "table > tbody > tr", function(e)
     return;
   }
   else {
-    cardsCreated.add(this.id);
-    createTicketCard(this.id);
+    cardsCreated.add(taskID);
+    createTicketCard(task);
 
     $.notify({
       icon: "fa fa-check",
@@ -2402,4 +2405,14 @@ function extractGroupID(idAttribute) {
 
   var groupID = idAttribute.substr(++startIndex);
   return groupID;
+}
+
+function getTableObject(groupID) {
+  console.log(groupID);
+  let groups = user.tables;
+
+  for (i = 0; i < groups.length; i++) {
+    if (groups[i].id == groupID) 
+      return groups[i];
+  }
 }
