@@ -164,9 +164,6 @@ $(document).ready(function() {
   })
 
   .then(function(){
-    for(let i = 0; i < user.tables.length; i++){
-      console.log(user.tables[i].rows.length);
-    }
     return addDataToDB();
   })
 
@@ -317,7 +314,6 @@ function createTablesFromGroups(groups, tasks){
   let tables = new Array();
   user.tables = tables;
   for(let i = 0; i < groups.length; i++){
-    console.log(groups[i]);
     let group = groups[i];
     let table = new Table(group.name, group.id, i);
 
@@ -736,7 +732,7 @@ $(".main").on("click", "#tableTitle", function() {
       if(!this.value || isEmptyString(this.value))
         this.value = inputText;
       updateFilters();
-      filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay 
+      filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay
                   // selected but the buttons become unhighlighted. Temp fix implemented
                   // to filter all when focus out.
     });
@@ -968,7 +964,18 @@ function onTableUpdated(event, ui){
 
 
 function onTablePositionUpdated(event, ui){
-  console.log('here');
+  let htmlTable = $(event.target.parentNode);
+  let htmlTableBody = htmlTable.find('tbody')[0];
+
+  let groups = htmlTableBody.children;
+  let newTablesArray = new Array();
+  for(let i = 0; i < groups.length; i++){
+    let currentGroup = groups[i];
+    let groupID = currentGroup.getAttribute('databaseID');
+    let table = user.getTableByID(groupID);
+    newTablesArray.push(table);
+  }
+  user.tempTables = newTablesArray;
 }
 
 function makeButtons(tableName) {
@@ -1078,36 +1085,23 @@ $("#reorder").click(function(e) {
 
   // CANCEL
   modal.addFooterBtn('Cancel', 'tingle-btn tingle-btn--primary', function() {
+    user.tempTables = new Array();
     modal.close();
   });
 
   // SAVE: reorder tables
   modal.addFooterBtn('Save', 'tingle-btn tingle-btn--danger', function() {
-    var table = listTables(1);
+    finalizeTempTable();
+    var tableIDsNewOrder = listTables(1);
 
-    var id = "wrapper_50";
-    var id2 = "wrapper_49";
-
-    $("#" + id).after($("#" + id2));
-
-    // console.log(table);
-    // for(i = 0; i < table.length; i++) {
-    //   console.log(wrapperPrefix + table[i]);
-    // }
-
-    // for(var i = 1; i < table.length - 1; i++) {
-    //   var id = wrapperPrefix + (table[i]);
-    //   var id2 = wrapperPrefix + (table[i + 1]);
-    //   console.log(document.getElementById(id));
-    //   //console.log(id);
-    //   //console.log(id2)
-
-    //   //$('#wrapper_50').after($('#wrapper_49'));
-    //   //$('#' + id).after($('#' + id2));
-    //   $(id2).after($(id));
-    //   draggableRows(GROUP_SORTABLE_CLASS);
-    // }
-
+    let tables = user.tables;
+    for(let i = 0; i < tables.length - 1; i++){
+      let id = wrapperPrefix + (tables[i].id);
+      let id2 = wrapperPrefix + (tables[i + 1].id);
+      $("#" + id).after($("#" + id2));
+      updateGroupPosition(user.databaseID, tables[i]);
+    }
+    draggableRows(GROUP_SORTABLE_CLASS);
     modal.close();
     updateFilters();
   });
@@ -1117,6 +1111,13 @@ $("#reorder").click(function(e) {
 });
 
  // $('.main').on("click", "#wrapper_50", function() {console.log("here")});
+function finalizeTempTable(){
+  for(let i = 0; i < user.tempTables.length; i++){
+    user.tempTables[i].position = i;
+  }
+  user.tables = user.tempTables;
+  user.tempTables = new Array();
+}
 
 function egg() {
   var egg = new Egg();
@@ -1135,7 +1136,7 @@ function listTables(bool) {
 
   // Get the names of all tables
   //var tables = document.getElementsByClassName('tables');
-  
+
   var tableNames = [];
   if(bool == 0) {
     for(var i = 0; i < user.tables.length; i++) {
@@ -1148,7 +1149,7 @@ function listTables(bool) {
     for(var i = 0; i < user.tables.length; i++) {
       var id = user.tables[i].id;
       tableNames.push(id);
-    }   
+    }
     return tableNames;
   }
 
@@ -1184,6 +1185,7 @@ function listTables(bool) {
 
     // Name elements
     row.setAttribute("class", "notFirst");
+    row.setAttribute("databaseID", user.tables[j].id);
     titleCell.setAttribute("id", "titleCell");
 
     // text for cell
@@ -1209,6 +1211,7 @@ function instantiateUser() {
   user.trello = new Object();
   user.zendesk = new Object();
   user.tables = new Array();
+  user.tempTables = new Array();
 
   user.getTableByID = function(tableID){
     for(let i = 0; i < user.tables.length; i++){
