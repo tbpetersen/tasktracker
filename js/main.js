@@ -164,14 +164,11 @@ $(document).ready(function() {
   })
 
   .then(function(){
-    // for(let i = 0; i < user.tables.length; i++){
-    //   console.log(user.tables[i].rows.length);
-    // }
     return addDataToDB();
   })
 
   .then(function(){
-    //createFilters();
+    // createFilters();
     createTablesFromTableObject();
     //return populatePage();
   })
@@ -312,7 +309,6 @@ function createTablesFromGroups(groups, tasks){
   let tables = new Array();
   user.tables = tables;
   for(let i = 0; i < groups.length; i++){
-    console.log(groups[i]);
     let group = groups[i];
     let table = new Table(group.name, group.id, i);
 
@@ -711,6 +707,8 @@ $(".main").on("click", "#tableTitle", function() {
   var $title = $(this);
   var $tableWrapper = $title.parent().parent();
   var $table = $title.parent().next();
+  var $groupID = extractGroupID($tableWrapper.attr("id"));
+
   var inputText;
   var $input = $('<input/>').val( $title.text() );
   var numKeyPress = 0;
@@ -728,8 +726,10 @@ $(".main").on("click", "#tableTitle", function() {
     $input.on("focusout", function(){
       if(!this.value || isEmptyString(this.value))
         this.value = inputText;
-      updateFilters();
-      filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay 
+
+      // Temporarily commented out - comment back in whenever it's fixed ty
+      // updateFilters();
+      // filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay
                   // selected but the buttons become unhighlighted. Temp fix implemented
                   // to filter all when focus out.
     });
@@ -742,13 +742,13 @@ $(".main").on("click", "#tableTitle", function() {
     $title.replaceWith($input);
 
     var save = function() {
-      var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
-      var $closedInput = $input.val().split(" ").join("_");
-      var $id = $closedInput + wrapperSuffix;
+      var $newName = $input.val();
+      var $titleStr = $('<h3 id="tableTitle" />').text( $newName );
+      var tableObj = user.getTableByID($groupID);
+      tableObj.name = $newName;
+      updateGroupName(user.databaseID, tableObj);
 
-      // Update table and wrapper ID
-      $table.attr("id", $closedInput);
-      $tableWrapper.attr("id", $id);
+      // Update input value
       $input.replaceWith($titleStr);
     };
 
@@ -757,23 +757,25 @@ $(".main").on("click", "#tableTitle", function() {
       ++numKeyPress;
 
       if (e.which === 13 || e.which === 27) {
-        //Get the name of the table that you are currently working with.
-        var table = this.parentNode.parentNode.id;
-        table = table.substring(0, table.indexOf("_table"));
-        table = table.split("_").join(" ");
-        //Check if the new table name is the same as others.
-        if (numKeyPress > 1 && getFilters().includes(this.value)
-          && this.value !== table) {
-          alert("Please rename this table as there is already one with the name \""
-            + this.value + "\"");
-          this.value = inputText;
-        }
-        else {
-          keyPressed = 0;
-          updateFilters();
-          $input.blur();
-          return;
-        }
+        var currentName = this.value;
+
+        checkUserGroupDB(user.databaseID, currentName)
+        .then(function(val) {
+          if (val) {
+            alert("Please rename this table as there is already one with the name \""
+              + currentName + "\"");
+            $input.val(inputText);
+          }
+          else {
+            keyPressed = 0;
+            // updateFilters();
+            $input.blur();
+            return;
+          }
+        })
+        .catch(function(err) {
+          console.log("Error: " + err);
+        });
       }
     }
   )};
@@ -961,7 +963,18 @@ function onTableUpdated(event, ui){
 
 
 function onTablePositionUpdated(event, ui){
-  console.log('here');
+  let htmlTable = $(event.target.parentNode);
+  let htmlTableBody = htmlTable.find('tbody')[0];
+
+  let groups = htmlTableBody.children;
+  let newTablesArray = new Array();
+  for(let i = 0; i < groups.length; i++){
+    let currentGroup = groups[i];
+    let groupID = currentGroup.getAttribute('databaseID');
+    let table = user.getTableByID(groupID);
+    newTablesArray.push(table);
+  }
+  user.tempTables = newTablesArray;
 }
 
 function makeButtons(tableName) {
@@ -1071,36 +1084,23 @@ $("#reorder").click(function(e) {
 
   // CANCEL
   modal.addFooterBtn('Cancel', 'tingle-btn tingle-btn--primary', function() {
+    user.tempTables = new Array();
     modal.close();
   });
 
   // SAVE: reorder tables
   modal.addFooterBtn('Save', 'tingle-btn tingle-btn--danger', function() {
-    var table = listTables(1);
+    finalizeTempTable();
+    var tableIDsNewOrder = listTables(1);
 
-    var id = "wrapper_50";
-    var id2 = "wrapper_49";
-
-    $("#" + id).after($("#" + id2));
-
-    // console.log(table);
-    // for(i = 0; i < table.length; i++) {
-    //   console.log(wrapperPrefix + table[i]);
-    // }
-
-    // for(var i = 1; i < table.length - 1; i++) {
-    //   var id = wrapperPrefix + (table[i]);
-    //   var id2 = wrapperPrefix + (table[i + 1]);
-    //   console.log(document.getElementById(id));
-    //   //console.log(id);
-    //   //console.log(id2)
-
-    //   //$('#wrapper_50').after($('#wrapper_49'));
-    //   //$('#' + id).after($('#' + id2));
-    //   $(id2).after($(id));
-    //   draggableRows(GROUP_SORTABLE_CLASS);
-    // }
-
+    let tables = user.tables;
+    for(let i = 0; i < tables.length - 1; i++){
+      let id = wrapperPrefix + (tables[i].id);
+      let id2 = wrapperPrefix + (tables[i + 1].id);
+      $("#" + id).after($("#" + id2));
+      updateGroupPosition(user.databaseID, tables[i]);
+    }
+    draggableRows(GROUP_SORTABLE_CLASS);
     modal.close();
     updateFilters();
   });
@@ -1110,6 +1110,13 @@ $("#reorder").click(function(e) {
 });
 
  // $('.main').on("click", "#wrapper_50", function() {console.log("here")});
+function finalizeTempTable(){
+  for(let i = 0; i < user.tempTables.length; i++){
+    user.tempTables[i].position = i;
+  }
+  user.tables = user.tempTables;
+  user.tempTables = new Array();
+}
 
 function egg() {
   var egg = new Egg();
@@ -1128,7 +1135,7 @@ function listTables(bool) {
 
   // Get the names of all tables
   //var tables = document.getElementsByClassName('tables');
-  
+
   var tableNames = [];
   if(bool == 0) {
     for(var i = 0; i < user.tables.length; i++) {
@@ -1141,7 +1148,7 @@ function listTables(bool) {
     for(var i = 0; i < user.tables.length; i++) {
       var id = user.tables[i].id;
       tableNames.push(id);
-    }   
+    }
     return tableNames;
   }
 
@@ -1177,6 +1184,7 @@ function listTables(bool) {
 
     // Name elements
     row.setAttribute("class", "notFirst");
+    row.setAttribute("databaseID", user.tables[j].id);
     titleCell.setAttribute("id", "titleCell");
 
     // text for cell
@@ -1202,6 +1210,7 @@ function instantiateUser() {
   user.trello = new Object();
   user.zendesk = new Object();
   user.tables = new Array();
+  user.tempTables = new Array();
 
   user.getTableByID = function(tableID){
     for(let i = 0; i < user.tables.length; i++){
@@ -2029,7 +2038,7 @@ $(".main").on("click", "table > tbody > tr", function(e)
 
   // Check if card id exists in set
   var $groupID = extractGroupID($(this).closest("table").attr("id"));
-  var ticketGroup = getTableObject($groupID);
+  var ticketGroup = user.getTableByID($groupID);
   var task = ticketGroup.rows[this.id];
   var taskID = task.id;
   if (cardsCreated.has(taskID)) {
@@ -2149,7 +2158,6 @@ function updateFilters(){
   var currentNode;
   var tables = document.getElementsByTagName("table");
   clearFilters();
-  // createFilterButton("View All");
   $('.wrapper-header').each(function(){
     currentNode = this.childNodes[0];
     if(currentNode.tagName === "INPUT")
@@ -2405,14 +2413,4 @@ function extractGroupID(idAttribute) {
 
   var groupID = idAttribute.substr(++startIndex);
   return groupID;
-}
-
-function getTableObject(groupID) {
-  console.log(groupID);
-  let groups = user.tables;
-
-  for (i = 0; i < groups.length; i++) {
-    if (groups[i].id == groupID) 
-      return groups[i];
-  }
 }

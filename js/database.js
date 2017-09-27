@@ -10,6 +10,8 @@ const PHP_GET_GROUP_NAME = PHP_DIRECTORY_PATH + '/getGroupName.php';
 const PHP_GET_GROUP_ID = PHP_DIRECTORY_PATH + '/getGroupID.php';
 const PHP_GET_GROUPS_FOR_USER = PHP_DIRECTORY_PATH + "/getAllGroups.php";
 const PHP_UPDATE_GROUP_NAME = PHP_DIRECTORY_PATH + '/updateGroupName.php';
+const PHP_UPDATE_GROUP_POSITION = PHP_DIRECTORY_PATH + '/updateGroupPosition.php';
+
 
 const PHP_ADD_ITEM = PHP_DIRECTORY_PATH + '/addItem.php';
 const PHP_GET_ITEM = PHP_DIRECTORY_PATH + '/getItem.php';
@@ -152,7 +154,7 @@ function checkUserGroupDB(user, group) {
       userID: user,
       groupName: group
     }, function(data) {
-      resolve(data);
+      resolve(data != "");
     });
   });
 }
@@ -218,12 +220,24 @@ function getItem(userID, itemID, groupID) {
   });
 }
 
-function updateGroupName(userID, table, newName){
+function updateGroupName(userID, tableObj){
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_GROUP_NAME, {
       userID: userID,
-      groupID: table.id,
-      newName: table.name
+      groupID: tableObj.id,
+      newName: tableObj.name
+    }, function(data) {
+      resolve(data == 1);
+    });
+  });
+}
+
+function updateGroupPosition(userID, tableObj){
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_UPDATE_GROUP_POSITION, {
+      userID: userID,
+      groupID: tableObj.id,
+      newPosition: tableObj.position
     }, function(data) {
       resolve(data == 1);
     });

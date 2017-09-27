@@ -22,6 +22,7 @@ Return value: the user's ID in the database or -1 if fail
     $success = $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-    echo($row['$groupName']);
+    echo($row['groupName']);
+    // echo(json_encode($row));
     $tasktrackerDB->close();
 ?>
