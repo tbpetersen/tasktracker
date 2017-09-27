@@ -230,28 +230,32 @@ function updateGroupName(userID, table, newName){
   });
 }
 
-//GRAB HTML AND MAKE IT THE NEW TABL BEJCT THIGNTY
-function updateItemPosition(userID, itemID, newPosition) {
-  let task = getTaskByID(itemID);
-  let currentTable = getUserTableFromItemID(itemID);
-  task.position = newPosition;
-  let HTMLTable = getHTMLTableFromItemID(itemID).childNodes;
-  let newRow = []
-  for(let i = 0; i < HTMLTable.length; i++)
-    newRow.push(getTaskByID(HTMLTable[i].id));
-  currentTable.rows = newRow;
-  sortByPosition(currentTable.rows);
-  console.log(currentTable);
+function updateItemPosition(userID, item) {
+  // let task = getTaskByID(itemID);
+  // let HTMLTable = getHTMLTableFromItemID(itemID);
+  // let currentTable = getTableFromID(HTMLTable.parentNode.id.slice(6)); //"table_" is 6 chars long.
+  // let HTMLTableRows = HTMLTable.rows;
+  // let newRow = [];
+  //
+  // task.position = newPosition;
+  // for(let i = 0; i < HTMLTableRows.length; i++)
+  //   newRow.push(getTaskByID(HTMLTableRows[i].id));
+  // currentTable.rows = newRow;
+  // sortByPosition(currentTable.rows);
+
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_ITEM_POSITION, {
       userID: userID,
-      itemID: itemID,
-      newPosition: newPosition
+      itemID: item.id,
+      newPosition: item.position
     }, function(data) {
       resolve(data == 1);
     });
   });
 }
+
+
+
 
 function getHTMLTableFromItemID(itemID){
   let rows = document.getElementsByTagName("TR");
@@ -298,24 +302,11 @@ function getAllItemsInGroup(userID, groupID) {
   });
 }
 
-/* Name: updateTableItemPositions
-   Purpose: Update the DB to have the correct positions of ALL the items inside
-            their respective tables.
-   Parameters: userID - The ID of the user using Zello.
-               category - The category to have it's tasks' positions updated.
-   Return: None.
-   TODO only update the positions of the tasks after the one that's inserted.
-*/
-function updateTableItemPositions(userID, table) {
-  //Find the tasks with the category to be updated.
-  var tableTasks = table.getElementsByTagName("TR")
-  for (let i = 1; i < tableTasks.length; i++) {
-    for (let j in user.tasks) {
-      if (user.tasks[j].id == tableTasks[i].id){
-        updateItemPosition(userID, user.tasks[j].id, getItemPosition(userID, user.tasks[j]));
-      }
+function getTableFromID(tableID){
+  for(let i in user.tables){
+    if(user.tables[i].id == tableID)
+      return user.tables[i]
     }
-  }
 }
 
 function getTableFromHTML(htmlTable){
@@ -323,33 +314,6 @@ function getTableFromHTML(htmlTable){
   if(htmlTableItems <= 1)
     return;
   return getUserTableFromItemID(htmlTableItems[1].id);
-}
-
-/* Name: updateItemPositions //TODO Redo with the table object.
-   Purpose: Update the DB to have the correct positions of ALL the items inside
-            their respective tables.
-   Parameters: None.
-   Return: None.
-*/
-function updateItemPositions(userID) {
-  var uniqueCategories = [];
-  for (let i in user.tasks) {
-    let currentCategory = user.tasks[i].category
-    if (!uniqueCategories.includes(currentCategory))
-      uniqueCategories.push(currentCategory);
-  }
-  var categoriesWithTasks = new Array(uniqueCategories.length);
-  for (let i in uniqueCategories) {
-    categoriesWithTasks[i] = new Array();
-  }
-  for (let j = 0; j < user.tasks.length; j++) {
-    categoriesWithTasks[uniqueCategories.indexOf(user.tasks[j].category)].push(user.tasks[j]);
-  }
-  for (let i in categoriesWithTasks) {
-    for (let j in categoriesWithTasks[i]) {
-      updateItemPosition(userID, categoriesWithTasks[i][j].id, j)
-    }
-  }
 }
 
 /* Name: getItemPosition

@@ -949,13 +949,17 @@ function draggableRows(className) {
 function onTableUpdated(event, ui){
   let htmlTable = event.target.parentNode;
   let tableID = extractGroupID(htmlTable.id);
-
+  let table = user.getTableByID(tableID);
+  let newRows = [];
   let items = htmlTable.getElementsByTagName("tr");
-  //UPDATE ROWS IN TABLE ARRAW
-  //let table = user.getTableByID(tableID);
-
-  let table = event.target.parentNode;
-  updateTableItemPositions(user.databaseID, table);
+  for (let i = 1; i < items.length; i++) {
+    let task = getTaskByID(items[i].id);
+    task.position = i - 1;
+    updateItemPosition(user.databaseID, task);
+    updateItemGroup(user.databaseID, task.id, table.id);
+    newRows.push(task);
+  }
+  table.rows = newRows;
 }
 
 
