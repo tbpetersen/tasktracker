@@ -230,13 +230,18 @@ function updateGroupName(userID, table, newName){
   });
 }
 
+//GRAB HTML AND MAKE IT THE NEW TABL BEJCT THIGNTY
 function updateItemPosition(userID, itemID, newPosition) {
   let task = getTaskByID(itemID);
   let currentTable = getUserTableFromItemID(itemID);
   task.position = newPosition;
-  currentTable.rows.push(task);
+  let HTMLTable = getHTMLTableFromItemID(itemID).childNodes;
+  let newRow = []
+  for(let i = 0; i < HTMLTable.length; i++)
+    newRow.push(getTaskByID(HTMLTable[i].id));
+  currentTable.rows = newRow;
   sortByPosition(currentTable.rows);
-  currentTable.rows = removeDuplicates(currentTable.rows);
+  console.log(currentTable);
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_ITEM_POSITION, {
       userID: userID,
@@ -246,6 +251,14 @@ function updateItemPosition(userID, itemID, newPosition) {
       resolve(data == 1);
     });
   });
+}
+
+function getHTMLTableFromItemID(itemID){
+  let rows = document.getElementsByTagName("TR");
+  for(let j = 0; j < rows.length; j++){
+    if(rows[j].id == itemID)
+      return rows[j].parentNode;
+  }
 }
 
 /* Name: removeDuplicates
