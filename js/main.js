@@ -2211,6 +2211,7 @@ function updateFilters(){
   var currentNode;
   var tables = document.getElementsByTagName("table");
   clearFilters();
+  createFilterButton("View All");
   $('.wrapper-header').each(function(){
     currentNode = this.childNodes[0];
     if(currentNode.tagName === "INPUT")
