@@ -168,9 +168,15 @@ $(document).ready(function() {
   })
 
   .then(function(){
+    $('.loader').hide();
     createFilters();
     createTablesFromTableObject();
     //return populatePage();
+  })
+
+  .catch(function(err){
+    $('.loader').hide();
+    console.log("Error during setup: " + err);
   })
 });
 
