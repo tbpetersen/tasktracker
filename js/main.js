@@ -1353,14 +1353,10 @@ function setZendeskID() {
 }
 
 function getCardsAndTickets() {
-  return new Promise(function(resolve, reject) {
-    let trelloCards = getTrelloCards();
-    let zendeskTickets = getZendeskTickets();
+  let trelloCards = getTrelloCards();
+  let zendeskTickets = getZendeskTickets();
 
-    Promise.all([trelloCards, zendeskTickets]).then(function(data) {
-      resolve([data[0], data[1].results]);
-    });
-  });
+  return Promise.all([trelloCards, zendeskTickets]);
 }
 
 function getTrelloCards() {
@@ -1441,7 +1437,56 @@ function getUsersCards(cards) {
 
 function getZendeskTickets() {
   //return zendeskGet("search.json?query=type:ticket status<solved");
-  return zendeskGet("search.json?query=type:ticket assignee:me status<closed");
+  let promiseArray = new Array();
+  let myTickets = getMyTicketsThatAreNotClosed();
+  let myGroupsUnassignedTickets = getMyGroupsUnassignedTickets();
+
+  promiseArray.push(myTickets);
+  promiseArray.push(myGroupsUnassignedTickets);
+
+  return Promise.all(promiseArray).then(function(arrayofArrayOfTickets){
+    return Promise.resolve(oneArrayFromMany(arrayofArrayOfTickets));
+  })
+}
+
+function getMyTicketsThatAreNotClosed(){
+  return zendeskGet("search.json?query=type:ticket assignee:me status<closed")
+
+  .then(function(results){
+    return Promise.resolve(results.results);
+  })
+}
+
+function getMyGroupsUnassignedTickets(){
+  return Promise.resolve()
+
+  .then(function(){
+    return getMyZendeskGroupsIDs()
+  })
+
+  .then(function(ids){
+    let promiseArray = new Array();
+    for(let i = 0; i < ids.length; i++){
+      let query = "search.json?query=type:ticket assignee:none group:" + ids[i];
+      promiseArray.push(zendeskGet(query));
+    }
+    return Promise.all(promiseArray).then(function(results){
+      let arrayofArrayOfTickets = results.map(function(result){
+        return result.results;
+      });
+      return Promise.resolve(oneArrayFromMany(arrayofArrayOfTickets))
+    })
+  })
+}
+
+function getMyZendeskGroupsIDs(){
+  return zendeskGet('users/' + user.zendesk.id + '/groups.json')
+  .then(function(data){
+    let ids = data.groups.map(function(group){
+      return group.id
+    })
+    return Promise.resolve(ids)
+  })
 }
 
 function addInfoToCardsAndTickets(cardsAndTickets){
