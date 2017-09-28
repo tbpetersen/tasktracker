@@ -955,10 +955,10 @@ function onTableUpdated(event, ui){
     let task = getTaskByID(items[i].id);
     task.position = i - 1;
     addGroupItemToDB(userID, task, table.id);
-    updateItemGroup(userID, task.id, table.id);
     newRows.push(task);
-    if(table.id === unsortedID)
+    if(table.id === unsortedID){
       deleteItem(userID, task.id);
+    }
   }
   table.rows = newRows;
 }
@@ -1359,6 +1359,16 @@ function getCardsAndTickets() {
   return Promise.all([trelloCards, zendeskTickets]);
 }
 
+function getTrelloCardsSearch(cardIDsArray){
+  // TODO Trevor: Looking into more efficient loaing from APIs
+  //getTrelloCardsSearch(['57f7bd3914dd9c8939c68521', '58dbf3c5f0b7e827080d81af', '5817a1edb54f1b3cd101be55']);
+  return trelloGet("search","card_board=true&card_list=true&query=*&board_fields=all&idCards=" + cardIDsArray.join(','))
+  .then(function(data){
+    console.log(data);
+    return Promise.resolve(data);
+  })
+}
+
 function getTrelloCards() {
   return new Promise(function(resolve, reject) {
     getTrelloBoards().then(function(boards) {
@@ -1378,11 +1388,11 @@ function getTrelloCards() {
         reject(getTrelloBoardsFailed);
       });
   });
+
 }
 
 function getTrelloBoards() {
   return trelloGet("members/me/boards");
-
 }
 
 function getCardsFromBoard(boards) {
@@ -1642,11 +1652,16 @@ function zendeskGet(url) {
   });
 }
 
-function trelloGet(url) {
+function trelloGet(url, getParams) {
+  if(getParams == null){
+    getParams = '';
+  }else{
+    getParams = "&" + getParams;
+  }
   return new Promise(function(resolve, reject) {
     $.ajax({
       type: "GET",
-      url: TRE_API_URL + url + "?token=" + trelloToken + "&key=" + TRE_APP_KEY,
+      url: TRE_API_URL + url + "?token=" + trelloToken + "&key=" + TRE_APP_KEY + getParams,
       success: function(data) {
         resolve(data)
       },

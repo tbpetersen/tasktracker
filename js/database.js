@@ -181,38 +181,12 @@ function addGroupItemToDB(userID, item, groupID) {
         });
       })
     }else{
-      return Promise.resolve(1);
+      return updateItemGroup(userID, item.id, groupID)
+      .then(function(){
+        return updateItemPosition(userID, item);
+      });
     }
   });
-
-
-  /*
-  return checkGroupItemDB(item, userID, groupID)
-  .then(function(itemObj) {
-      //If the item doesn't exist, add it
-      if (!itemObj) {
-        return getGroupID(userID, groupName)
-        .then(function(groupID) {
-          return new Promise(function(resolve, reject) {
-            $.post(PHP_ADD_ITEM, {
-              itemID: item.id,
-              userID: userID,
-              groupID: groupID,
-              itemType: item.type,
-              position: position
-            }, function(data) {
-              if (data === -1)
-                reject(data);
-              resolve(data);
-            });
-          })
-        })
-      }
-    })
-    .catch(function(err) {
-      console.log("Error: " + err);
-    });
-    */
 }
 
 function checkGroupItemDB(item, userID, groupID) {
@@ -268,18 +242,6 @@ function updateGroupPosition(userID, tableObj){
 }
 
 function updateItemPosition(userID, item) {
-  // let task = getTaskByID(itemID);
-  // let HTMLTable = getHTMLTableFromItemID(itemID);
-  // let currentTable = getTableFromID(HTMLTable.parentNode.id.slice(6)); //"table_" is 6 chars long.
-  // let HTMLTableRows = HTMLTable.rows;
-  // let newRow = [];
-  //
-  // task.position = newPosition;
-  // for(let i = 0; i < HTMLTableRows.length; i++)
-  //   newRow.push(getTaskByID(HTMLTableRows[i].id));
-  // currentTable.rows = newRow;
-  // sortByPosition(currentTable.rows);
-
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_ITEM_POSITION, {
       userID: userID,
