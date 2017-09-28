@@ -218,7 +218,6 @@ $(".main").on("click", "#deleteTableBtn", function(e)
  var userName = user.trello.email;
  let unsortedTableObj = user.getTableByID(unsortedID);
 
-
  if((unsortedTableObj != null && tableObj.id === unsortedTableObj.id) && !(isEmpty($table))) {
    deleteUnsorted();
  }else if (isEmpty($table)){
@@ -2112,29 +2111,10 @@ function createFilterButton(filter){
 }
 
 var onPageLoad = true;
-function getFilters(){//Most likely will change when we implement database
-  var categories = [];
-  var i;
-  if(onPageLoad){
-    var tasks = user.tasks;
-    var currentCategory;
-    for(i = 0; i < tasks.length; i++)
-    {
-      currentCategory = tasks[i].category.charAt(0).toUpperCase() + tasks[i].category.substring(1);
-      if(!categories.includes(currentCategory))
-      {
-        categories.push(currentCategory);
-      }
-    }
-    onPageLoad = false;
-  }else{
-    var leftSidebar = $("#leftSidebar");
-    var buttons = leftSidebar[0].getElementsByTagName("BUTTON")
-    for(i = 1; i < buttons.length; i++){
-      categories.push(buttons[i].id.substring(buttons[i].id.indexOf(" ") + 1));
-    }
-  }
-  return categories;
+function getFilters(){
+  return user.tables.map(function(table){
+    return table.name;
+  })
 }
 
 function updateFilters(){
