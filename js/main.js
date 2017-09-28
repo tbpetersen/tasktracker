@@ -183,7 +183,16 @@ function delayedPromise(seconds){
 }
 
 function refreshGroupUI(tableObj) {
-  // TODO
+  let tableWrapper = document.getElementById(wrapperPrefix + tableObj.id);
+  let headerWrapper = $(tableWrapper).find('.wrapper-header h3');
+  let tableBody = $(tableWrapper).find('tbody');
+
+  headerWrapper.text(tableObj.name);
+  tableBody.empty();
+  for(let i = 0; i < tableObj.rows.length; i++) {
+    populateTable(tableObj.rows[i], tableObj.id, i);
+  }
+  draggableRows(ITEM_SORTABLE_CLASS);
 }
 
 // Maybe another function - refreshAllGroupUI
@@ -202,30 +211,20 @@ function makeID() {
 
 $(".main").on("click", "#deleteTableBtn", function(e)
 {
-  // Find the parent, table-wrapper, and get table
-  var $table = $(this).parent().next();
-  var userName = user.trello.email;
+ // Find the parent, table-wrapper, and get table
+ var $table = $(this).parent().next();
+ let tableID = extractGroupID($table[0].id);
+ let tableObj = user.getTableByID(tableID);
+ var userName = user.trello.email;
+ let unsortedTableObj = user.getTableByID(unsortedID);
 
-  getUserID(userName)
-  .then(function(id) {
-    return getGroupID(id, "Unsorted");
-  })
-  .then(function(grpID) {
-    var unsortedTable = tablePrefix + grpID;
-    if(($table[0].id === unsortedTable) && !(isEmpty($table))) {
-      deleteUnsorted();
-      return;
-    }
-    else if (isEmpty($table))
-    {
-      deleteTable($table);
-      return;
-    }
-    deleteTablePrompt($table);
-  })
-  .catch(function(err) {
-    console.log("Error: " + err);
-  });
+ if((tableObj.id === unsortedTableObj.id) && !(isEmpty($table))) {
+   deleteUnsorted();
+ }else if (isEmpty($table)){
+   deleteTable(tableObj);
+ }else{
+   deleteTablePrompt(tableObj);
+ }
 });
 
 function storeDataFromTableObjects(){
@@ -325,7 +324,7 @@ function createTablesFromGroups(groups, tasks){
     }
     tables.push(table);
   }
-  let unsortedTable = getUnsortedTable(tasks, groups);
+  let unsortedTable = createUnsortedTable(tasks, groups);
   tables.push(unsortedTable);
   return tables;
 }
@@ -341,7 +340,7 @@ function getUserTableFromItemID(itemID){
   }
 }
 
-function getUnsortedTable(tasks, groups){
+function createUnsortedTable(tasks, groups){
   let table = new Table('Unsorted', unsortedID, user.tables.length);
   var clonedTasks = JSON.parse(JSON.stringify(tasks));
   for(let i = 0; i < groups.length; i++){
@@ -508,52 +507,29 @@ function createNewTable() {
   });
 }
 
-function deleteTable(tableName) {
-
-  if(!isEmpty(tableName)) {
-
-    // If unsorted table doesn't already exist, create it
-    if(document.getElementById("Unsorted") == null) {
-      createTable("Unsorted", false);
-    }
-
-    // For when unsorted table is empty but still exists & table being deleted
-    // is not empty, remove 'place' class before adding new rows
-    $("#Unsorted").find("tbody").removeClass("place");
-
-    // For each row, make a new Task and create a row for it in the unsorted table
-    var info = tableName[0].tBodies[0].rows;
-    for(var i = 0; i < info.length; i++) {
-      var task = {
-        name: info[i].cells[0].innerHTML,
-        desc: info[i].cells[1].innerHTML,
-        lastModified: info[i].cells[2].innerHTML,
-        category: info[i].cells[3].innerHTML,
-        id: info[i].id
-      }
-
-      // Make row
-      var unsortedTable = document.getElementById("Unsorted");
-      addRow(task, unsortedTable, task.id);
-    }
-    draggableRows(ITEM_SORTABLE_CLASS);
+function deleteTable(tableObj) {
+  if(tableObj.id == unsortedID){
+    return;
   }
-
-  // Delete wrapper and table
-  // var wrapperName = tableName[0].id + wrapperSuffix;
-  var wrapperName = tableName.parent().attr("id");
-  var wrapper = document.getElementById(wrapperName);
-
-  tableName.remove();
-  wrapper.remove();
-
+  let tableWrapper = $('#wrapper_' + tableObj.id);
+  let unsortedTableObj = user.getTableByID(unsortedID);
+  tableWrapper.remove();
+  for(let i = 0; i < tableObj.rows.length; i++){
+    let row = tableObj.rows[i];
+    unsortedTableObj.addRow(row);
+  }
+  user.deleteTable(tableObj);
+  deleteItemsFromUserGroup(user.databaseID, tableObj);
+  deleteUserGroup(user.databaseID, tableObj);
+  refreshGroupUI(unsortedTableObj);
+  draggableRows(ITEM_SORTABLE_CLASS);
+  updateFilters();
   $.notify({
     icon: "fa fa-trash",
     message: "Table deleted."
   }, {
     type: "danger",
   });
-  updateFilters();
 }
 
 function isEmpty(tableName) {
@@ -925,6 +901,8 @@ function draggableRows(className) {
 
   $("." + className).sortable({
     axis: 'y',
+    dropOnEmpty: true,
+    forceHelperSize: true,
     helper: fixHelper,
     connectWith: "." + className,
     placeholder: "ui-state-highlight",
@@ -1210,7 +1188,6 @@ function instantiateUser() {
   user.zendesk = new Object();
   user.tables = new Array();
   user.tempTables = new Array();
-
   user.getTableByID = function(tableID){
     for(let i = 0; i < user.tables.length; i++){
       let table = user.tables[i];
@@ -1220,6 +1197,16 @@ function instantiateUser() {
     }
     return null;
   }
+  user.deleteTable = function(tableObj){
+    for(let i = 0; i < user.tables.length; i++){
+      let table = user.tables[i];
+      if(table.id == tableObj.id){
+        user.tables.splice(i,1);
+        break;
+      }
+    }
+      // TODO update table positions
+  };
 }
 
 function redirectToHTTPS() {
