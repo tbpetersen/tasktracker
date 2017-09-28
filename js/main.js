@@ -215,14 +215,15 @@ $(".main").on("click", "#deleteTableBtn", function(e)
  var $table = $(this).parent().next();
  let tableID = extractGroupID($table[0].id);
  let tableObj = user.getTableByID(tableID);
- var userName = user.trello.email;
  let unsortedTableObj = user.getTableByID(unsortedID);
 
  if((unsortedTableObj != null && tableObj.id === unsortedTableObj.id) && !(isEmpty($table))) {
    deleteUnsorted();
- }else if (isEmpty($table)){
+ }
+ else if (isEmpty($table)) {
    deleteTable(tableObj);
- }else{
+ }
+ else {
    deleteTablePrompt(tableObj);
  }
 });
@@ -489,13 +490,14 @@ function createNewTable() {
     type: "info",
   });
 
-  var tableID = "New_Table_" + tableNumber;
+  var tableID = "New Table " + tableNumber;
   let tableObject = new Table(tableID, -1, user.tables.length);
+
   user.tables.push(tableObject);
   addUserGroupToDB(user.databaseID, tableObject).then(function(){
-    tableObject.name = "New_Table_" + tableObject.id;
+    tableObject.name = "New Table " + tableObject.id;
     updateGroupName(user.databaseID, tableObject).then(function(){
-      tableID = tableObject.name;
+      tableID = tablePrefix + tableObject.id;
       createTable(tableObject, true); // Create a table with a random ID;
       $("#" + tableID).find("tbody").addClass("place");
       updateFilters();
@@ -511,7 +513,7 @@ function deleteTable(tableObj) {
     return;
   }
 
-  let tableWrapper = $('#wrapper_' + tableObj.id);
+  let tableWrapper = $('#' + wrapperPrefix + tableObj.id);
   let unsortedTableObj = user.getTableByID(unsortedID);
 
   if(unsortedTableObj == null){
@@ -521,16 +523,19 @@ function deleteTable(tableObj) {
 
 
   tableWrapper.remove();
+
   for(let i = 0; i < tableObj.rows.length; i++){
     let row = tableObj.rows[i];
     unsortedTableObj.addRow(row);
   }
+
   user.deleteTable(tableObj);
   deleteItemsFromUserGroup(user.databaseID, tableObj);
   deleteUserGroup(user.databaseID, tableObj);
   refreshGroupUI(unsortedTableObj);
   draggableRows(ITEM_SORTABLE_CLASS);
   updateFilters();
+
   $.notify({
     icon: "fa fa-trash",
     message: "Table deleted."
