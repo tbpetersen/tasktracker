@@ -218,7 +218,8 @@ $(".main").on("click", "#deleteTableBtn", function(e)
  var userName = user.trello.email;
  let unsortedTableObj = user.getTableByID(unsortedID);
 
- if((tableObj.id === unsortedTableObj.id) && !(isEmpty($table))) {
+
+ if((unsortedTableObj != null && tableObj.id === unsortedTableObj.id) && !(isEmpty($table))) {
    deleteUnsorted();
  }else if (isEmpty($table)){
    deleteTable(tableObj);
@@ -226,11 +227,6 @@ $(".main").on("click", "#deleteTableBtn", function(e)
    deleteTablePrompt(tableObj);
  }
 });
-
-function storeDataFromTableObjects(){
-  //TODO
-  return Promise.resolve();
-}
 
 function deleteUnsorted() {
   $('#delUnsorted').modal('show');
@@ -301,14 +297,12 @@ function sortByPosition(array){
 
 
 function createTablesFromDPandAPI(dbData, tasks){
-  let tables = createTablesFromGroups(dbData, tasks);
-  user.tables = tables;
+  createTablesFromGroups(dbData, tasks);
   return Promise.resolve();
 }
 
 function createTablesFromGroups(groups, tasks){
-  let tables = new Array();
-  user.tables = tables;
+  user.tables = new Array();
   for(let i = 0; i < groups.length; i++){
     let group = groups[i];
     let table = new Table(group.name, group.id, i);
@@ -322,11 +316,9 @@ function createTablesFromGroups(groups, tasks){
       }
       sortByPosition(table.rows);
     }
-    tables.push(table);
+    user.tables.push(table);
   }
   let unsortedTable = createUnsortedTable(tasks, groups);
-  tables.push(unsortedTable);
-  return tables;
 }
 
 function getUserTableFromItemID(itemID){
@@ -355,6 +347,7 @@ function createUnsortedTable(tasks, groups){
   for(let i = 0; i < clonedTasks.length; i++){
     table.addRow(clonedTasks[i]);
   }
+  user.tables.push(table);
   return table;
 }
 
@@ -511,8 +504,16 @@ function deleteTable(tableObj) {
   if(tableObj.id == unsortedID){
     return;
   }
+
   let tableWrapper = $('#wrapper_' + tableObj.id);
   let unsortedTableObj = user.getTableByID(unsortedID);
+
+  if(unsortedTableObj == null){
+    unsortedTableObj = createUnsortedTable([],[]);
+    createTable(unsortedTableObj, true);
+  }
+
+
   tableWrapper.remove();
   for(let i = 0; i < tableObj.rows.length; i++){
     let row = tableObj.rows[i];
