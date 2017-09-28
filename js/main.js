@@ -844,7 +844,7 @@ function addRow(task, tableName, index) {
 
   // Name elements
   // row.setAttribute("id", task.id/*index*/);
-  row.setAttribute("id", index);
+  row.setAttribute("id", task.id);
   row.setAttribute("class", "notFirst");
   titleCell.setAttribute("id", "title");
   descCell.setAttribute("id", "desc");
@@ -917,7 +917,6 @@ function draggableRows(className) {
   $("." + className).sortable({
     axis: 'y',
     dropOnEmpty: true,
-    forceHelperSize: true,
     helper: fixHelper,
     connectWith: "." + className,
     placeholder: "ui-state-highlight",
@@ -941,8 +940,9 @@ function onTableUpdated(event, ui){
   let table = user.getTableByID(tableID);
   let newRows = [];
   let items = htmlTable.getElementsByTagName("tr");
-  let userID = user.databaseID
+  let userID = user.databaseID;
   for (let i = 1; i < items.length; i++) {
+    console.log(items[i]);
     let task = getTaskByID(items[i].id);
     task.position = i - 1;
     updateItemPosition(userID, task);

@@ -7,7 +7,6 @@ const PHP_GET_USER_ID = PHP_DIRECTORY_PATH + '/getUserID.php';
 const PHP_ADD_GROUP = PHP_DIRECTORY_PATH + '/addGroup.php';
 const PHP_GET_GROUP = PHP_DIRECTORY_PATH + '/getGroup.php';
 const PHP_GET_GROUP_NAME = PHP_DIRECTORY_PATH + '/getGroupName.php';
-const PHP_GET_GROUP_ID = PHP_DIRECTORY_PATH + '/getGroupID.php';
 const PHP_GET_GROUPS_FOR_USER = PHP_DIRECTORY_PATH + "/getAllGroups.php";
 const PHP_UPDATE_GROUP_NAME = PHP_DIRECTORY_PATH + '/updateGroupName.php';
 const PHP_UPDATE_GROUP_POSITION = PHP_DIRECTORY_PATH + '/updateGroupPosition.php';
@@ -35,17 +34,6 @@ function getUserID(user) {
   return new Promise(function(resolve, reject) {
     $.post(PHP_GET_USER_ID, {
       username: user
-    }, function(data) {
-      resolve(data);
-    });
-  })
-}
-
-function getGroupID(user, group) {
-  return new Promise(function(resolve, reject) {
-    $.post(PHP_GET_GROUP_ID, {
-      userID: user,
-      groupName: group
     }, function(data) {
       resolve(data);
     });
@@ -82,7 +70,7 @@ function addDataToDB(){
       let tables = user.tables;
       for(let i in tables){
         for(let j in tables[i].rows){
-          itemPromises.push(addGroupItemToDB(tables[i].rows[j], userID, j, tables[i].name));
+          itemPromises.push(addGroupItemToDB(tables[i].rows[j], userID, j, tables[i].id));
         }
       }
         Promise.all(itemPromises).then(function(){
@@ -170,11 +158,34 @@ function checkUserGroupDB(user, group) {
   });
 }
 
-function addGroupItemToDB(item, userID, position, groupName) {
-  return getGroupID(userID, groupName)
-  .then(function(groupID){
-    return checkGroupItemDB(item, userID, groupID)
-  })
+function addGroupItemToDB(item, userID, position, groupID) {
+  if(groupID == unsortedID){
+    return Promise.resolve(1);
+  }
+  return checkGroupItemDB(item, userID, groupID)
+  .then(function(itemObj) {
+    if(!itemObj){
+      return new Promise(function(resolve, reject) {
+        $.post(PHP_ADD_ITEM, {
+          itemID: item.id,
+          userID: userID,
+          groupID: groupID,
+          itemType: item.type,
+          position: position
+        }, function(data) {
+          if (data === -1)
+            reject(data);
+          resolve(data);
+        });
+      })
+    }else{
+      return Promise.resolve(1);
+    }
+  });
+
+
+  /*
+  return checkGroupItemDB(item, userID, groupID)
   .then(function(itemObj) {
       //If the item doesn't exist, add it
       if (!itemObj) {
@@ -199,6 +210,7 @@ function addGroupItemToDB(item, userID, position, groupName) {
     .catch(function(err) {
       console.log("Error: " + err);
     });
+    */
 }
 
 function checkGroupItemDB(item, userID, groupID) {
@@ -207,10 +219,7 @@ function checkGroupItemDB(item, userID, groupID) {
     item.group = "Ungrouped";
   var type = item.type;
   var groupTable = user.getTableByID(groupID);
-  return getGroupID(userID, groupTable.name)
-  .then(function(groupID) {
-    return getItem(userID, ID, groupID);
-  })
+    return getItem(userID, ID, groupID)
   .catch(function(err) {
     console.log("Error: " + err);
   });
