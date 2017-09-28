@@ -947,7 +947,6 @@ function onTableUpdated(event, ui){
   let items = htmlTable.getElementsByTagName("tr");
   let userID = user.databaseID;
   for (let i = 1; i < items.length; i++) {
-    console.log(items[i]);
     let task = getTaskByID(items[i].id);
     task.position = i - 1;
     addGroupItemToDB(userID, task, table.id);
@@ -2044,7 +2043,7 @@ $(".main").on("click", "table > tbody > tr", function(e)
   // Check if card id exists in set
   var $groupID = extractGroupID($(this).closest("table").attr("id"));
   var ticketGroup = user.getTableByID($groupID);
-  var task = ticketGroup.rows[this.id];
+  var task = ticketGroup.getRowByID(this.id);
   var taskID = task.id;
   if (cardsCreated.has(taskID)) {
     $.notify({
