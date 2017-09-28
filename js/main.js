@@ -1,5 +1,5 @@
 const ZEN_AUTH_URL = "https://sdsc.zendesk.com/oauth/authorizations/new?response_type=token&client_id=client_services_tool_dev&scope=read%20write";
-const TRE_AUTH_URL = "https://trello.com/1/authorize?name=Zello&key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost&scope=read,account";
+const TRE_AUTH_URL = "https://trello.com/1/authorize?name=Zello&key=8886ef1a1bc5ad08caad020068a3f9a2&callback_method=fragment&return_url=https://localhost&scope=read,account&expiration=never";
 
 const ZEN_API_URL = "https://sdsc.zendesk.com/api/v2/";
 const TRE_API_URL = "https://trello.com/1/";
@@ -1440,7 +1440,8 @@ function getUsersCards(cards) {
 
 
 function getZendeskTickets() {
-  return zendeskGet("search.json?query=type:ticket status<solved");
+  //return zendeskGet("search.json?query=type:ticket status<solved");
+  return zendeskGet("search.json?query=type:ticket assignee:me status<closed");
 }
 
 function addInfoToCardsAndTickets(cardsAndTickets){
