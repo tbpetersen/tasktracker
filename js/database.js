@@ -56,11 +56,15 @@ function addDataToDB(){
   return new Promise(function(resolve, reject){
     var userName = user.trello.email;
     addUserToDB(userName)
-    .then(function(promise){
+    .then(function(newlyInsertedUserID){
+      if(newlyInsertedUserID == -1){
+        reject('Failed to add user to database');
+        return;
+      }
       return getUserID(userName);
     })
     .then(function(id){
-      user.databaseID == id;
+      user.databaseID = id;
       //Add Groups to the DB
       var tables = user.tables;
       let groupPromises = new Array();
@@ -385,7 +389,7 @@ function deleteItem(userID, itemID) {
 function deleteItemsFromUserGroup(userID, tableObj) {
   let promises = new Array();
   for(let i = 0; i < tableObj.rows.length; i++){
-    promises.push(deleteItem(user.databaseID, tableObj.rows[i].id));
+    promises.push(deleteItem(userID, tableObj.rows[i].id));
   }
   return Promise.all(promises);
 }
