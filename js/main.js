@@ -177,7 +177,6 @@ $(document).ready(function() {
 function delayedPromise(seconds){
   return new Promise(function(resolve,reject){
     setTimeout(function(){
-      console.log("Delayed promise" + new Date().getMilliseconds());
       resolve();
     }, seconds * 1000);
   });
@@ -279,7 +278,6 @@ function createTablesFromTableObject(){
 
   //TODO Shiva
   let tables = user.tables; // You can iterate over these
-  console.log(tables);
 
   // create each table by iterating through tables list
   for(i = 0; i < tables.length; i++) {
@@ -578,7 +576,6 @@ function populatePage() {
       return getAllGroups(id);
     })
     .then(function(groups) {
-      // console.log(groups);
       var cat = {};
 
       for (var i = 0; i < groups.length; i++) {
@@ -609,7 +606,6 @@ function populatePage() {
 }
 
 function createTable(tableObj, isNewTable) {
-  // console.log(table);
   var tableName = tableObj.id;
 
   // Create table structure
@@ -746,11 +742,8 @@ $(".main").on("click", "#tableTitle", function() {
     var save = function() {
       var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
       var $closedInput = $input.val().split(" ").join("_");
-      var $id = $closedInput + wrapperSuffix;
+      var $id = $closedInput;
 
-      // Update table and wrapper ID
-      $table.attr("id", $closedInput);
-      $tableWrapper.attr("id", $id);
       $input.replaceWith($titleStr);
     };
 
@@ -966,7 +959,6 @@ function onTableUpdated(event, ui){
       deleteItem(userID, task.id);
   }
   table.rows = newRows;
-
 }
 
 
@@ -1117,7 +1109,6 @@ $("#reorder").click(function(e) {
   modal.open();
 });
 
- // $('.main').on("click", "#wrapper_50", function() {console.log("here")});
 function finalizeTempTable(){
   for(let i = 0; i < user.tempTables.length; i++){
     user.tempTables[i].position = i;
@@ -1438,7 +1429,6 @@ function getUsersCards(cards) {
 
 
 function getZendeskTickets() {
-  //return zendeskGet("search.json?query=type:ticket status<solved assignee_id:" + user.zendesk.id);
   return zendeskGet("search.json?query=type:ticket status<solved");
 }
 function addInfoToCardsAndTickets(cardsAndTickets){
@@ -2163,7 +2153,7 @@ function updateFilters(){
   var currentNode;
   var tables = document.getElementsByTagName("table");
   clearFilters();
-  // createFilterButton("View All");
+  createFilterButton("View All");
   $('.wrapper-header').each(function(){
     currentNode = this.childNodes[0];
     if(currentNode.tagName === "INPUT")
@@ -2275,8 +2265,9 @@ function filterAll() {
   tables = document.getElementsByTagName("table");
   //Get the TR tags from the table.
   for (i = 0; i < tables.length; i++) {
-    if(tables[i].id !== "names")
+    if(tables[i].id !== "names"){
       filterInTable(tables[i].id);
+    }
   }
 }
 
@@ -2345,9 +2336,6 @@ function getTableNameFromID(tableID){
 function search() {
   //Text typed in search.
   var searchFor = document.getElementsByClassName("form-control")[0].value;
-  if(searchFor === ""){
-    return filterAll();
-  }
   //Tables of tasks.
   var tables = document.getElementsByTagName("table");
   var rows;
