@@ -848,7 +848,6 @@ function addRow(task, tableName, index) {
   catCell = document.createElement("td");
 
   // Name elements
-  // row.setAttribute("id", task.id/*index*/);
   row.setAttribute("id", task.id);
   row.setAttribute("class", "notFirst");
   titleCell.setAttribute("id", "title");
@@ -2043,8 +2042,9 @@ $(".main").on("click", "table > tbody > tr", function(e)
   // Check if card id exists in set
   var $groupID = extractGroupID($(this).closest("table").attr("id"));
   var ticketGroup = user.getTableByID($groupID);
-  var task = ticketGroup.getRowByID(this.id);
-  var taskID = task.id;
+  var taskID = this.id;
+  var task = ticketGroup.getRowByID(taskID);
+
   if (cardsCreated.has(taskID)) {
     $.notify({
       icon: "fa fa-exclamation-triangle",
