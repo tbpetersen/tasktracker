@@ -277,12 +277,19 @@ function createTablesFromTableObject(){
   for(i = 0; i < tables.length; i++) {
     var table = tables[i];
     createTable(table, false);
-    //createTable(table.id, false);
 
-   // populate each table by accessing rows in each table
+    // populate each table by accessing rows in each table
+    var tableRows = table.rows.length;
+    if (tableRows == 0) {
+      var id = table.id;
+      var tableID = tablePrefix + id;
+      $("#" + tableID).find("tbody").addClass("place");
+    }
+
     for(j = 0; j < table.rows.length; j++) {
       populateTable(table.rows[j], table.id, j);
     }
+
     draggableRows(ITEM_SORTABLE_CLASS);
   }
 }
@@ -685,6 +692,8 @@ $(".main").on("click", "#tableTitle", function() {
   var $title = $(this);
   var $tableWrapper = $title.parent().parent();
   var $table = $title.parent().next();
+  var $groupID = extractGroupID($tableWrapper.attr("id"));
+
   var inputText;
   var $input = $('<input/>').val( $title.text() );
   var numKeyPress = 0;
@@ -702,6 +711,7 @@ $(".main").on("click", "#tableTitle", function() {
     $input.on("focusout", function(){
       if(!this.value || isEmptyString(this.value))
         this.value = inputText;
+
       updateFilters();
       filterAll(); // TODO THIS IS A TEMP FIX. Renaming them causes them to stay
                   // selected but the buttons become unhighlighted. Temp fix implemented
@@ -716,10 +726,13 @@ $(".main").on("click", "#tableTitle", function() {
     $title.replaceWith($input);
 
     var save = function() {
-      var $titleStr = $('<h3 id="tableTitle" />').text( $input.val() );
-      var $closedInput = $input.val().split(" ").join("_");
-      var $id = $closedInput;
+      var $newName = $input.val();
+      var $titleStr = $('<h3 id="tableTitle" />').text( $newName );
+      var tableObj = user.getTableByID($groupID);
+      tableObj.name = $newName;
+      updateGroupName(user.databaseID, tableObj);
 
+      // Update input value
       $input.replaceWith($titleStr);
     };
 
@@ -728,23 +741,25 @@ $(".main").on("click", "#tableTitle", function() {
       ++numKeyPress;
 
       if (e.which === 13 || e.which === 27) {
-        //Get the name of the table that you are currently working with.
-        var table = this.parentNode.parentNode.id;
-        table = table.substring(0, table.indexOf("_table"));
-        table = table.split("_").join(" ");
-        //Check if the new table name is the same as others.
-        if (numKeyPress > 1 && getFilters().includes(this.value)
-          && this.value !== table) {
-          alert("Please rename this table as there is already one with the name \""
-            + this.value + "\"");
-          this.value = inputText;
-        }
-        else {
-          keyPressed = 0;
-          updateFilters();
-          $input.blur();
-          return;
-        }
+        var currentName = this.value;
+
+        checkUserGroupDB(user.databaseID, currentName)
+        .then(function(val) {
+          if (val) {
+            alert("Please rename this table as there is already one with the name \""
+              + currentName + "\"");
+            $input.val(inputText);
+          }
+          else {
+            keyPressed = 0;
+            updateFilters();
+            $input.blur();
+            return;
+          }
+        })
+        .catch(function(err) {
+          console.log("Error: " + err);
+        });
       }
     }
   )};
@@ -789,7 +804,6 @@ function formatDate(date) {
 }
 
 function addRow(task, tableName, index) {
-
   // Get title of task
   var title = task.name;
 
@@ -829,7 +843,8 @@ function addRow(task, tableName, index) {
   catCell = document.createElement("td");
 
   // Name elements
-  row.setAttribute("id", task.id/*index*/);
+  // row.setAttribute("id", task.id/*index*/);
+  row.setAttribute("id", index);
   row.setAttribute("class", "notFirst");
   titleCell.setAttribute("id", "title");
   descCell.setAttribute("id", "desc");
@@ -1418,6 +1433,7 @@ function getUsersCards(cards) {
 function getZendeskTickets() {
   return zendeskGet("search.json?query=type:ticket status<solved");
 }
+
 function addInfoToCardsAndTickets(cardsAndTickets){
   let trelloCards = cardsAndTickets[0];
   let zendeskCards = cardsAndTickets[1];
@@ -1921,20 +1937,19 @@ $("#changeThemeBtn").click(function() {
 /* ------------------ TICKET PANEL ------------------ */
 
 /* Helper method that creates the card div */
-function createTicketCard(cardIndex)
+function createTicketCard(task)
 {
   var newCard = document.createElement("div");
-  var task = user.tasks[cardIndex];
   var cardTitle = task.name;
   var cardDesc = task.desc;
+  var cardIndex = task.id;
   var status = task.category.charAt(0).toUpperCase() + task.category.substring(1);
   var date = formatDate(task.lastModified);
   var type = task.type;
 
   if (type === 1)
   {
-    var id = task.id;
-    var url = ZEN_TICKET_URL + id;
+    var url = ZEN_TICKET_URL + task.id;
   }
   else
   {
@@ -2022,7 +2037,11 @@ $(".main").on("click", "table > tbody > tr", function(e)
   }
 
   // Check if card id exists in set
-  if (cardsCreated.has(this.id)) {
+  var $groupID = extractGroupID($(this).closest("table").attr("id"));
+  var ticketGroup = user.getTableByID($groupID);
+  var task = ticketGroup.rows[this.id];
+  var taskID = task.id;
+  if (cardsCreated.has(taskID)) {
     $.notify({
       icon: "fa fa-exclamation-triangle",
       message: "Ticket already queued."
@@ -2033,8 +2052,8 @@ $(".main").on("click", "table > tbody > tr", function(e)
     return;
   }
   else {
-    cardsCreated.add(this.id);
-    createTicketCard(this.id);
+    cardsCreated.add(taskID);
+    createTicketCard(task);
 
     $.notify({
       icon: "fa fa-check",
@@ -2121,7 +2140,6 @@ function updateFilters(){
   var currentNode;
   var tables = document.getElementsByTagName("table");
   clearFilters();
-  createFilterButton("View All");
   $('.wrapper-header').each(function(){
     currentNode = this.childNodes[0];
     if(currentNode.tagName === "INPUT")

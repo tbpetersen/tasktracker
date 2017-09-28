@@ -82,7 +82,7 @@ function addDataToDB(){
       let tables = user.tables;
       for(let i in tables){
         for(let j in tables[i].rows){
-          itemPromises.push(addGroupItemToDB(tables[i].rows[j], userID, j));
+          itemPromises.push(addGroupItemToDB(tables[i].rows[j], userID, j, tables[i].name));
         }
       }
         Promise.all(itemPromises).then(function(){
@@ -165,20 +165,20 @@ function checkUserGroupDB(user, group) {
       userID: user,
       groupName: group
     }, function(data) {
-      resolve(data);
+      resolve(data != "");
     });
   });
 }
 
-function addGroupItemToDB(item, userID, position) {
-  return getGroupID(userID, item.category)
+function addGroupItemToDB(item, userID, position, groupName) {
+  return getGroupID(userID, groupName)
   .then(function(groupID){
     return checkGroupItemDB(item, userID, groupID)
   })
   .then(function(itemObj) {
       //If the item doesn't exist, add it
       if (!itemObj) {
-        return getGroupID(userID, item.category)
+        return getGroupID(userID, groupName)
         .then(function(groupID) {
           return new Promise(function(resolve, reject) {
             $.post(PHP_ADD_ITEM, {
@@ -206,7 +206,8 @@ function checkGroupItemDB(item, userID, groupID) {
   if (item.group == undefined)
     item.group = "Ungrouped";
   var type = item.type;
-  return getGroupID(userID, item.category)
+  var groupTable = user.getTableByID(groupID);
+  return getGroupID(userID, groupTable.name)
   .then(function(groupID) {
     return getItem(userID, ID, groupID);
   })
