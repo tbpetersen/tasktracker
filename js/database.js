@@ -70,7 +70,9 @@ function addDataToDB(){
       let tables = user.tables;
       for(let i in tables){
         for(let j in tables[i].rows){
-          itemPromises.push(addGroupItemToDB(tables[i].rows[j], userID, j, tables[i].id));
+          let item = tables[i].rows[j];
+          item.position = j;
+          itemPromises.push(addGroupItemToDB(userID,item, tables[i].id));
         }
       }
         Promise.all(itemPromises).then(function(){
@@ -158,7 +160,7 @@ function checkUserGroupDB(user, group) {
   });
 }
 
-function addGroupItemToDB(item, userID, position, groupID) {
+function addGroupItemToDB(userID, item, groupID) {
   if(groupID == unsortedID){
     return Promise.resolve(1);
   }
@@ -171,7 +173,7 @@ function addGroupItemToDB(item, userID, position, groupID) {
           userID: userID,
           groupID: groupID,
           itemType: item.type,
-          position: position
+          position: item.position
         }, function(data) {
           if (data === -1)
             reject(data);

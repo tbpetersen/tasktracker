@@ -945,7 +945,7 @@ function onTableUpdated(event, ui){
     console.log(items[i]);
     let task = getTaskByID(items[i].id);
     task.position = i - 1;
-    updateItemPosition(userID, task);
+    addGroupItemToDB(userID, task, table.id);
     updateItemGroup(userID, task.id, table.id);
     newRows.push(task);
     if(table.id === unsortedID)
