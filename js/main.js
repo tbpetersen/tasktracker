@@ -16,6 +16,8 @@ const wrapperPrefix = "wrapper_";
 const tablePrefix = "table_";
 const GROUP_SORTABLE_CLASS = 'sortable-group'
 const ITEM_SORTABLE_CLASS = 'sortable-item'
+const CONVERTER = new showdown.Converter();
+
 var failedZendeskAuth = false;
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
@@ -90,7 +92,6 @@ class Task {
 }
 
 $(document).ready(function() {
-
   // Hamburger menu toggle
   var trigger = $(".hamburger");
 
@@ -280,8 +281,6 @@ function loadUsersItemsFromDB(){
 }
 
 function createTablesFromTableObject(){
-
-  //TODO Shiva
   let tables = user.tables; // You can iterate over these
 
   // create each table by iterating through tables list
@@ -889,6 +888,9 @@ function addRow(task, tableName, index) {
   // text for cell
   textNode1 = document.createTextNode(title);
   textNode2 = document.createTextNode(shortDesc);
+  //TODO
+  // Use the makrdown converter on descriptions
+  //let markdownHTML = CONVERTER.makeHtml(shortDesc);
   textNode3 = document.createTextNode(group);
   textNode4 = document.createTextNode(date);
   textNode5 = document.createTextNode(capCat);
@@ -1441,7 +1443,6 @@ function getTrelloBoards() {
 }
 
 function getCardsFromBoard(boards) {
-  //TODO trevor
   return new Promise(function(resolve, reject) {
     let boardDataPromises = new Array();
     for (let i = 0; i < boards.length; i++) {
@@ -2059,6 +2060,9 @@ function createTicketCard(task)
   var newCard = document.createElement("div");
   var cardTitle = task.name;
   var cardDesc = task.desc;
+  //TODO
+  // Use the makrdown converter on descriptions
+  //let markdownHTML = CONVERTER.makeHtml(shortDesc);
   var cardIndex = task.id;
   var status = task.category.charAt(0).toUpperCase() + task.category.substring(1);
   var date = formatDate(task.lastModified);
