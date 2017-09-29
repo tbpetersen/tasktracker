@@ -147,9 +147,11 @@ $(document).ready(function() {
   });
 
   // Allocate tables for Zendesk and Trello
-  setupPage();
 
   Promise.resolve()
+  .then(function(){
+    return initialSetup();
+  })
 
   .then(function(){
     return setIDs()
@@ -176,7 +178,8 @@ $(document).ready(function() {
 
   .catch(function(err){
     $('.loader').hide();
-    console.log("Error during setup: " + err);
+    console.log("Error during setup: ");
+    console.log(err);
   })
 });
 
@@ -1199,11 +1202,18 @@ function listTables(bool) {
 }
 /* End modal */
 
-function setupPage() {
-  if (!redirectToHTTPS()) {
-    getTokens();
-    instantiateUser();
+function initialSetup() {
+  if(isNotUsingHTTPS()){
+    redirectToHTTPS();
+    return Promise.reject();
+  }else{
+    return setupTokens()
+    .then(function(){
+      instantiateUser();
+      return Promise.resolve();
+    })
   }
+
 }
 
 function instantiateUser() {
@@ -1233,12 +1243,12 @@ function instantiateUser() {
   };
 }
 
+function isNotUsingHTTPS(){
+  return window.location.protocol != 'https:'
+}
+
 function redirectToHTTPS() {
-  if (window.location.protocol != 'https:') {
     window.location.assign('https://' + window.location.hostname);
-    return true;
-  }
-  return false;
 }
 
 function saveTokenFromURL() {
@@ -1273,24 +1283,57 @@ function saveZendeskTokenFromURL() {
   localStorage["zendeskToken"] = token;
 }
 
-function getTokens() {
+function setupTokens() {
   saveTokenFromURL();
-  getZendeskToken();
-  getTrelloToken();
+
+  return getZendeskToken()
+  .then(function(){
+    return getTrelloToken();
+  })
 }
 
 function getZendeskToken() {
   zendeskToken = localStorage.getItem("zendeskToken");
   if (zendeskToken == undefined) {
     redirectToZendeskLogin();
+    return Promise.reject();
+  }else{
+    return checkZendeskToken()
+    .catch(function(error){
+      if(error.status == 401){
+        localStorage.removeItem("zendeskToken");
+        return getZendeskToken();
+      }else{
+        return Promise.reject(error);
+      }
+    })
   }
+}
+
+function checkZendeskToken(){
+  return zendeskGet('users/me');
 }
 
 function getTrelloToken() {
   trelloToken = localStorage.getItem("trelloToken");
   if (trelloToken == undefined) {
     redirectToTrelloLogin();
+    return Promise.reject();
+  }else{
+    return checkTrelloToken()
+    .catch(function(error){
+      if(error.responseText == 'invalid token'){
+        localStorage.removeItem("trelloToken");
+        return getTrelloToken();
+      }else{
+        return Promise.reject(error);
+      }
+    })
   }
+}
+
+function checkTrelloToken(){
+  return trelloGet("members/me");
 }
 
 function redirectToTrelloLogin() {
