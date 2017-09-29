@@ -16,6 +16,7 @@ const wrapperPrefix = "wrapper_";
 const tablePrefix = "table_";
 const GROUP_SORTABLE_CLASS = 'sortable-group'
 const ITEM_SORTABLE_CLASS = 'sortable-item'
+var failedZendeskAuth = false;
 
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
@@ -147,9 +148,11 @@ $(document).ready(function() {
   });
 
   // Allocate tables for Zendesk and Trello
-  setupPage();
 
   Promise.resolve()
+  .then(function(){
+    return initialSetup();
+  })
 
   .then(function(){
     return setIDs()
@@ -176,7 +179,8 @@ $(document).ready(function() {
 
   .catch(function(err){
     $('.loader').hide();
-    console.log("Error during setup: " + err);
+    console.log("Error during setup: ");
+    console.log(err);
   })
 });
 
@@ -1199,11 +1203,18 @@ function listTables(bool) {
 }
 /* End modal */
 
-function setupPage() {
-  if (!redirectToHTTPS()) {
-    getTokens();
-    instantiateUser();
+function initialSetup() {
+  if(isNotUsingHTTPS()){
+    redirectToHTTPS();
+    return Promise.reject();
+  }else{
+    return setupTokens()
+    .then(function(){
+      instantiateUser();
+      return Promise.resolve();
+    })
   }
+
 }
 
 function instantiateUser() {
@@ -1233,12 +1244,12 @@ function instantiateUser() {
   };
 }
 
+function isNotUsingHTTPS(){
+  return window.location.protocol != 'https:'
+}
+
 function redirectToHTTPS() {
-  if (window.location.protocol != 'https:') {
     window.location.assign('https://' + window.location.hostname);
-    return true;
-  }
-  return false;
 }
 
 function saveTokenFromURL() {
@@ -1256,7 +1267,7 @@ function saveTrelloTokenFromURL() {
 
   var tokenStart = url.indexOf(tokenString) + tokenString.length;
   token = url.substring(tokenStart);
-  localStorage["trelloToken"] = token;
+  localStorage.setItem("trelloToken", token);
 }
 
 function saveZendeskTokenFromURL() {
@@ -1270,27 +1281,61 @@ function saveZendeskTokenFromURL() {
   var tokenStart = url.indexOf(tokenString) + tokenString.length;
   var tokenEnd = url.indexOf("&scope=");
   token = url.substring(tokenStart, tokenEnd);
-  localStorage["zendeskToken"] = token;
+  localStorage.setItem("zendeskToken", token);
 }
 
-function getTokens() {
+function setupTokens() {
   saveTokenFromURL();
-  getZendeskToken();
-  getTrelloToken();
+
+  return getZendeskToken()
+  .then(function(){
+    return getTrelloToken();
+  })
 }
 
 function getZendeskToken() {
   zendeskToken = localStorage.getItem("zendeskToken");
   if (zendeskToken == undefined) {
     redirectToZendeskLogin();
+    return Promise.reject();
+  }else{
+    return checkZendeskToken()
+    .catch(function(error){
+      if(error.status == 0 && ! failedZendeskAuth){
+        localStorage.removeItem("zendeskToken");
+        failedZendeskAuth = true;
+        return getZendeskToken();
+      }else{
+        return Promise.reject(error);
+      }
+    })
   }
+}
+
+function checkZendeskToken(){
+  return zendeskGet('users/me');
 }
 
 function getTrelloToken() {
   trelloToken = localStorage.getItem("trelloToken");
   if (trelloToken == undefined) {
     redirectToTrelloLogin();
+    return Promise.reject();
+  }else{
+    return checkTrelloToken()
+    .catch(function(error){
+      if(error.responseText == 'invalid token'){
+        localStorage.removeItem("trelloToken");
+        return getTrelloToken();
+      }else{
+        return Promise.reject(error);
+      }
+    })
   }
+}
+
+function checkTrelloToken(){
+  return trelloGet("members/me");
 }
 
 function redirectToTrelloLogin() {
@@ -1645,7 +1690,9 @@ function zendeskGet(url) {
       success: function(data) {
         resolve(data)
       },
-      error: function(data) {
+      error: function(data, d) {
+        console.log(data);
+        console.log(d);
         reject(data)
       }
     });
