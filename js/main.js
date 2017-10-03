@@ -30,6 +30,7 @@ class Table{
     this.rows.push(task)
   }
 
+
   getRowByID(rowID) {
     for (let i = 0; i < this.rows.length; i++){
       let row = this.rows[i];
@@ -80,6 +81,7 @@ class Task {
     let hexTime = trelloID.substring(0, 8);
     return parseInt(hexTime, 16);
   }
+
 
   getTimeStampFromString(timeString) {
     let date = new Date(timeString);
@@ -181,6 +183,7 @@ $(document).ready(function() {
   })
 });
 
+
 function extractGroupID(idAttribute) {
   var startIndex = idAttribute.indexOf("_");
 
@@ -191,6 +194,7 @@ function extractGroupID(idAttribute) {
   return groupID;
 }
 
+
 function delayedPromise(seconds){
   return new Promise(function(resolve,reject){
     setTimeout(function(){
@@ -198,6 +202,7 @@ function delayedPromise(seconds){
     }, seconds * 1000);
   });
 }
+
 
 function refreshGroupUI(tableObj) {
   let tableWrapper = document.getElementById(wrapperPrefix + tableObj.id);
@@ -212,7 +217,6 @@ function refreshGroupUI(tableObj) {
   draggableRows(ITEM_SORTABLE_CLASS);
 }
 
-// Maybe another function - refreshAllGroupUI
 
 /*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   Generates and returns a random string ID.*/
@@ -255,6 +259,7 @@ function loadUsersItemsFromDB(){
   })
 }
 
+
 function createTablesFromTableObject(){
   let tables = user.tables; // You can iterate over these
 
@@ -279,6 +284,7 @@ function createTablesFromTableObject(){
   }
 }
 
+
 function sortByPosition(array){
   let compare = function(a,b){
     return a.position - b.position;
@@ -291,6 +297,7 @@ function createTablesFromDPandAPI(dbData, tasks){
   createTablesFromGroups(dbData, tasks);
   return Promise.resolve();
 }
+
 
 function createTablesFromGroups(groups, tasks){
   user.tables = new Array();
@@ -311,6 +318,7 @@ function createTablesFromGroups(groups, tasks){
   }
   let unsortedTable = createUnsortedTable(tasks, groups);
 }
+
 
 function getUserTableFromItemID(itemID){
   let task = getTaskByID(itemID);
@@ -337,6 +345,7 @@ function getTaskByID(taskID){
   return null;
 }
 
+
 function createTasks(){
   return Promise.resolve()
   .then(function(){
@@ -357,6 +366,7 @@ function createTasks(){
   })
 }
 
+
 function loadFromAPI(){
   return Promise.resolve()
   .then(function(){
@@ -367,8 +377,8 @@ function loadFromAPI(){
     createGroupsForUser(tasks);
     return Promise.resolve();
   })
-
 }
+
 
 function loadFromDB(){
   return Promise.resolve()
@@ -386,6 +396,7 @@ function loadFromDB(){
     return createTablesFromDPandAPI(itemsFromDB, user.tasks);
   })
 }
+
 
 function createGroupsForUser(tasks){
   let cat = {};
@@ -407,6 +418,7 @@ function createGroupsForUser(tasks){
     user.tables[i].id = -1;
   }
 }
+
 
 function getTrelloAndZendeskCardData(items){
   let proimseArray = new Array();
@@ -463,9 +475,11 @@ function populatePage() {
 
 }
 
+
 $(".navbar-toggle").on("focusout", function(){
   //console.log("Close the links"); TODO
 });
+
 
 /* Name: isEmptyString
    Purpose: Tell whether the string is empty or not.
@@ -500,6 +514,7 @@ function finalizeTempTable(){
   user.tables = user.tempTables;
   user.tempTables = new Array();
 }
+
 
 function egg() {
   var egg = new Egg();
@@ -557,18 +572,22 @@ function instantiateUser() {
   };
 }
 
+
 function isNotUsingHTTPS(){
   return window.location.protocol != 'https:'
 }
+
 
 function redirectToHTTPS() {
     window.location.assign('https://' + window.location.hostname);
 }
 
+
 function saveTokenFromURL() {
   saveTrelloTokenFromURL();
   saveZendeskTokenFromURL();
 }
+
 
 function saveTrelloTokenFromURL() {
   var url = window.location.href;
@@ -582,6 +601,7 @@ function saveTrelloTokenFromURL() {
   token = url.substring(tokenStart);
   localStorage.setItem("trelloToken", token);
 }
+
 
 function saveZendeskTokenFromURL() {
   var url = window.location.href;
@@ -597,6 +617,7 @@ function saveZendeskTokenFromURL() {
   localStorage.setItem("zendeskToken", token);
 }
 
+
 function setupTokens() {
   saveTokenFromURL();
 
@@ -605,6 +626,7 @@ function setupTokens() {
     return getTrelloToken();
   })
 }
+
 
 function getZendeskToken() {
   zendeskToken = localStorage.getItem("zendeskToken");
@@ -625,9 +647,11 @@ function getZendeskToken() {
   }
 }
 
+
 function checkZendeskToken(){
   return zendeskGet('users/me');
 }
+
 
 function getTrelloToken() {
   trelloToken = localStorage.getItem("trelloToken");
@@ -647,17 +671,21 @@ function getTrelloToken() {
   }
 }
 
+
 function checkTrelloToken(){
   return trelloGet("members/me");
 }
+
 
 function redirectToTrelloLogin() {
   window.location.assign(TRE_AUTH_URL);
 }
 
+
 function redirectToZendeskLogin() {
   window.location.assign(ZEN_AUTH_URL);
 }
+
 
 function setIDs() {
   return new Promise(function(resolve, reject){
@@ -678,6 +706,7 @@ function setIDs() {
 
 }
 
+
 function setTrelloID() {
   return new Promise(function(resolve, reject) {
     trelloGet("members/me")
@@ -696,6 +725,7 @@ function setTrelloID() {
   });
 }
 
+
 function setZendeskID() {
   return new Promise(function(resolve, reject) {
     zendeskGet("users/me")
@@ -710,12 +740,14 @@ function setZendeskID() {
   });
 }
 
+
 function getCardsAndTickets() {
   let trelloCards = getTrelloCards();
   let zendeskTickets = getZendeskTickets();
 
   return Promise.all([trelloCards, zendeskTickets]);
 }
+
 
 function getTrelloCardsSearch(cardIDsArray){
   // TODO Trevor: Looking into more efficient loaing from APIs
@@ -726,6 +758,7 @@ function getTrelloCardsSearch(cardIDsArray){
     return Promise.resolve(data);
   })
 }
+
 
 function getTrelloCards() {
   return new Promise(function(resolve, reject) {
@@ -749,9 +782,11 @@ function getTrelloCards() {
 
 }
 
+
 function getTrelloBoards() {
   return trelloGet("members/me/boards");
 }
+
 
 function getCardsFromBoard(boards) {
   return new Promise(function(resolve, reject) {
@@ -776,6 +811,7 @@ function getCardsFromBoard(boards) {
       });
   });
 }
+
 
 function getUsersCards(cards) {
   return new Promise(function(resolve, reject) {
@@ -816,6 +852,7 @@ function getZendeskTickets() {
   })
 }
 
+
 function getMyTicketsThatAreNotClosed(){
   return zendeskGet("search.json?query=type:ticket assignee:me status<closed")
 
@@ -823,6 +860,7 @@ function getMyTicketsThatAreNotClosed(){
     return Promise.resolve(results.results);
   })
 }
+
 
 function getMyGroupsUnassignedTickets(){
   return Promise.resolve()
@@ -846,6 +884,7 @@ function getMyGroupsUnassignedTickets(){
   })
 }
 
+
 function getMyZendeskGroupsIDs(){
   return zendeskGet('users/' + user.zendesk.id + '/groups.json')
   .then(function(data){
@@ -855,6 +894,7 @@ function getMyZendeskGroupsIDs(){
     return Promise.resolve(ids)
   })
 }
+
 
 function addInfoToCardsAndTickets(cardsAndTickets){
   let trelloCards = cardsAndTickets[0];
@@ -869,6 +909,7 @@ function addInfoToCardsAndTickets(cardsAndTickets){
       });
   });
 }
+
 
 function addZendeskGroups(zendeskCards){
   return new Promise(function(resolve, reject){
@@ -890,6 +931,7 @@ function addZendeskGroups(zendeskCards){
     });
   });
 }
+
 
 function addTrelloGroups(trelloCards){
   return new Promise(function(resolve, reject){
@@ -918,6 +960,7 @@ function addTrelloGroups(trelloCards){
   });
 }
 
+
 function addZendeskRequester(zendeskCards){
   return new Promise(function(resolve, reject){
     let allZendeskUsers = getAllZendeskUsers("users", new Array());
@@ -938,6 +981,7 @@ function addZendeskRequester(zendeskCards){
   });
 }
 
+
 function getAllZendeskUsers(url, previousList){
   let userPromise = zendeskGet(url);
   return userPromise.then(function(data){
@@ -952,6 +996,7 @@ function getAllZendeskUsers(url, previousList){
   });
 }
 
+
 function oneArrayFromMany(arrayOfArrays){
   let returnArray = new Array();
   for(let i =0; i < arrayOfArrays.length; i++){
@@ -962,6 +1007,7 @@ function oneArrayFromMany(arrayOfArrays){
   return returnArray;
 }
 
+
 function findList(card, lists){
   for(let i = 0; i < lists.length; i++){
     if(card.idList == lists[i].id){
@@ -970,6 +1016,7 @@ function findList(card, lists){
   }
   return null;
 }
+
 
 function findGroup(card, groups){
   for(let i = 0; i < groups.length; i++){
@@ -991,6 +1038,7 @@ function createTasksFromCardsAndTickets(cardsAndTickets) {
   return Promise.resolve(tasks);
 }
 
+
 function zendeskGet(url) {
   return new Promise(function(resolve, reject) {
     $.ajax({
@@ -1010,6 +1058,7 @@ function zendeskGet(url) {
     });
   });
 }
+
 
 function trelloGet(url, getParams) {
   if(getParams == null){
