@@ -20,9 +20,13 @@ Return value: the user's ID in the database or -1 if fail
     $stmt = $tasktrackerDB->prepare("SELECT * FROM $groupsTable WHERE userID = (?) && groupName = (?) LIMIT 1;");
     $stmt->bind_param('is', $userID, $groupName);
     $success = $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    echo($row['groupName']);
-    // echo(json_encode($row));
-    $tasktrackerDB->close();
+    $result = $stmt->bind_result($groupID, $user, $name, $position);
+    if($stmt->fetch() == null || $stmt->fetch() == false)
+      echo(-1);
+    else{
+      $row = $result->fetch_assoc();
+      echo($row['groupName']);
+      // echo(json_encode($row));
+      $tasktrackerDB->close();
+    }
 ?>
