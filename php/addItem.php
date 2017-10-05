@@ -18,11 +18,12 @@ $userID   = $_POST['userID'];
 $groupID  = $_POST['groupID'];
 $itemType = $_POST['itemType'];
 $position = $_POST['position'];
-$stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE itemID = (?)");
+$stmt = $tasktrackerDB->prepare("SELECT itemID FROM $itemsTable WHERE itemID = (?)");
 $stmt->bind_param('s', $itemID);
 $success = $stmt->execute();
-$result = $stmt->get_result();
-if($result->num_rows != 0){
+$result = $stmt->bind_result($col1);
+$rowFetchStatus = $stmt->fetch();
+if($rowFetchStatus){
   //TODO Modify table
   $stmt = $tasktrackerDB->prepare("UPDATE $itemsTable SET userID = (?), groupID = (?), itemType = (?), position = (?) WHERE itemID = (?);");
   $stmt->bind_param('iiiis', $userID, $groupID, $itemType, $position, $itemID);

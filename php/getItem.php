@@ -15,13 +15,23 @@ Return value: a JSON string of the item or null
   $groupID = $_POST['groupID'];
 
   /* Add the user to the db */
-    $stmt = $tasktrackerDB->prepare("SELECT * FROM $itemsTable WHERE itemID = (?) && userID = (?) && groupID = (?) LIMIT 1;");
-    $stmt->bind_param('sii', $itemID, $userID, $groupID);
+    $stmt = $tasktrackerDB->prepare("SELECT itemID, userID, groupID, itemType, position FROM $itemsTable WHERE itemID = (?) && userID = (?) LIMIT 1;");
+    $stmt->bind_param('si', $itemID, $userID);
     $success = $stmt->execute();
-    $results = $stmt->get_result();
+    $results = $stmt->bind_result($itemID, $userID, $groupID, $itemType, $position);
+    $rowFetchStatus = $stmt->fetch();
 
-    $row = $results->fetch_assoc();
-    echo(json_encode($row));
+    if($rowFetchStatus == null){
+      echo("");
+    }else{
+      $row = array();
+      $row["itemID"] = $itemID;
+      $row["userID"] = $userID;
+      $row["groupID"] = $groupID;
+      $row["itemType"] = $itemType;
+      $row["position"] = $position;
+      echo(json_encode($row));
+    }
 
     $tasktrackerDB->close();
 ?>

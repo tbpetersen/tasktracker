@@ -17,11 +17,15 @@ Return value: the user's ID in the database or -1 if fail
   /*TODO: Check that the given userID is not already in the users table */
 
   /* Add the user to the db */
-    $stmt = $tasktrackerDB->prepare("SELECT * FROM $groupsTable WHERE userID = (?) && groupName = (?) LIMIT 1;");
+    $stmt = $tasktrackerDB->prepare("SELECT groupID FROM $groupsTable WHERE userID = (?) && groupName = (?) LIMIT 1;");
     $stmt->bind_param('is', $userID, $groupName);
     $success = $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    echo($row['groupID']);
+    $result = $stmt->bind_result($col1);
+    $row = $stmt->fetch();
+    if($row == null){
+      echo(-1);
+    }else{
+      echo($col1);
+    }
     $tasktrackerDB->close();
 ?>

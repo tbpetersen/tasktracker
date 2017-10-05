@@ -1,10 +1,10 @@
 <?php
 /*
-File: getGroupName.php
-Purpose: gets a group's name
+File: getGroup.php
+Purpose: gets a group
 POST parameters: userID - the user's userID (int)
-                 groupID - the ID of a group
-Description: gets the group's name from the user
+                 groupName - the name of the users group (String)
+Description: gets the user from the db
 Return value: the user's ID in the database or -1 if fail
 */
   /* Connect to the server */
@@ -12,16 +12,24 @@ Return value: the user's ID in the database or -1 if fail
 
   /* POST arguments */
   $userID = $_POST['userID'];
-  $groupID = $_POST['groupID'];
+  $groupName = $_POST['groupName'];
 
   /*TODO: Check that the given userID is not already in the users table */
 
   /* Add the user to the db */
-    $stmt = $tasktrackerDB->prepare("SELECT * FROM $groupsTable WHERE userID = (?) && groupID = (?) LIMIT 1;");
-    $stmt->bind_param('ii', $userID, $groupID);
+    $stmt = $tasktrackerDB->prepare("SELECT groupName FROM $groupsTable WHERE userID = (?) && groupName = (?) LIMIT 1;");
+    $stmt->bind_param('is', $userID, $groupName);
     $success = $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    echo($row['groupName']);
+    $result = $stmt->bind_result($col1);
+    if(! $result){
+      echo(-1);
+    }
+    $row = $stmt->fetch();
+    if($col1 != null){
+      echo($col1);
+    }else{
+      echo(-1);
+    }
+    // echo(json_encode($row));
     $tasktrackerDB->close();
 ?>
