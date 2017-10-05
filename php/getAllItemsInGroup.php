@@ -13,7 +13,7 @@ Return value: a JSON string array of ids (empty if there are no items in the gro
   $groupID = $_POST['groupID'];
   $userID = $_POST['userID'];
 
-  /* Add the user to the db */
+
     $stmt = $tasktrackerDB->prepare("SELECT itemID, userID, groupID, itemType, position FROM $itemsTable WHERE groupID = (?) && userID = (?);");
     $stmt->bind_param('ii', $groupID, $userID);
     $success = $stmt->execute();
