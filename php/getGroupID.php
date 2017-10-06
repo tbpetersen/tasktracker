@@ -20,17 +20,6 @@ Return value: the user's ID in the database or -1 if fail
     $stmt = $tasktrackerDB->prepare("SELECT groupID FROM $groupsTable WHERE userID = (?) && groupName = (?) LIMIT 1;");
     $stmt->bind_param('is', $userID, $groupName);
     $success = $stmt->execute();
-<<<<<<< HEAD
-    $row = $result->bind_result($groupID);
-    $stmt->fetch();
-    if($row == true){
-      echo($row['groupID']);
-      $tasktrackerDB->close();
-    }
-    else {
-      echo(-1)
-    }
-=======
     $result = $stmt->bind_result($col1);
     $row = $stmt->fetch();
     if($row == null){
@@ -39,5 +28,4 @@ Return value: the user's ID in the database or -1 if fail
       echo($col1);
     }
     $tasktrackerDB->close();
->>>>>>> 7041a626988efea9950370e68ead7fee6f6a3385
 ?>
