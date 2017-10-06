@@ -133,7 +133,7 @@ function addUserGroupToDB(user, table) {
           groupName: table.name,
           groupID: table.id,
           position: table.position
-        }, function(data) {
+        }, function(data){
           if (data === -1)
             reject(data);
           table.id = data;
@@ -155,7 +155,7 @@ function checkUserGroupDB(user, group) {
       userID: user,
       groupName: group
     }, function(data) {
-      resolve(data != "");
+      resolve(data != -1);
     });
   });
 }
@@ -166,7 +166,7 @@ function addGroupItemToDB(userID, item, groupID) {
   }
   return checkGroupItemDB(item, userID, groupID)
   .then(function(itemObj) {
-    if(!itemObj){
+    if(itemObj == null){
       return new Promise(function(resolve, reject) {
         $.post(PHP_ADD_ITEM, {
           itemID: item.id,
@@ -208,7 +208,7 @@ function getItem(userID, itemID, groupID) {
       itemID: itemID,
       groupID: groupID
     }, function(data) {
-      if (data == null) {
+      if (data == "") {
         resolve(null);
       } else {
         resolve(JSON.parse(data));

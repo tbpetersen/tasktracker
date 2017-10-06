@@ -393,6 +393,7 @@ function loadFromDB(){
   })
 
   .then(function(itemsFromDB){
+    console.log(itemsFromDB);
     return createTablesFromDPandAPI(itemsFromDB, user.tasks);
   })
 }
@@ -586,6 +587,7 @@ function redirectToHTTPS() {
 function saveTokenFromURL() {
   saveTrelloTokenFromURL();
   saveZendeskTokenFromURL();
+  window.history.replaceState(null, null, window.location.pathname);
 }
 
 

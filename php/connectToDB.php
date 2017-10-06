@@ -10,9 +10,6 @@ Description: connect to the sql server
   $usersTable  = "users";
   $groupsTable = "user_groups";
   $itemsTable  = "group_items";
-  try {
-    $tasktrackerDB = new mysqli( "localhost", "root", '',"tasktracker_db");
-} catch (Exception $e) {
-    $tasktrackerDB = null;
-}
+  $tasktrackerDB = new mysqli( "localhost", "root", '',"tasktracker_db");
+
  ?>

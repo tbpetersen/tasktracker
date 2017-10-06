@@ -15,15 +15,15 @@ Return value: the user's ID in the database or -1 if fail
   /*TODO: Check that the given username is not already in the users table */
 
   /* Add the user to the db */
-    $stmt = $tasktrackerDB->prepare("SELECT * FROM $usersTable WHERE username = (?) LIMIT 1;");
+    $stmt = $tasktrackerDB->prepare("SELECT userID FROM $usersTable WHERE username = (?) LIMIT 1;");
     $stmt->bind_param('s', $username);
     $success = $stmt->execute();
-    $result = $stmt->get_result();
-    if($result->num_rows == 0){
+    $result = $stmt->bind_result($col1);
+    $row = $stmt->fetch();
+    if($row == null){
       echo(-1);
     }else{
-      $row = $result->fetch_assoc();
-      echo($row['userID']);
+      echo($col1);
     }
 
     $tasktrackerDB->close();

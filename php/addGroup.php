@@ -16,12 +16,12 @@ $groupName = $_POST['groupName'];
 $groupID = $_POST['groupID'];
 $position = $_POST['position'];
 
-//TODO Work on when there are multiple groups with the same name.
-$stmt = $tasktrackerDB->prepare("SELECT * FROM $groupsTable WHERE groupName = (?) && userID = (?)");
-$stmt->bind_param('ss', $groupName, $userID);
+$stmt = $tasktrackerDB->prepare("SELECT groupID FROM $groupsTable WHERE groupID = (?) && userID = (?)");
+$stmt->bind_param('ss', $groupID, $userID);
 $success = $stmt->execute();
-$result = $stmt->get_result();
-if($groupID > -1){
+$result = $stmt->bind_result($col1);
+$rowFetchStatus = $stmt->fetch();
+if($rowFetchStatus){
   //TODO Modify table
   $stmt = $tasktrackerDB->prepare("UPDATE $groupsTable SET userID = (?), groupName = (?), position = (?) WHERE groupID = (?);");
   $stmt->bind_param('isii', $userID, $groupName, $position, $groupID);

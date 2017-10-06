@@ -20,6 +20,7 @@ Return value: 1 for success of -1 for failure
     $stmt = $tasktrackerDB->prepare("UPDATE $itemsTable SET position = (?) WHERE userID = (?) && itemID = (?);");
     $stmt->bind_param('iis', $newPosition, $userID, $itemID);
     $success = $stmt->execute();
+    
     if($success){
       echo(1);
     }else{
