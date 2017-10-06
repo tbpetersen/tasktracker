@@ -7,6 +7,7 @@ $(document).on('click', '.navbar-collapse.in',function(e) {
     }
 });
 
+
 // Theme change
 $("#changeThemeBtn").click(function() {
   var mainTheme = "css/main.css";
