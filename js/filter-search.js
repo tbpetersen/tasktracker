@@ -519,8 +519,6 @@ function filterInTable(table){
 
 function isGrey(tableID){
   let table = getTableNameFromID(tableID);
-  if(table == "Unsorted")
-    return false;
   //Get the background color of the row.
   var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
   //Is the background ofthe button grey?
