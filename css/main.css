@@ -220,7 +220,7 @@ td {
 }
 
 .ui-state-highlight {
-  background: #d3d3d3;
+  background: #A2270C;
 }
 
 .notFirst:hover {
@@ -264,7 +264,7 @@ select#sortList {
   transition: all 0.5s ease;
   width: 10%;
   z-index: 100;
-  background-color: whitemsoke;
+  background-color: whitesmoke;
 }
 
 .leftSidebarItem {
@@ -291,7 +291,7 @@ select#sortList {
 
 #leftSidebar h3 {
   margin-top: 0px;
-  background-color: #c60909;
+  background-color: #A2270C;
   height: 55px;
   display: flex;
   align-items: center;
@@ -338,7 +338,7 @@ select#sortList {
 
 #info-header {
   margin: 0;
-  background-color: #c60909;
+  background-color: #A2270C;
   height: 5%;
   width: 100%;
   font-weight: bold;
@@ -353,7 +353,7 @@ select#sortList {
   font-weight: bold;
   border-radius: 0;
   padding: 0.9em;
-  background-color: #c60909;
+  background-color: #A2270C;
   color: #111;
 }
 
@@ -366,7 +366,7 @@ select#sortList {
 
 .panel {
   direction: ltr;
-  margin: 15px;
+  margin: 10px; /* changed from 15 */
 }
 
 .panel .panel-title {
@@ -376,14 +376,29 @@ select#sortList {
 
 .panel-heading {
   background-color: #e8e8e8 !important;
+  padding: 7px 10px;
 }
 
-.panel-heading .glyphicon-remove-sign {
+.panel-heading .glyphicon-remove {
   float: right;
   cursor: pointer;
   margin-left: 10px;
-}
+  background-color: #A2270C;
+  color: #FFF;
+  padding: inherit;
+  height: 2vh; 
+  width: 3vh;
+  font-size: 15px;
+  /* For smaller x
+  height: 10px; 
+  width: 15px;
+  font-size: 10px;*/
+  text-align: center;
+  }
 
+.glyphicon-remove:hover {
+  background-color: black;
+}
 .panel-body {
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -651,6 +666,9 @@ select#sortList {
   padding: inherit;
 }
 
+#deleteTableBtn:hover {
+  background-color: black;
+}
 
 /* Scroll to top button */
 
@@ -703,7 +721,7 @@ select#sortList {
 }
 
 .btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
-  background-color: #c6595c !important;
+  background-color: #A2270C !important;
   border: none;
 }
 
@@ -746,7 +764,7 @@ select#sortList {
   margin-top: 15%;
   margin-left: auto;
   margin-right: auto;
-  border: 16px solid #f3f3f3; /* Light grey */
+  border: 16px solid lightgrey; /* Light grey */
   border-top: 16px solid #a2270c; /* Red */
   border-radius: 50%;
   width: 120px;
