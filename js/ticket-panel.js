@@ -37,7 +37,7 @@ function createTicketCard(task)
   var removeIcon = document.createElement("i");
   var link = document.createElement("a");
 
-  removeIcon.setAttribute("class", "glyphicon glyphicon-remove-sign");
+  removeIcon.setAttribute("class", "glyphicon glyphicon-remove");
   removeIcon.setAttribute("aria-hidden", "true");
   link.setAttribute("target", "_blank");
   link.setAttribute("href", url);
@@ -156,7 +156,7 @@ $("#clearBtn").click(function()
 
 /* Method that will delegate which ticket card is clicked and delete that
    particular card */
-$(".info-panel").on("click", ".glyphicon-remove-sign", function(e)
+$(".info-panel").on("click", ".glyphicon-remove", function(e)
 {
   var card = $(this).closest(".panel-default");
   var index = card.attr("id");
