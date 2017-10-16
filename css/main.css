@@ -344,16 +344,32 @@ select#sortList {
 
 /* Card list header */
 
+#info-header-container{
+  height: 5%;
+  width: 100%;
+}
+
 #info-header {
   margin: 0;
   background-color: #A2270C;
-  height: 5%;
-  width: 100%;
+  width: 85%;
+  height: 100%;
   font-weight: bold;
   font-size: 2vw;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#info-header-container *{
+  float: left;
+}
+
+#close-ticket-panel-button{
+  height: 100%;
+  width: 15%;
+  margin: 0;
+  padding: 0;
 }
 
 #clearBtn {
@@ -394,11 +410,11 @@ select#sortList {
   background-color: #A2270C;
   color: #FFF;
   padding: inherit;
-  height: 2vh; 
+  height: 2vh;
   width: 3vh;
   font-size: 15px;
   /* For smaller x
-  height: 10px; 
+  height: 10px;
   width: 15px;
   font-size: 10px;*/
   text-align: center;
@@ -775,6 +791,8 @@ select#sortList {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
 
 html {
     overflow-y:scroll;

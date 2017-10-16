@@ -157,7 +157,11 @@ $("#clearBtn").click(function()
 {
   $("#card-list").empty();
   cardsCreated.clear();
+  closeTicketPanel();
 });
+
+/* Close the ticket panel when clicked */
+$("#close-ticket-panel-button").click(closeTicketPanel);
 
 
 /* Method that will delegate which ticket card is clicked and delete that
