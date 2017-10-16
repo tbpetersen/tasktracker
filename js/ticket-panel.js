@@ -132,18 +132,24 @@ $(".main").on("click", "table > tbody > tr", function(e)
 $("#openInfo").click(function(e)
 {
   e.preventDefault();
+  onTicketPanelClicked();
+});
+
+function onTicketPanelClicked(){
+  let openInfoPanelButton = document.getElementById("openInfo");
+
   $(".info-panel").toggleClass("toggled");
   $(".scrollTop").toggleClass("toggled");
 
-    if ($(this).text() === "Open Ticket Panel")
+    if ($(openInfoPanelButton).text() === "Open Ticket Panel")
     {
-      $(this).text("Close Ticket Panel");
+      $(openInfoPanelButton).text("Close Ticket Panel");
     }
     else
     {
-      $(this).text("Open Ticket Panel");
+      $(openInfoPanelButton).text("Open Ticket Panel");
     }
-});
+}
 
 
 /* Clears all ticket cards inside ticket panel */
@@ -168,5 +174,26 @@ $(".info-panel").on("click", ".glyphicon-remove", function(e)
   card.addClass("animated fadeOutRight");
   card.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function() {
     $(this).remove();
+
+    if(ticketPanelIsEmpty()){
+      closeTicketPanel();
+    }
+
   });
 });
+
+function closeTicketPanel(){
+  let openInfoPanelButton = document.getElementById("openInfo");
+  if(ticketPanelIsOpen()){
+    onTicketPanelClicked();
+  }
+}
+
+function ticketPanelIsEmpty(){
+  return $("#card-list")[0].children.length == 0;
+}
+
+function ticketPanelIsOpen(){
+  let openInfoPanelButton = document.getElementById("openInfo");
+  return $(openInfoPanelButton).text() != "Open Ticket Panel";
+}
