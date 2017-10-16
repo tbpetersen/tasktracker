@@ -146,10 +146,6 @@ function deleteUnsorted() {
 
 // Method to delete table and table wrappers as well as removing deleted group from db
 function deleteTable(tableObj) {
-  if(tableObj.id == unsortedID){
-    return;
-  }
-
   let tableWrapper = $('#' + wrapperPrefix + tableObj.id);
   let unsortedTableObj = user.getTableByID(unsortedID);
 

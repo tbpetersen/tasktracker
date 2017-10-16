@@ -106,12 +106,8 @@ body.toggled .place {
 
 .btn, button {
   background-color: transparent;
-  border-radius: 0
+  border-radius: 0;
 }
-
-/*h1, h2, h3 {
-  font-family: 'Roboto', sans-serif;
-}*/
 
 h3 {
   font-weight: bold;
@@ -299,6 +295,18 @@ select#sortList {
 }
 
 
+.fadeInLeft{
+  border: 1px solid black;
+}
+.fadeInLeft:hover{
+  background-color: #eee;
+}
+
+.fadeInLeft:active{
+  background-color: #ccc;
+}
+
+
 /* Side info panel */
 
 .info-panel {
@@ -413,6 +421,10 @@ select#sortList {
   background-color: green;
 }
 
+#navbar-collapse:active{
+  background-color: #ccc;
+}
+
 .navbar {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
@@ -454,29 +466,10 @@ select#sortList {
   background-color: #dcdcdc;
 }
 
-/*.navbar-collapse li>.btn {
-  width: 100%;
-  text-align: left;
-}
-*/
 .navbar-nav li>.btn {
-  /*border-radius: 0;*/
   height: 55px;
-  /*background-color: transparent;*/
 }
 
-/*.navbar-nav li>.btn:active {
-  background: transparent;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-*/
-
-/*.btn, button:not(.navbar-toggle .hamburger):active {
-  background-color: transparent;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}*/
 
 #app-title {
   cursor: pointer;
@@ -649,6 +642,12 @@ select#sortList {
   background-color: #A2270C;
   color: #FFF;
   padding: inherit;
+}
+#deleteTableBtn:hover{
+  background-color: #7a0902;
+}
+#deleteTableBtn:active{
+  background-color: black;
 }
 
 

@@ -393,7 +393,6 @@ function loadFromDB(){
   })
 
   .then(function(itemsFromDB){
-    console.log(itemsFromDB);
     return createTablesFromDPandAPI(itemsFromDB, user.tasks);
   })
 }

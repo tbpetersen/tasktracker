@@ -320,6 +320,7 @@ function createFilters(){
   for(i = 0; i < filters.length; i++){
     createFilterButton(filters[i]);
   }
+  filterAll();
 }
 
 
@@ -449,6 +450,7 @@ function filterAll() {
   nightTheme = nightTheme === currentTheme;
   var tables, i, currentRow, filterBar;
   var whitesmoke = "#F5F5F5";
+  var filterAllButton = document.getElementById("filter View All");
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
   //If the Filter All button was pressed, change the button colors to default.
@@ -468,10 +470,17 @@ function filterAll() {
       filterInTable(tables[i].id);
     }
   }
+  if(filterAllButton){
+    if(nightTheme)
+      filterAllButton.style.backgroundColor = "rgb(23, 23, 23)";
+    else
+      filterAllButton.style.backgroundColor = "lightgrey";
+  }
 }
 
 
 function filterIn(tableIDReal, button){
+  document.getElementById("filter View All").style.backgroundColor = "";
   //Hide unwanted tables.
   let tableName = getTableNameFromID(tableIDReal)
   if(!isGrey(tableIDReal) && tableName !== button.innerHTML){
