@@ -37,7 +37,7 @@ function createTicketCard(task)
   var removeIcon = document.createElement("i");
   var link = document.createElement("a");
 
-  removeIcon.setAttribute("class", "glyphicon glyphicon-remove");
+  removeIcon.setAttribute("class", "glyphicon glyphicon-remove deleteBtn");
   removeIcon.setAttribute("aria-hidden", "true");
   link.setAttribute("target", "_blank");
   link.setAttribute("href", url);
@@ -216,6 +216,7 @@ $("#close-ticket-panel-button").click(closeTicketPanel);
    particular card */
 $(".info-panel").on("click", ".glyphicon-remove", function(e)
 {
+
   var card = $(this).closest(".panel-default");
   var index = card.attr("id");
 
@@ -223,14 +224,13 @@ $(".info-panel").on("click", ".glyphicon-remove", function(e)
     cardsCreated.delete(index);
   }
 
+  if(isLastTicketInPanel()){
+    closeTicketPanel();
+  }
+
   card.addClass("animated fadeOutRight");
   card.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function() {
     $(this).remove();
-
-    if(ticketPanelIsEmpty()){
-      closeTicketPanel();
-    }
-
   });
 });
 
@@ -249,8 +249,8 @@ function closeNavBar(){
   }
 }
 
-function ticketPanelIsEmpty(){
-  return $("#card-list")[0].children.length == 0;
+function isLastTicketInPanel(){
+  return $("#card-list")[0].children.length == 1;
 }
 
 function ticketPanelIsOpen(){

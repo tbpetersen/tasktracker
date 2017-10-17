@@ -49,9 +49,9 @@
           <span class="glyphicon glyphicon-menu-hamburger"></span>
         </button>
 
-        <a class="navbar-brand" href="index.html"><img src="images/logo.png"
+        <div class="navbar-brand"><img src="images/logo.png"
           id="logo" alt="SDSC" title="Go to Holonet homepage">
-        </a>
+        </div>
       </div>
 
       <h1 id="app-title"><a href="index.html">Zello</a></h1>
@@ -104,7 +104,7 @@
   <!-- Info panel -->
   <div id="ticket-panel-container" class="info-panel">
     <div id="info-header-container">
-      <button id="close-ticket-panel-button">X</button>
+      <button id="close-ticket-panel-button" class="glyphicon glyphicon-menu-right deleteBtn" title="Hide ticket information"></button>
       <h2 id="info-header">Ticket Information</h2>
     </div>
 
@@ -170,6 +170,29 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirm">Okay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for redirecting to holonet -->
+  <div class="modal fade" id="redirectToHostModal" tabindex="-1" role="dialog" aria-labelledby="redirectToHolonetModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span id="closeModal" aria-hidden="true">&times;</span>
+          </button>
+          <span class="fa fa-exclamation-triangle" aria-hidden="true">
+            <h3 class="modal-title" id="warningLabel"> Leaving Zello </h5>
+          </span>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to go back to the Holonet home page?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="redirectToHost()">Okay</button>
         </div>
       </div>
     </div>

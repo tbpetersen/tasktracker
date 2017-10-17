@@ -579,7 +579,7 @@ function isNotUsingHTTPS(){
 
 
 function redirectToHTTPS() {
-    window.location.assign('https://' + window.location.hostname);
+    window.location.assign('https://' + window.location.hostname + window.location.pathname);
 }
 
 
