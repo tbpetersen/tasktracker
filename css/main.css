@@ -775,6 +775,22 @@ select#sortList {
   display: block;
 }
 
+#tableTitle{
+  display: inline-block;
+  cursor: pointer;
+  width: auto;
+}
+
+#tableTitle:hover{
+  /*
+  transform: scale(1.01);
+  */
+  color: white;
+  background: #a2270c;
+  border-radius: 5px;
+
+}
+
 .loader {
   margin-top: 15%;
   margin-left: auto;
@@ -791,8 +807,6 @@ select#sortList {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-
 
 html {
     overflow-y:scroll;

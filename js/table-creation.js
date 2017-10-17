@@ -119,6 +119,7 @@ function createTableWrapper(tableObj, isNewTable) {
 
   tableWrapper.setAttribute("id", wrapperName);
   title.setAttribute("id", "tableTitle");
+  title.setAttribute("title", "Click to change name");
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
