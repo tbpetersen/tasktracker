@@ -127,7 +127,6 @@ $(".main").on("click", "table > tbody > tr", function(e)
   }
 });
 
-
 /* Click event listener for openInfo to toggle the ticket panel view */
 $("#openInfo").click(function(e)
 {
@@ -160,6 +159,55 @@ $("#clearBtn").click(function()
   closeTicketPanel();
 });
 
+/* Close panels when the user clicks off them */
+$(document).click(function(e){
+  let currentElement = e.target;
+
+  if(userClickedOffTicketPanel(e.target)){
+    closeTicketPanel();
+  }
+
+  if(userClickedOffMainNavBar(e.target)){
+    closeNavBar();
+  }
+});
+
+function userClickedOffTicketPanel(element){
+  let openTicketPanelButton = document.getElementById("openInfo");
+
+  let isChildOfTicketPanel = elementIsChildOfTicketPanel(element);
+  let isButtonToOpenTicketPanel = element == openTicketPanelButton;
+  let isTicketRow = element.tagName == "TD";
+
+  return !(isChildOfTicketPanel || isButtonToOpenTicketPanel || isTicketRow);
+}
+
+function userClickedOffMainNavBar(element){
+  let isExpandButton = element == document.getElementById("navbar-collapse");
+  return !(elementIsChildOfMainNavBar(element) || isExpandButton);
+}
+
+function elementIsChildOfContainer(element, container){
+  let currentElement = element;
+
+  do{
+    if(currentElement == container){
+      return true;
+    }
+  }while( (currentElement = currentElement.parentNode) != null );
+  return false;
+}
+
+function elementIsChildOfTicketPanel(element){
+  let ticketPanelContainer = document.getElementById("ticket-panel-container");
+  return elementIsChildOfContainer(element, ticketPanelContainer);
+}
+
+function elementIsChildOfMainNavBar(element){
+  let mainNavBar = document.getElementById("navbar-links");
+  return elementIsChildOfContainer(element, mainNavBar);
+}
+
 /* Close the ticket panel when clicked */
 $("#close-ticket-panel-button").click(closeTicketPanel);
 
@@ -187,9 +235,17 @@ $(".info-panel").on("click", ".glyphicon-remove", function(e)
 });
 
 function closeTicketPanel(){
-  let openInfoPanelButton = document.getElementById("openInfo");
   if(ticketPanelIsOpen()){
     onTicketPanelClicked();
+  }
+}
+
+function closeNavBar(){
+  let mainNavBar = document.getElementById("navbar-links");
+  let isExpanded = $(mainNavBar).attr("aria-expanded") == "true";
+
+  if(isExpanded){
+    $("#navbar-collapse").click();
   }
 }
 
