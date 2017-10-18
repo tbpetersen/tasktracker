@@ -343,6 +343,7 @@ h3#filters {
   padding: 0.9em;
   background-color: #B93C3C;
   color: #ddd;
+  border: 2px solid grey;
 }
 
 #clearBtn:active {
@@ -410,7 +411,6 @@ h3#filters {
   background-color: #171717;
   border-color: transparent;
   height: 55px;
-/*  color: #BDBDBD;*/
 }
 
 .navbar.toggled {
@@ -766,4 +766,8 @@ h3#filters {
   margin-top: 1%;
   width: 95%;
   display: block;
+}
+html {
+  overflow-x: hidden;
+  overflow-y:scroll;
 }
