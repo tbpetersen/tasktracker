@@ -513,6 +513,7 @@ h3#filters {
 }
 
 .hamburger:hover {
+  background: #333;
   outline: none;
 }
 
@@ -522,6 +523,7 @@ h3#filters {
 
 .hamburger:active {
   outline: none;
+  background: #555;
 }
 
 .hamburger.is-closed:before {
@@ -637,6 +639,14 @@ h3#filters {
   background-color: #B93C3C;
   color: #FFF;
   padding: inherit;
+  border: 2px solid dimgrey;
+  border-radius: 5px;
+}
+#deleteTableBtn:hover{
+  background-color: #7a0902;
+}
+#deleteTableBtn:active{
+  background-color: black;
 }
 
 

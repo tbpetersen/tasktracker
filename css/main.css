@@ -109,6 +109,10 @@ body.toggled .place {
   border-radius: 0;
 }
 
+.btn:hover{
+  background-color: lightgrey;
+}
+
 h3 {
   font-weight: bold;
   color:#A2270C;
@@ -550,6 +554,7 @@ select#sortList {
 
 .hamburger:hover {
   outline: none;
+  background-color: #BBB;
 }
 
 .hamburger:focus {
@@ -558,6 +563,7 @@ select#sortList {
 
 .hamburger:active {
   outline: none;
+  background-color: #999;
 }
 
 .hamburger.is-closed:before {
@@ -673,6 +679,8 @@ select#sortList {
   background-color: #A2270C;
   color: #FFF;
   padding: inherit;
+  border: 2px solid dimgrey;
+  border-radius: 5px;
 }
 #deleteTableBtn:hover{
   background-color: #7a0902;
@@ -681,9 +689,6 @@ select#sortList {
   background-color: black;
 }
 
-#deleteTableBtn:hover {
-  background-color: black;
-}
 
 /* Scroll to top button */
 
@@ -735,11 +740,10 @@ select#sortList {
   border: none;
 }
 
-.btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
-  background-color: #A2270C !important;
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #82070C !important;
   border: none;
 }
-
 
 /* Table wrappers */
 
