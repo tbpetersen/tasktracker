@@ -70,6 +70,7 @@ h3#filters {
 #clearBtn {
   background-color: #B93C3C;
   color: #ddd;
+  border: 2px solid grey;
 }
 
 #clearBtn:active {
@@ -101,7 +102,6 @@ h3#filters {
 .navbar {
   background-color: #171717;
   border-color: transparent;
-/*  color: #BDBDBD;*/
 }
 
 .navbar-toggle, .navbar-toggle:hover, .navbar-toggle:active {
@@ -239,4 +239,8 @@ h3#filters {
 
 .table-wrapper {
   background-color: #1D1D1D;
+}
+html {
+  overflow-x: hidden;
+  overflow-y:scroll;
 }

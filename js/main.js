@@ -97,6 +97,11 @@ $(document).ready(function() {
     hamburger_cross();
   });
 
+  $("#logo").click(function(){
+    $("#redirectNotif").modal("show");
+  //  window.location.href = "http://holonet.sdsc.edu";
+  })
+
   function hamburger_cross() {
     if (isClosed == true) {
       trigger.removeClass("is-open");

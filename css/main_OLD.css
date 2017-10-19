@@ -109,9 +109,20 @@ body.toggled .place {
   border-radius: 0;
 }
 
+button.sortButton:hover {
+  color: #7a0902;
+}
+button.sortButton:active {
+  color: black;
+}
+
+.btn:hover{
+  background-color: lightgrey;
+}
+
 h3 {
   font-weight: bold;
-  color:#A2270C;
+  color:#D42127;
 }
 
 h3#filters{
@@ -140,7 +151,7 @@ tbody
 
 th {
   white-space: nowrap;
-  color: #A2270C;/*
+  color: #D42127;/*
   background-color: #A2270C;
   color: #FFF;*/
 }
@@ -287,7 +298,7 @@ select#sortList {
 
 #leftSidebar h3 {
   margin-top: 0px;
-  background-color: #A2270C;
+  background-color: #D42127;
   height: 55px;
   display: flex;
   align-items: center;
@@ -351,7 +362,7 @@ select#sortList {
 
 #info-header {
   margin: 0;
-  background-color: #A2270C;
+  background-color: #D42127;
   width: 85%;
   height: 100%;
   font-weight: bold;
@@ -379,12 +390,15 @@ select#sortList {
   font-weight: bold;
   border-radius: 0;
   padding: 0.9em;
-  background-color: #A2270C;
+  background-color: #D42127;
   color: #111;
+  border: 2px solid grey;
 }
-
-#clearBtn:active {
+#clearBtn:hover {
   background-color: #9e0707;
+}
+#clearBtn:active {
+  background-color: #82070c;
 }
 
 
@@ -522,15 +536,20 @@ select#sortList {
 }
 
 #app-title a, a:hover {
-  color: #A2270C;
+  color: #D42127;
   text-decoration: none;
 }
 
 
 /* Search form */
 
+.form-control:hover {
+  border-color: #D42127;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
+}
+
 .form-control:focus {
-  border-color: #A2270C;
+  border-color: #D42127;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
 }
 
@@ -556,6 +575,7 @@ select#sortList {
 
 .hamburger:hover {
   outline: none;
+  background-color: #BBB;
 }
 
 .hamburger:focus {
@@ -564,6 +584,7 @@ select#sortList {
 
 .hamburger:active {
   outline: none;
+  background-color: #999;
 }
 
 .hamburger.is-closed:before {
@@ -683,6 +704,11 @@ select#sortList {
   text-align: center;
   position: absolute;
   right: 0;
+  background-color: #D42127;
+  color: #FFF;
+  padding: inherit;
+  border: 2px solid dimgrey;
+  border-radius: 5px;
 }
 
 .panel-heading .deleteBtn{
@@ -700,9 +726,6 @@ select#sortList {
   background-color: black;
 }
 
-.deleteBtn:hover {
-  background-color: black;
-}
 
 /* Scroll to top button */
 .scrollTop {
@@ -773,11 +796,10 @@ select#sortList {
   border: none;
 }
 
-.btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
-  background-color: #A2270C !important;
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #82070C !important;
   border: none;
 }
-
 
 /* Table wrappers */
 
@@ -820,11 +842,8 @@ select#sortList {
 }
 
 #tableTitle:hover{
-  /*
-  transform: scale(1.01);
-  */
   color: white;
-  background: #a2270c;
+  background: #D42127;
   border-radius: 5px;
 
 }
@@ -838,7 +857,7 @@ select#sortList {
   margin-left: auto;
   margin-right: auto;
   border: 16px solid lightgrey; /* Light grey */
-  border-top: 16px solid #a2270c; /* Red */
+  border-top: 16px solid #D42127; /* Red */
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -851,5 +870,6 @@ select#sortList {
 }
 
 html {
-    overflow-y:scroll;
+  overflow-x: hidden;
+  overflow-y:scroll;
 }
