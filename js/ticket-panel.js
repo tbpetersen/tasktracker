@@ -34,7 +34,7 @@ function createTicketCard(task)
 
   // Title
   var panelTitle = document.createElement("h3");
-  var removeIcon = document.createElement("i");
+  var removeIcon = document.createElement("button");
   var link = document.createElement("a");
 
   removeIcon.setAttribute("class", "glyphicon glyphicon-remove deleteBtn");
@@ -44,9 +44,10 @@ function createTicketCard(task)
   link.innerHTML = cardTitle;
   panelTitle.setAttribute("class", "panel-title");
 
-  panelTitle.appendChild(removeIcon);
+  //panelTitle.appendChild(removeIcon);
   panelTitle.appendChild(link);
   panelHead.appendChild(panelTitle);
+  panelHead.appendChild(removeIcon);
 
   // Body
   var body = document.createElement("div");
@@ -174,9 +175,10 @@ $(document).click(function(e){
 
 function userClickedOffTicketPanel(element){
   let openTicketPanelButton = document.getElementById("openInfo");
+  let openPanelArrow = document.getElementById("openPanelArrow");
 
   let isChildOfTicketPanel = elementIsChildOfTicketPanel(element);
-  let isButtonToOpenTicketPanel = element == openTicketPanelButton;
+  let isButtonToOpenTicketPanel = element == openTicketPanelButton || element == openPanelArrow;
   let isTicketRow = element.tagName == "TD";
 
   return !(isChildOfTicketPanel || isButtonToOpenTicketPanel || isTicketRow);
@@ -211,6 +213,12 @@ function elementIsChildOfMainNavBar(element){
 /* Close the ticket panel when clicked */
 $("#close-ticket-panel-button").click(closeTicketPanel);
 
+$("#openPanelArrow").click(function(e){
+  e.preventDefault();
+
+  console.log("click");
+  onTicketPanelClicked();
+});
 
 /* Method that will delegate which ticket card is clicked and delete that
    particular card */

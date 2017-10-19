@@ -51,7 +51,7 @@
 }
 
 @media only screen and (max-width: 1150px) {
-  #app-title {
+  #app-title{
     visibility: hidden;
   }
 }
@@ -355,7 +355,7 @@ select#sortList {
   width: 85%;
   height: 100%;
   font-weight: bold;
-  font-size: 2vw;
+  font-size: 1vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -396,8 +396,12 @@ select#sortList {
 }
 
 .panel .panel-title {
+  display: inline;
   font-size: 18px;
   font-weight: bold;
+  margin: 0;
+  width: 80%;
+  display: inline-block;
 }
 
 .panel-heading {
@@ -682,7 +686,9 @@ select#sortList {
 }
 
 .panel-heading .deleteBtn{
-  padding-top: 3px;
+  display: block;
+  text-align: center;
+  margin: 0;
 }
 
 
@@ -699,15 +705,14 @@ select#sortList {
 }
 
 /* Scroll to top button */
-
 .scrollTop {
   width: 52px;
   height: 52px;
+  font-size: 52px;
   line-height: 52px;
   text-align: center;
   background-color: transparent;
   font-weight: bold;
-  font-size: 52px;
   position: fixed;
   margin: 20px;
   bottom: 0%;
@@ -719,6 +724,26 @@ select#sortList {
 
 .scrollTop.toggled {
   right: 20%;
+}
+
+#openPanelArrow {
+  width: 52px;
+  height: 52px;
+  font-size: 52px;
+  line-height: 52px;
+  text-align: center;
+  background-color: transparent;
+  font-weight: bold;
+  position: fixed;
+  margin: 20px;
+  top: 50px;
+  right: 0%;
+  transition: right 0.5s ease;
+  color: #000;
+}
+
+#openPanelArrow:hover{
+  color: #A2270C;
 }
 
 /* Delete Table Notification */
@@ -802,6 +827,10 @@ select#sortList {
   background: #a2270c;
   border-radius: 5px;
 
+}
+
+#main-container{
+  width: 90%;
 }
 
 .loader {

@@ -1,0 +1,176 @@
+body {
+  background-color: whitesmoke;
+}
+
+.btn, button {
+  background-color: transparent;
+}
+
+h3 {
+  color:#A2270C;
+}
+
+h3#filters{
+  color: #222;
+}
+
+h2#info-header {
+    color: #222;
+}
+
+th {
+  color: #A2270C;
+}
+
+td {
+  border-color: #ededed;
+}
+
+.ui-state-highlight {
+  background: #d3d3d3;
+}
+
+.notFirst:hover {
+  background-color: #A2270C;
+  color: #FFF;
+}
+
+select#sortList {
+  color: black;
+}
+
+#leftSidebar {
+  background-color: whitemsoke;
+}
+
+.leftSidebarItem {
+  background-color: transparent;
+}
+
+.leftSidebarItem:hover {
+  background-color: lightgrey;
+}
+
+#leftSidebar h3 {
+  background-color: #c60909;
+}
+
+.info-panel {
+  background-color: #f1f1f1;
+}
+
+#info-header {
+  background-color: #c60909;
+}
+
+#clearBtn {
+  background-color: #c60909;
+  color: #111;
+}
+#clearBtn:active {
+  background-color: #9e0707;
+}
+
+.panel-heading {
+  background-color: #e8e8e8 !important;
+}
+
+.panel-body a {
+  color: #A2270C;
+}
+
+.panel-heading a {
+  color: #A2270C;
+}
+
+.panel-heading a:hover {
+  color: #000;
+}
+
+.navbar > li > ul  > .dropdown-menu {
+  background-color: green;
+}
+
+.navbar {
+  background-color: #e8e8e8;
+  border-color: transparent;
+}
+
+.navbar-collapse {
+  background-color: #e8e8e8;
+}
+
+#navbar-links li:not(#searchBar):hover {
+  background-color: #dcdcdc;
+}
+
+#app-title a, a:hover {
+  color: #A2270C;
+}
+
+.form-control:focus {
+  border-color: #A2270C;
+}
+
+.hamburger.is-closed:before {
+  color: #000;
+}
+
+.hamburger.is-closed .hamb-top {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.hamburger.is-closed .hamb-middle {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.hamburger.is-closed .hamb-bottom {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.hamburger.is-open .hamb-top {
+  background-color: #000;
+}
+.hamburger.is-open .hamb-middle {
+  background-color: #000;
+}
+
+.hamburger.is-open .hamb-bottom {
+  background-color: #000;
+}
+
+.hamburger.is-open:before {
+  color: #000;
+}
+
+.sortButton {
+  background-color: transparent;
+}
+#deleteTableBtn {
+  background-color: #A2270C;
+  color: #FFF;
+}
+.scrollTop {
+  background-color: transparent;
+  color: #000;
+}
+
+.modal-header {
+  color: #A2270C;
+}
+
+.btn-primary {
+  background-color: #A2270C;
+}
+
+.btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
+  background-color: #c6595c !important;
+}
+
+.table-wrapper {
+  background-color: #fcfcfc;
+}
+
+.wrapper-header {
+  color: #A2270C;
+}
