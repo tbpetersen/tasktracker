@@ -381,21 +381,6 @@ select#sortList {
   padding: 7px 10px;
 }
 
-.panel-heading .glyphicon-remove {
-  float: right;
-  cursor: pointer;
-  margin-left: 10px;
-  padding: inherit;
-  height: 2vh;
-  width: 3vh;
-  font-size: 15px;
-  /* For smaller x
-  height: 10px;
-  width: 15px;
-  font-size: 10px;*/
-  text-align: center;
-  }
-
 .glyphicon-remove:hover {
 }
 .panel-body {
@@ -413,9 +398,6 @@ select#sortList {
 
 .panel-heading a {
   font-weight: bold;
-}
-
-.panel-heading a:hover {
 }
 
 /* Navbar */
@@ -633,9 +615,8 @@ select#sortList {
 }
 
 .panel-heading .deleteBtn{
-  display: block;
-  text-align: center;
-  margin: 0;
+  display: inline;
+  float: right;
 }
 
 /* Scroll to top button */
