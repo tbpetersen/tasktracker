@@ -109,6 +109,13 @@ body.toggled .place {
   border-radius: 0;
 }
 
+button.sortButton:hover {
+  color: #7a0902;
+}
+button.sortButton:active {
+  color: black;
+}
+
 .btn:hover{
   background-color: lightgrey;
 }
