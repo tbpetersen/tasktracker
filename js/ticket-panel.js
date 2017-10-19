@@ -141,14 +141,14 @@ function onTicketPanelClicked(){
   $(".info-panel").toggleClass("toggled");
   $(".scrollTop").toggleClass("toggled");
 
-    if ($(openInfoPanelButton).text() === "Open Ticket Panel")
-    {
-      $(openInfoPanelButton).text("Close Ticket Panel");
-    }
-    else
-    {
-      $(openInfoPanelButton).text("Open Ticket Panel");
-    }
+    // if ($(openInfoPanelButton).text() === "Open Ticket Panel")
+    // {
+    //   $(openInfoPanelButton).text("Close Ticket Panel");
+    // }
+    // else
+    // {
+    //   $(openInfoPanelButton).text("Open Ticket Panel");
+    // }
 }
 
 
@@ -215,8 +215,6 @@ $("#close-ticket-panel-button").click(closeTicketPanel);
 
 $("#openPanelArrow").click(function(e){
   e.preventDefault();
-
-  console.log("click");
   onTicketPanelClicked();
 });
 
@@ -263,5 +261,5 @@ function isLastTicketInPanel(){
 
 function ticketPanelIsOpen(){
   let openInfoPanelButton = document.getElementById("openInfo");
-  return $(openInfoPanelButton).text() != "Open Ticket Panel";
+  return $("#ticket-panel-container").hasClass("toggled");
 }
