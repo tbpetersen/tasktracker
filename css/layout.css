@@ -70,6 +70,13 @@
   }
 }
 
+.red-color:hover, .red-background:hover{
+  color: #62070C
+}
+.red-color:active, .red-background:active{
+  color: black;
+}
+
 body {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
@@ -352,13 +359,27 @@ select#sortList {
   padding: 0;
   border-right: 1px #222 solid;
   top: 0;
+  color: #222;
+}
+#close-ticket-panel-button:hover{
+  background-color: #62070C;
+}
+#close-ticket-panel-button:active{
+  background-color: black;
 }
 
 #clearBtn {
   height: 5%;
   font-weight: bold;
+  border: 2px solid dimgrey;
   border-radius: 0;
   padding: 0.9em;
+}
+#clearBtn:hover{
+  background-color: #62070C;
+}
+#clearBtn:active{
+  background-color: black;
 }
 
 /* Individual cards */
@@ -470,6 +491,9 @@ select#sortList {
 
 /* Search form */
 
+.form-control:hover {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
+}
 .form-control:focus {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
 }
@@ -607,6 +631,17 @@ select#sortList {
   width: 25px;
 }
 
+#deleteTableBtn{
+  border: 2px solid dimgrey;
+  border-radius: 5px;
+}
+#deleteTableBtn:hover{
+  background-color: #62070C;
+}
+#deleteTableBtn:active{
+  background-color: black;
+}
+
 .wrapper-header .deleteBtn{
   display: block;
   text-align: center;
@@ -654,6 +689,7 @@ select#sortList {
 }
 
 #openPanelArrow:hover{
+
 }
 
 /* Delete Table Notification */

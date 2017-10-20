@@ -152,8 +152,8 @@ function makeButtons(tableName) {
   var modCell = table.rows[0].cells[3];
   var catCell = table.rows[0].cells[4];
 
-  var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
-  var button2 = "glyphicon glyphicon-remove deleteBtn";
+  var button1 = "sortButton red-color glyphicon glyphicon-triangle-bottom";
+  var button2 = "deleteBtn red-background glyphicon glyphicon-remove";
 
   // Create the sorting buttons
   var titleSort = document.createElement("button");

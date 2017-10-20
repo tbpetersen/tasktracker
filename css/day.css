@@ -30,6 +30,14 @@ td {
   border-color: #ededed;
 }
 
+.redBackground{
+  background-color: #D42127;
+}
+
+.redColor{
+  color: #D42127;
+}
+
 .ui-state-highlight {
   background: #d3d3d3;
 }
