@@ -202,8 +202,8 @@ select#sortList {
 #openPanelArrow {
   background-color: #e8e8e8;
   color: #A2270C;
-  border-left: 1px solid darkgrey;
-  border-bottom: 1px solid darkgrey;
+  border-left-color: darkgrey;
+  border-bottom-color: darkgrey;
 }
 #openPanelArrow:hover{
   background-color: lightgrey;

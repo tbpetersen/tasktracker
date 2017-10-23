@@ -195,8 +195,8 @@ h3#filters {
 #openPanelArrow {
   background-color: #171717;
   color: #A2270C;
-  border-left: 1px solid darkgrey;
-  border-bottom: 1px solid darkgrey;
+  border-left-color: darkgrey;
+  border-bottom-color: darkgrey;
 }
 #openPanelArrow:hover{
   background-color: dimgrey;

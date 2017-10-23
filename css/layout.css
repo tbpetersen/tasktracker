@@ -688,6 +688,8 @@ select#sortList {
   transition: right 0.5s ease;
   padding-top: 1.75vh;
   border-bottom-left-radius: 5px;
+  border-left:  1px solid;
+  border-bottom:  1px solid;
 }
 
 /* Delete Table Notification */
