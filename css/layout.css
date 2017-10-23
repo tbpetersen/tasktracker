@@ -634,6 +634,7 @@ select#sortList {
 #deleteTableBtn{
   border: 2px solid dimgrey;
   border-radius: 5px;
+  width: 5vh;
 }
 #deleteTableBtn:hover{
   background-color: #62070C;
@@ -786,5 +787,6 @@ select#sortList {
 }
 
 html {
-    overflow-y:scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
