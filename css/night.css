@@ -102,6 +102,7 @@ h3#filters {
 .navbar {
   background-color: #171717;
   border-color: transparent;
+  border-bottom: 1px solid darkgrey;
 }
 
 .navbar-toggle, .navbar-toggle:hover, .navbar-toggle:active {
@@ -191,7 +192,20 @@ h3#filters {
   color: #FFF;
 }
 
-.scrollTop, #openPanelArrow {
+#openPanelArrow {
+  background-color: #171717;
+  color: #A2270C;
+  border-left: 1px solid darkgrey;
+  border-bottom: 1px solid darkgrey;
+}
+#openPanelArrow:hover{
+  background-color: dimgrey;
+}
+#openPanelArrow:active{
+  background-color: grey;
+}
+
+.scrollTop {
   background-color: transparent;
   color: #BDBDBD;
 }

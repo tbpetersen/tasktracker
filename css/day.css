@@ -104,13 +104,15 @@ select#sortList {
   color: #000;
 }
 
+.navbar, .nav, #openPanelArrow{
+  border-bottom: 1px solid darkgrey;
+}
+
 .navbar > li > ul  > .dropdown-menu {
-  background-color: green;
 }
 
 .navbar {
   background-color: #e8e8e8;
-  border-color: transparent;
 }
 
 .navbar-collapse {
@@ -198,10 +200,14 @@ select#sortList {
 }
 
 #openPanelArrow {
-  background-color: transparent;
-  color: #000;
-}
-
-#openPanelArrow:hover{
+  background-color: #e8e8e8;
   color: #A2270C;
+  border-left: 1px solid darkgrey;
+  border-bottom: 1px solid darkgrey;
+}
+#openPanelArrow:hover{
+  background-color: lightgrey;
+}
+#openPanelArrow:active{
+  background-color: darkgrey;
 }

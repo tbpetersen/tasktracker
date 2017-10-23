@@ -467,7 +467,7 @@ select#sortList {
 }
 
 .navbar-nav li>.btn {
-  height: 55px;
+  height: 54px;
 }
 
 
@@ -676,21 +676,18 @@ select#sortList {
 }
 
 #openPanelArrow {
-  width: 52px;
-  height: 52px;
-  font-size: 52px;
-  line-height: 52px;
+  width: 4vh;
+  height: 7vh;
+  font-size: 4vh;
+  line-height: 3vh;
   text-align: center;
   font-weight: bold;
   position: fixed;
-  margin: 20px;
-  top: 50px;
+  top: 6%;
   right: 0%;
   transition: right 0.5s ease;
-}
-
-#openPanelArrow:hover{
-
+  padding-top: 1.75vh;
+  border-bottom-left-radius: 5px;
 }
 
 /* Delete Table Notification */
