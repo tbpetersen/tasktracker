@@ -37,7 +37,7 @@ function createTicketCard(task)
   var removeIcon = document.createElement("button");
   var link = document.createElement("a");
 
-  removeIcon.setAttribute("class", "glyphicon glyphicon-remove deleteBtn");
+  removeIcon.setAttribute("class", "glyphicon glyphicon-remove deleteBtn red-background");
   removeIcon.setAttribute("aria-hidden", "true");
   link.setAttribute("target", "_blank");
   link.setAttribute("href", url);

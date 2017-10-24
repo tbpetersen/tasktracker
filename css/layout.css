@@ -70,13 +70,6 @@
   }
 }
 
-.red-color:hover, .red-background:hover{
-  color: #62070C
-}
-.red-color:active, .red-background:active{
-  color: black;
-}
-
 body {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
@@ -217,8 +210,6 @@ td {
   background: #A2270C;
 }
 
-.notFirst:hover {
-}
 /* End table CSS*/
 
 #logo {
@@ -270,9 +261,6 @@ select#sortList {
   text-align: left;
 }
 
-.leftSidebarItem:hover {
-}
-
 #leftSidebar::-webkit-scrollbar {
   display: none;
 }
@@ -289,12 +277,6 @@ select#sortList {
 .fadeInLeft{
   border: 1px solid black;
 }
-.fadeInLeft:hover{
-}
-
-.fadeInLeft:active{
-}
-
 
 /* Side info panel */
 
@@ -357,13 +339,13 @@ select#sortList {
   width: 15%;
   margin: 0;
   padding: 0;
-  border-right: 1px #222 solid;
   top: 0;
-  color: #222;
 }
+
 #close-ticket-panel-button:hover{
   background-color: #62070C;
 }
+
 #close-ticket-panel-button:active{
   background-color: black;
 }
@@ -402,8 +384,6 @@ select#sortList {
   padding: 7px 10px;
 }
 
-.glyphicon-remove:hover {
-}
 .panel-body {
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -461,9 +441,6 @@ select#sortList {
 .navbar-collapse li>button {
   width: 100%;
   text-align: left;
-}
-
-#navbar-links li:not(#searchBar):hover {
 }
 
 .navbar-nav li>.btn {
@@ -629,18 +606,10 @@ select#sortList {
   border: none;
   height: 25px;
   width: 25px;
-}
 
-#deleteTableBtn{
   border: 2px solid dimgrey;
   border-radius: 5px;
   width: 5vh;
-}
-#deleteTableBtn:hover{
-  background-color: #62070C;
-}
-#deleteTableBtn:active{
-  background-color: black;
 }
 
 .wrapper-header .deleteBtn{
