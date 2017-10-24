@@ -1,7 +1,4 @@
 @media only screen and (max-width: 1250px) {
-  .navbar-header {
-    float: none;
-  }
   .navbar-left, .navbar-right {
     float: none !important;
   }
@@ -291,6 +288,13 @@ select#sortList {
   overflow-x: hidden;
   overflow-y: hidden;
   transition: 0.5s;
+}
+@media only screen and (max-width: 950px) {
+  .info-panel {
+    width: 30%;
+    right: -30%;
+  }
+
 }
 
 
@@ -604,9 +608,6 @@ select#sortList {
 .deleteBtn {
   cursor: pointer;
   border: none;
-  height: 25px;
-  width: 25px;
-
   border: 2px solid dimgrey;
   border-radius: 5px;
   width: 5vh;
@@ -622,6 +623,7 @@ select#sortList {
 .panel-heading .deleteBtn{
   display: inline;
   float: right;
+  width: 3vw;
 }
 
 /* Scroll to top button */
@@ -643,6 +645,12 @@ select#sortList {
 .scrollTop.toggled {
   right: 20%;
 }
+@media only screen and (max-width: 950px) {
+  .scrollTop.toggled {
+    right: 30%;
+  }
+}
+
 
 #openPanelArrow {
   width: 4vh;
@@ -757,4 +765,12 @@ select#sortList {
 html {
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+
+
+@media only screen and (max-width: 1250px) {
+  .navbar-header {
+    float: none;
+  }
 }
