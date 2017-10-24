@@ -181,6 +181,7 @@ $(document).ready(function() {
     console.log("Error during setup: ");
     console.log(err);
   })
+  egg();
 });
 
 
