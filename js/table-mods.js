@@ -102,6 +102,24 @@ $(".main").on("click", "#deleteTableBtn", function(e)
  }
 });
 
+// Event listener for clicking the sdsc logo
+$(document).on("click", "#logo", showRedirectToHostModal);
+
+function showRedirectToHostModal(){
+  $("#redirectToHostModal").modal("show");
+  $("#redirectToHostModal").unbind("keyup");
+
+
+  // Enter keypress for 'Okay'
+  $('#redirectToHostModal').keyup(function (e) {
+    e.preventDefault();
+
+    var key = e.which;
+    if (key == 13) {  // the enter key code
+      redirectToHost();
+    }
+  });
+}
 
 // Modal for showing deleting table warning
 function deleteTablePrompt(tableName) {
@@ -146,10 +164,6 @@ function deleteUnsorted() {
 
 // Method to delete table and table wrappers as well as removing deleted group from db
 function deleteTable(tableObj) {
-  if(tableObj.id == unsortedID){
-    return;
-  }
-
   let tableWrapper = $('#' + wrapperPrefix + tableObj.id);
   let unsortedTableObj = user.getTableByID(unsortedID);
 
@@ -317,4 +331,8 @@ function listTables(bool) {
     body.appendChild(row);
   }
   return table;
+}
+
+function redirectToHost(){
+  window.location.assign('https://' + window.location.hostname);
 }

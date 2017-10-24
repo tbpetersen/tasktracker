@@ -34,19 +34,20 @@ function createTicketCard(task)
 
   // Title
   var panelTitle = document.createElement("h3");
-  var removeIcon = document.createElement("i");
+  var removeIcon = document.createElement("button");
   var link = document.createElement("a");
 
-  removeIcon.setAttribute("class", "glyphicon glyphicon-remove");
+  removeIcon.setAttribute("class", "glyphicon glyphicon-remove deleteBtn");
   removeIcon.setAttribute("aria-hidden", "true");
   link.setAttribute("target", "_blank");
   link.setAttribute("href", url);
   link.innerHTML = cardTitle;
   panelTitle.setAttribute("class", "panel-title");
 
-  panelTitle.appendChild(removeIcon);
+  //panelTitle.appendChild(removeIcon);
   panelTitle.appendChild(link);
   panelHead.appendChild(panelTitle);
+  panelHead.appendChild(removeIcon);
 
   // Body
   var body = document.createElement("div");
@@ -127,23 +128,28 @@ $(".main").on("click", "table > tbody > tr", function(e)
   }
 });
 
-
 /* Click event listener for openInfo to toggle the ticket panel view */
 $("#openInfo").click(function(e)
 {
   e.preventDefault();
+  onTicketPanelClicked();
+});
+
+function onTicketPanelClicked(){
+  let openInfoPanelButton = document.getElementById("openInfo");
+
   $(".info-panel").toggleClass("toggled");
   $(".scrollTop").toggleClass("toggled");
 
-    if ($(this).text() === "Open Ticket Panel")
-    {
-      $(this).text("Close Ticket Panel");
-    }
-    else
-    {
-      $(this).text("Open Ticket Panel");
-    }
-});
+    // if ($(openInfoPanelButton).text() === "Open Ticket Panel")
+    // {
+    //   $(openInfoPanelButton).text("Close Ticket Panel");
+    // }
+    // else
+    // {
+    //   $(openInfoPanelButton).text("Open Ticket Panel");
+    // }
+}
 
 
 /* Clears all ticket cards inside ticket panel */
@@ -151,13 +157,72 @@ $("#clearBtn").click(function()
 {
   $("#card-list").empty();
   cardsCreated.clear();
+  closeTicketPanel();
 });
 
+/* Close panels when the user clicks off them */
+$(document).click(function(e){
+  let currentElement = e.target;
+
+  if(userClickedOffTicketPanel(e.target)){
+    closeTicketPanel();
+  }
+
+  if(userClickedOffMainNavBar(e.target)){
+    closeNavBar();
+  }
+});
+
+function userClickedOffTicketPanel(element){
+  let openTicketPanelButton = document.getElementById("openInfo");
+  let openPanelArrow = document.getElementById("openPanelArrow");
+
+  let isChildOfTicketPanel = elementIsChildOfTicketPanel(element);
+  let isButtonToOpenTicketPanel = element == openTicketPanelButton || element == openPanelArrow;
+  let isTicketRow = element.tagName == "TD";
+
+  return !(isChildOfTicketPanel || isButtonToOpenTicketPanel || isTicketRow);
+}
+
+function userClickedOffMainNavBar(element){
+  let isExpandButton = element == document.getElementById("navbar-collapse");
+  return !(elementIsChildOfMainNavBar(element) || isExpandButton);
+}
+
+function elementIsChildOfContainer(element, container){
+  let currentElement = element;
+
+  do{
+    if(currentElement == container){
+      return true;
+    }
+  }while( (currentElement = currentElement.parentNode) != null );
+  return false;
+}
+
+function elementIsChildOfTicketPanel(element){
+  let ticketPanelContainer = document.getElementById("ticket-panel-container");
+  return elementIsChildOfContainer(element, ticketPanelContainer);
+}
+
+function elementIsChildOfMainNavBar(element){
+  let mainNavBar = document.getElementById("navbar-links");
+  return elementIsChildOfContainer(element, mainNavBar);
+}
+
+/* Close the ticket panel when clicked */
+$("#close-ticket-panel-button").click(closeTicketPanel);
+
+$("#openPanelArrow").click(function(e){
+  e.preventDefault();
+  onTicketPanelClicked();
+});
 
 /* Method that will delegate which ticket card is clicked and delete that
    particular card */
 $(".info-panel").on("click", ".glyphicon-remove", function(e)
 {
+
   var card = $(this).closest(".panel-default");
   var index = card.attr("id");
 
@@ -165,8 +230,36 @@ $(".info-panel").on("click", ".glyphicon-remove", function(e)
     cardsCreated.delete(index);
   }
 
+  if(isLastTicketInPanel()){
+    closeTicketPanel();
+  }
+
   card.addClass("animated fadeOutRight");
   card.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function() {
     $(this).remove();
   });
 });
+
+function closeTicketPanel(){
+  if(ticketPanelIsOpen()){
+    onTicketPanelClicked();
+  }
+}
+
+function closeNavBar(){
+  let mainNavBar = document.getElementById("navbar-links");
+  let isExpanded = $(mainNavBar).attr("aria-expanded") == "true";
+
+  if(isExpanded){
+    $("#navbar-collapse").click();
+  }
+}
+
+function isLastTicketInPanel(){
+  return $("#card-list")[0].children.length == 1;
+}
+
+function ticketPanelIsOpen(){
+  let openInfoPanelButton = document.getElementById("openInfo");
+  return $("#ticket-panel-container").hasClass("toggled");
+}

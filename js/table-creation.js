@@ -119,6 +119,7 @@ function createTableWrapper(tableObj, isNewTable) {
 
   tableWrapper.setAttribute("id", wrapperName);
   title.setAttribute("id", "tableTitle");
+  title.setAttribute("title", "Click to change name");
   tableWrapper.setAttribute("class", "table-wrapper");
   header.setAttribute("class", "wrapper-header");
 
@@ -151,8 +152,8 @@ function makeButtons(tableName) {
   var modCell = table.rows[0].cells[3];
   var catCell = table.rows[0].cells[4];
 
-  var button1 = "sortButton glyphicon glyphicon-triangle-bottom";
-  var button2 = "glyphicon glyphicon-remove";
+  var button1 = "sortButton red-color glyphicon glyphicon-triangle-bottom";
+  var button2 = "deleteBtn red-background glyphicon glyphicon-remove";
 
   // Create the sorting buttons
   var titleSort = document.createElement("button");

@@ -23,7 +23,8 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
 
-  <link id="main_style" rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link id="current-theme" rel="stylesheet" href="css/day.css">
   <link rel="stylesheet" href="css/animate.css">
   <link rel="stylesheet" href="css/tingle.css">
 
@@ -45,13 +46,13 @@
 
       <div class="navbar-header">
         <!-- Button for collapsible menu during resize -->
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-links">
+        <button id="navbar-collapse" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-links">
           <span class="glyphicon glyphicon-menu-hamburger"></span>
         </button>
 
-        <a class="navbar-brand" href="index.html"><img src="images/logo.png"
-          id="logo" alt="SDSC">
-        </a>
+        <div class="navbar-brand"><img src="images/logo.png"
+          id="logo" alt="SDSC" title="Go to Holonet homepage">
+        </div>
       </div>
 
       <h1 id="app-title"><a href="index.html">Zello</a></h1>
@@ -60,9 +61,6 @@
       <div class="collapse navbar-collapse" id="navbar-links">
         <ul class="nav navbar-nav">
           <li><button class="btn" id="changeThemeBtn"><span class="glyphicon glyphicon-adjust"></span></button></li>
-
-          <li><button class="btn" id="openInfo">Open Ticket Panel</button></li>
-
           <!-- Table dropdown for creation and reordering -->
           <li class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownTableOpt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -84,13 +82,6 @@
             <ul class="dropdown-menu">
               <li><a target="_blank" href="https://www.trello.com">Trello</a></li>
               <li><a target="_blank" href="https://sdsc.zendesk.com">Zendesk</a></li>
-
-              <!-- Uncomment if needed -->
-<!--          <li><a href="#">Something else here</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="#">Separated link</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="#">One more separated link</a></li> -->
             </ul>
           </li>
           <li id="searchBar">
@@ -103,19 +94,21 @@
             </form>
           </li>
         </ul>
-
       </div>
     </div>
   </nav>
 
   <!-- Info panel -->
-  <div class="info-panel">
-    <h2 id="info-header">Ticket Information</h2>
+  <div id="ticket-panel-container" class="info-panel">
+    <div id="info-header-container">
+      <button id="close-ticket-panel-button" class=" red-background glyphicon glyphicon-menu-right deleteBtn" title="Hide ticket information"></button>
+      <h2 id="info-header">Ticket Information</h2>
+    </div>
 
     <div class="info-cards" id="card-list">
     </div>
 
-    <button type="button" class="btn btn-block" id="clearBtn">Clear All</button>
+    <button type="button" class="red-background btn btn-block" id="clearBtn">Clear All</button>
   </div>
 <!-- End of info panel -->
 
@@ -130,6 +123,7 @@
     </div>
     <div class="loader"></div>
 
+    <a href="#" ><span id="openPanelArrow" class="glyphicon glyphicon-triangle-left" aria-hidden="false"></span></a>
     <a href="#" class="scrollTop"><span class="fa fa-chevron-circle-up" aria-hidden="true"></span></a>
   </div>
 
@@ -174,6 +168,29 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirm">Okay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for redirecting to holonet -->
+  <div class="modal fade" id="redirectToHostModal" tabindex="-1" role="dialog" aria-labelledby="redirectToHolonetModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span id="closeModal" aria-hidden="true">&times;</span>
+          </button>
+          <span class="fa fa-exclamation-triangle" aria-hidden="true">
+            <h3 class="modal-title" id="warningLabel"> Leaving Zello </h5>
+          </span>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to go back to the Holonet home page?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="redirectToHost()">Okay</button>
         </div>
       </div>
     </div>

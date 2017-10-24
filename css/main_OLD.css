@@ -51,7 +51,7 @@
 }
 
 @media only screen and (max-width: 1150px) {
-  #app-title {
+  #app-title{
     visibility: hidden;
   }
 }
@@ -106,16 +106,23 @@ body.toggled .place {
 
 .btn, button {
   background-color: transparent;
-  border-radius: 0
+  border-radius: 0;
 }
 
-/*h1, h2, h3 {
-  font-family: 'Roboto', sans-serif;
-}*/
+button.sortButton:hover {
+  color: #7a0902;
+}
+button.sortButton:active {
+  color: black;
+}
+
+.btn:hover{
+  background-color: lightgrey;
+}
 
 h3 {
   font-weight: bold;
-  color:#A2270C;
+  color:#D42127;
 }
 
 h3#filters{
@@ -144,7 +151,7 @@ tbody
 
 th {
   white-space: nowrap;
-  color: #A2270C;/*
+  color: #D42127;/*
   background-color: #A2270C;
   color: #FFF;*/
 }
@@ -291,11 +298,23 @@ select#sortList {
 
 #leftSidebar h3 {
   margin-top: 0px;
-  background-color: #A2270C;
+  background-color: #D42127;
   height: 55px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+.fadeInLeft{
+  border: 1px solid black;
+}
+.fadeInLeft:hover{
+  background-color: #eee;
+}
+
+.fadeInLeft:active{
+  background-color: #ccc;
 }
 
 
@@ -336,16 +355,34 @@ select#sortList {
 
 /* Card list header */
 
-#info-header {
-  margin: 0;
-  background-color: #A2270C;
+#info-header-container{
   height: 5%;
   width: 100%;
+}
+
+#info-header {
+  margin: 0;
+  background-color: #D42127;
+  width: 85%;
+  height: 100%;
   font-weight: bold;
-  font-size: 2vw;
+  font-size: 1vw;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#info-header-container *{
+  float: left;
+}
+
+#close-ticket-panel-button{
+  height: 100%;
+  width: 15%;
+  margin: 0;
+  padding: 0;
+  border-right: 1px #222 solid;
+  top: 0;
 }
 
 #clearBtn {
@@ -353,12 +390,15 @@ select#sortList {
   font-weight: bold;
   border-radius: 0;
   padding: 0.9em;
-  background-color: #A2270C;
+  background-color: #D42127;
   color: #111;
+  border: 2px solid grey;
 }
-
-#clearBtn:active {
+#clearBtn:hover {
   background-color: #9e0707;
+}
+#clearBtn:active {
+  background-color: #82070c;
 }
 
 
@@ -370,8 +410,12 @@ select#sortList {
 }
 
 .panel .panel-title {
+  display: inline;
   font-size: 18px;
   font-weight: bold;
+  margin: 0;
+  width: 80%;
+  display: inline-block;
 }
 
 .panel-heading {
@@ -386,11 +430,11 @@ select#sortList {
   background-color: #A2270C;
   color: #FFF;
   padding: inherit;
-  height: 2vh; 
+  height: 2vh;
   width: 3vh;
   font-size: 15px;
   /* For smaller x
-  height: 10px; 
+  height: 10px;
   width: 15px;
   font-size: 10px;*/
   text-align: center;
@@ -427,6 +471,10 @@ select#sortList {
 
 .navbar > li > ul  > .dropdown-menu {
   background-color: green;
+}
+
+#navbar-collapse:active{
+  background-color: #ccc;
 }
 
 .navbar {
@@ -470,29 +518,10 @@ select#sortList {
   background-color: #dcdcdc;
 }
 
-/*.navbar-collapse li>.btn {
-  width: 100%;
-  text-align: left;
-}
-*/
 .navbar-nav li>.btn {
-  /*border-radius: 0;*/
   height: 55px;
-  /*background-color: transparent;*/
 }
 
-/*.navbar-nav li>.btn:active {
-  background: transparent;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-*/
-
-/*.btn, button:not(.navbar-toggle .hamburger):active {
-  background-color: transparent;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}*/
 
 #app-title {
   cursor: pointer;
@@ -508,15 +537,20 @@ select#sortList {
 }
 
 #app-title a, a:hover {
-  color: #A2270C;
+  color: #D42127;
   text-decoration: none;
 }
 
 
 /* Search form */
 
+.form-control:hover {
+  border-color: #D42127;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
+}
+
 .form-control:focus {
-  border-color: #A2270C;
+  border-color: #D42127;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
 }
 
@@ -542,6 +576,7 @@ select#sortList {
 
 .hamburger:hover {
   outline: none;
+  background-color: #BBB;
 }
 
 .hamburger:focus {
@@ -550,6 +585,7 @@ select#sortList {
 
 .hamburger:active {
   outline: none;
+  background-color: #999;
 }
 
 .hamburger.is-closed:before {
@@ -648,39 +684,59 @@ select#sortList {
   opacity: 1;
 }
 
-.sortButton, #deleteTableBtn {
+.sortButton {
   border: none;
   height: 2vh;
   width: 3vh;
-}
-
-.sortButton {
   background-color: transparent;
 }
 
-#deleteTableBtn {
-  position: absolute;
-  top: 0;
-  right: 0;
+.deleteBtn {
+  cursor: pointer;
+  border: none;
+  height: 25px;
+  width: 25px;
   background-color: #A2270C;
   color: #FFF;
-  padding: inherit;
 }
 
-#deleteTableBtn:hover {
+.wrapper-header .deleteBtn{
+  display: block;
+  text-align: center;
+  position: absolute;
+  right: 0;
+  background-color: #D42127;
+  color: #FFF;
+  padding: inherit;
+  border: 2px solid dimgrey;
+  border-radius: 5px;
+}
+
+.panel-heading .deleteBtn{
+  display: block;
+  text-align: center;
+  margin: 0;
+}
+
+
+
+.deleteBtn:hover{
+  background-color: #7a0902;
+}
+.deleteBtn:active{
   background-color: black;
 }
 
-/* Scroll to top button */
 
+/* Scroll to top button */
 .scrollTop {
   width: 52px;
   height: 52px;
+  font-size: 52px;
   line-height: 52px;
   text-align: center;
   background-color: transparent;
   font-weight: bold;
-  font-size: 52px;
   position: fixed;
   margin: 20px;
   bottom: 0%;
@@ -692,6 +748,26 @@ select#sortList {
 
 .scrollTop.toggled {
   right: 20%;
+}
+
+#openPanelArrow {
+  width: 52px;
+  height: 52px;
+  font-size: 52px;
+  line-height: 52px;
+  text-align: center;
+  background-color: transparent;
+  font-weight: bold;
+  position: fixed;
+  margin: 20px;
+  top: 50px;
+  right: 0%;
+  transition: right 0.5s ease;
+  color: #000;
+}
+
+#openPanelArrow:hover{
+  color: #A2270C;
 }
 
 /* Delete Table Notification */
@@ -721,11 +797,10 @@ select#sortList {
   border: none;
 }
 
-.btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
-  background-color: #A2270C !important;
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #82070C !important;
   border: none;
 }
-
 
 /* Table wrappers */
 
@@ -761,12 +836,29 @@ select#sortList {
   display: block;
 }
 
+#tableTitle{
+  display: inline-block;
+  cursor: pointer;
+  width: auto;
+}
+
+#tableTitle:hover{
+  color: white;
+  background: #D42127;
+  border-radius: 5px;
+
+}
+
+#main-container{
+  width: 90%;
+}
+
 .loader {
   margin-top: 15%;
   margin-left: auto;
   margin-right: auto;
   border: 16px solid lightgrey; /* Light grey */
-  border-top: 16px solid #a2270c; /* Red */
+  border-top: 16px solid #D42127; /* Red */
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -779,7 +871,8 @@ select#sortList {
 }
 
 html {
-    overflow-y:scroll;
+  overflow-x: hidden;
+  overflow-y:scroll;
 }
 
 #projectInfo {

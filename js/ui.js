@@ -10,20 +10,20 @@ $(document).on('click', '.navbar-collapse.in',function(e) {
 
 // Theme change
 $("#changeThemeBtn").click(function() {
-  var mainTheme = "css/main.css";
+  var dayTheme = "css/day.css";
   var nightTheme = "css/night.css";
-  var currentTheme = $('#main_style').attr("href");
+  var currentTheme = $('#current-theme').attr("href");
 
-  if (currentTheme === mainTheme)
+  if (currentTheme === dayTheme)
   {
-    $("#main_style").attr("href", nightTheme);
+    $("#current-theme").attr("href", nightTheme);
     $("#logo").attr("src", "images/logo-invert.png");
   }
   else
   {
-    $("#main_style").attr("href", mainTheme);
+    $("#current-theme").attr("href", dayTheme);
     $("#logo").attr("src", "images/logo.png");
   }
   filterAll();
-  currentTheme = $('#main_style').attr("href");
+  currentTheme = $('#current-theme').attr("href");
 });

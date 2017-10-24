@@ -97,6 +97,11 @@ $(document).ready(function() {
     hamburger_cross();
   });
 
+  $("#logo").click(function(){
+    $("#redirectNotif").modal("show");
+  //  window.location.href = "http://holonet.sdsc.edu";
+  })
+
   function hamburger_cross() {
     if (isClosed == true) {
       trigger.removeClass("is-open");
@@ -394,7 +399,6 @@ function loadFromDB(){
   })
 
   .then(function(itemsFromDB){
-    console.log(itemsFromDB);
     return createTablesFromDPandAPI(itemsFromDB, user.tasks);
   })
 }
@@ -581,7 +585,7 @@ function isNotUsingHTTPS(){
 
 
 function redirectToHTTPS() {
-    window.location.assign('https://' + window.location.hostname);
+    window.location.assign('https://' + window.location.hostname + window.location.pathname);
 }
 
 

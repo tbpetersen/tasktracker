@@ -1,0 +1,213 @@
+body {
+  background-color: whitesmoke;
+}
+
+.btn{
+  background-color: transparent;
+}
+
+.btn:hover, button:hover, li:hover {
+  color: black;
+}
+
+h3 {
+  color:#A2270C;
+}
+
+h3#filters{
+  color: #222;
+}
+
+h2#info-header {
+    color: #222;
+}
+
+th {
+  color: #A2270C;
+}
+
+td {
+  border-color: #ededed;
+}
+
+.redBackground{
+  background-color: #D42127;
+}
+
+.redColor{
+  color: #D42127;
+}
+
+.ui-state-highlight {
+  background: #d3d3d3;
+}
+
+.notFirst:hover {
+  background-color: #A2270C;
+  color: #FFF;
+}
+
+#tableTitle:hover{
+  background: #a2270c;
+  color: #fff;
+}
+
+select#sortList {
+  color: black;
+}
+
+#leftSidebar {
+  background-color: whitemsoke;
+}
+
+.leftSidebarItem {
+  background-color: transparent;
+}
+
+.leftSidebarItem:hover {
+  background-color: lightgrey;
+}
+
+#leftSidebar h3 {
+  background-color: #A2270C;
+}
+
+.info-panel {
+  background-color: #f1f1f1;
+}
+
+#info-header {
+  background-color: #A2270C;
+}
+
+#clearBtn {
+  background-color: #A2270C;
+  color: #111;
+}
+#clearBtn:active {
+  background-color: #9e0707;
+}
+
+.panel-heading {
+  background-color: #e8e8e8 !important;
+}
+
+.panel-body a {
+  color: #A2270C;
+}
+
+.panel-heading a {
+  color: #A2270C;
+}
+
+.panel-heading a:hover {
+  color: #000;
+}
+
+.navbar, .nav, #openPanelArrow{
+  border-bottom: 1px solid darkgrey;
+}
+
+.navbar > li > ul  > .dropdown-menu {
+}
+
+.navbar {
+  background-color: #e8e8e8;
+}
+
+.navbar-collapse {
+  background-color: #e8e8e8;
+}
+
+#navbar-links li:not(#searchBar):hover {
+  background-color: #dcdcdc;
+}
+
+#app-title a, a:hover {
+  color: #A2270C;
+}
+
+.form-control:focus {
+  border-color: #A2270C;
+}
+
+.hamburger.is-closed:before {
+  color: #000;
+}
+
+.hamburger.is-closed .hamb-top {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.hamburger.is-closed .hamb-middle {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.hamburger.is-closed .hamb-bottom {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.hamburger.is-open .hamb-top {
+  background-color: #000;
+}
+.hamburger.is-open .hamb-middle {
+  background-color: #000;
+}
+
+.hamburger.is-open .hamb-bottom {
+  background-color: #000;
+}
+
+.hamburger.is-open:before {
+  color: #000;
+}
+
+.sortButton {
+  background-color: transparent;
+}
+
+.deleteBtn {
+  background-color: #a2270c;
+}
+
+#deleteTableBtn {
+  background-color: #A2270C;
+  color: #FFF;
+}
+.scrollTop {
+  background-color: transparent;
+  color: #000;
+}
+
+.modal-header {
+  color: #A2270C;
+}
+
+.btn-primary {
+  background-color: #A2270C;
+}
+
+.btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
+  background-color: #c6595c !important;
+}
+
+.table-wrapper {
+  background-color: #fcfcfc;
+}
+
+.wrapper-header {
+  color: #A2270C;
+}
+
+#openPanelArrow {
+  background-color: #e8e8e8;
+  color: #A2270C;
+  border-left-color: darkgrey;
+  border-bottom-color: darkgrey;
+}
+#openPanelArrow:hover{
+  background-color: lightgrey;
+}
+#openPanelArrow:active{
+  background-color: darkgrey;
+}
