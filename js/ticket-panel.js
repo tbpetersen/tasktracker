@@ -1,5 +1,17 @@
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
 
+/* Allows resizing of the ticket panel. Weird results in edge thougth
+$(document).ready(function(){
+  console.log($('.info-panel'));
+  $('.info-panel').resizable({
+    handles: 'w,e',
+    minWidth: 200,
+    maxWidth: 700
+});
+});
+*/
+
+
 /* Helper method that creates the card div */
 function createTicketCard(task)
 {
@@ -138,17 +150,11 @@ $("#openInfo").click(function(e)
 function onTicketPanelClicked(){
   let openInfoPanelButton = document.getElementById("openInfo");
 
+  $(".info-panel").css("left", "");
+  $(".info-panel").css("width", "300px");
   $(".info-panel").toggleClass("toggled");
   $(".scrollTop").toggleClass("toggled");
 
-    // if ($(openInfoPanelButton).text() === "Open Ticket Panel")
-    // {
-    //   $(openInfoPanelButton).text("Close Ticket Panel");
-    // }
-    // else
-    // {
-    //   $(openInfoPanelButton).text("Open Ticket Panel");
-    // }
 }
 
 

@@ -1,72 +1,3 @@
-@media only screen and (max-width: 1250px) {
-  .navbar-left, .navbar-right {
-    float: none !important;
-  }
-  .navbar-toggle {
-    display: block;
-  }
-  .navbar-collapse {
-    border-top: 1px solid transparent;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  }
-  .navbar-fixed-top {
-    top: 0;
-    border-width: 0 0 1px;
-  }
-  .navbar-collapse.collapse {
-    display: none!important;
-  }
-  .navbar-nav {
-    float: none!important;
-    margin-top: 7.5px;
-  }
-  .navbar-nav>li {
-    float: none;
-  }
-  .navbar-nav>li>a {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .collapse.in {
-    display: block !important;
-  }
-}
-
-@media only screen and (max-width: 1425px) {
-  #logo {
-    min-width: 358px;
-  }
-  .navbar-form {
-    left: 87vh;
-  }
-}
-
-@media only screen and (max-width: 950px) {
-  #table {
-    min-width: 920px;
-  }
-}
-
-@media only screen and (max-width: 1150px) {
-  #app-title{
-    visibility: hidden;
-  }
-}
-
-@media only screen and (max-width: 540px) {
-  .navbar-toggle {
-    position: absolute;
-    left: 470px;
-  }
-}
-
-@media only screen and (max-width: 306px) {
-  #sort {
-    position: relative;
-    left: 25px;
-  }
-}
-
 body {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
@@ -212,13 +143,21 @@ td {
 #logo {
   max-height: 100%;
 }
+@media only screen and (max-width: 1425px) {
+  #logo {
+    min-width: 358px;
+  }
+}
 
 #sort {
   float: right;
   min-width: 258px;
 }
-
-select#sortList {
+@media only screen and (max-width: 306px) {
+  #sort {
+    position: relative;
+    left: 25px;
+  }
 }
 
 #filters {
@@ -279,23 +218,18 @@ select#sortList {
 
 .info-panel {
   height: 100%;
-  width: 20%;
+  width: 300px;
   position: fixed;
   z-index: 100;
   top: 0;
   padding-top: 55px;
-  right: -20%;
+  right: -300px;
   overflow-x: hidden;
   overflow-y: hidden;
   transition: 0.5s;
 }
-@media only screen and (max-width: 950px) {
-  .info-panel {
-    width: 30%;
-    right: -30%;
-  }
 
-}
+
 
 
 /* Side info panel toggle action*/
@@ -328,7 +262,7 @@ select#sortList {
   width: 85%;
   height: 100%;
   font-weight: bold;
-  font-size: 1vw;
+  font-size: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -441,6 +375,16 @@ select#sortList {
   float: right;
   overflow-x: hidden;
 }
+@media only screen and (max-width: 1250px) {
+  .navbar-collapse {
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .navbar-collapse.collapse {
+    display: none!important;
+  }
+}
 
 .navbar-collapse li>button {
   width: 100%;
@@ -463,6 +407,11 @@ select#sortList {
   align-items: center;
   justify-content: center;
   font-weight: bold;
+}
+@media only screen and (max-width: 1150px) {
+  #app-title{
+    visibility: hidden;
+  }
 }
 
 #app-title a, a:hover {
@@ -623,7 +572,7 @@ select#sortList {
 .panel-heading .deleteBtn{
   display: inline;
   float: right;
-  width: 3vw;
+  width: 2em;
 }
 
 /* Scroll to top button */
@@ -767,10 +716,58 @@ html {
     overflow-x: hidden;
 }
 
-
+@media only screen and (max-width: 1425px) {
+  .navbar-form {
+    left: 87vh;
+  }
+}
 
 @media only screen and (max-width: 1250px) {
   .navbar-header {
     float: none;
+  }
+
+  .navbar-left, .navbar-right {
+    float: none !important;
+  }
+
+  .navbar-toggle {
+    display: block;
+  }
+
+  .collapse.in {
+    display: block !important;
+  }
+
+  .navbar-nav {
+    float: none!important;
+    margin-top: 7.5px;
+  }
+
+  .navbar-nav>li {
+    float: none;
+  }
+
+  .navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .navbar-fixed-top {
+    top: 0;
+    border-width: 0 0 1px;
+  }
+}
+
+@media only screen and (max-width: 950px) {
+  #table {
+    min-width: 920px;
+  }
+}
+
+@media only screen and (max-width: 540px) {
+  .navbar-toggle {
+    position: absolute;
+    left: 470px;
   }
 }
