@@ -785,7 +785,7 @@ select#sortList {
   100% { transform: rotate(360deg); }
 }
 
-html {
+html{
     overflow-y: auto;
     overflow-x: hidden;
 }

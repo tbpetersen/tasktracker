@@ -183,12 +183,23 @@ select#sortList {
   color: #A2270C;
 }
 
-.btn-primary {
+#delTableConfirm {
   background-color: #A2270C;
 }
+#delTableConfirm:hover{
+  background-color: #82070C !important;
+}
+#delTableConfirm:active{
+  background-color: black;
+}
 
-.btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
-  background-color: #c6595c !important;
+#delTableCancel {
+  background-color: #EEE;
+}
+#delTableCancel:hover{
+  background-color: lightgrey !important;
+}
+#delTableCancel:active{
 }
 
 .table-wrapper {

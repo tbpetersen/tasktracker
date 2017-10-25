@@ -172,7 +172,6 @@ function deleteTable(tableObj) {
     createTable(unsortedTableObj, true);
   }
 
-
   tableWrapper.remove();
 
   for(let i = 0; i < tableObj.rows.length; i++){
@@ -186,7 +185,6 @@ function deleteTable(tableObj) {
   refreshGroupUI(unsortedTableObj);
   draggableRows(ITEM_SORTABLE_CLASS);
   updateFilters();
-
   $.notify({
     icon: "fa fa-trash",
     message: "Table deleted."
