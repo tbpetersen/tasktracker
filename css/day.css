@@ -30,8 +30,8 @@ td {
   border-color: #ededed;
 }
 
-.redBackground{
-  background-color: #D42127;
+.red-background{
+  background-color: #A2270C;
 }
 
 .redColor{
@@ -54,6 +54,12 @@ td {
 
 select#sortList {
   color: black;
+}
+
+#close-ticket-panel-button{
+  color: #222;
+  border: none;
+  border-right: 1px #222 solid;
 }
 
 #leftSidebar {
@@ -166,14 +172,17 @@ select#sortList {
   background-color: transparent;
 }
 
-.deleteBtn {
-  background-color: #a2270c;
-}
-
-#deleteTableBtn {
-  background-color: #A2270C;
+.deleteBtn{
   color: #FFF;
 }
+
+.deleteBtn:hover{
+  background-color: #62070C;
+}
+.deleteBtn:active{
+  background-color: black;
+}
+
 .scrollTop {
   background-color: transparent;
   color: #000;
