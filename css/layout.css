@@ -375,7 +375,7 @@ td {
   float: right;
   overflow-x: hidden;
 }
-@media only screen and (max-width: 1250px) {
+@media only screen and (max-width: 1025px) {
   .navbar-collapse {
     border-top: 1px solid transparent;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -408,7 +408,7 @@ td {
   justify-content: center;
   font-weight: bold;
 }
-@media only screen and (max-width: 1150px) {
+@media only screen and (max-width: 1250px) {
   #app-title{
     visibility: hidden;
   }
@@ -722,7 +722,7 @@ html {
   }
 }
 
-@media only screen and (max-width: 1250px) {
+@media only screen and (max-width: 1025px) {
   .navbar-header {
     float: none;
   }
