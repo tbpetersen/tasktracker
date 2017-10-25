@@ -687,7 +687,10 @@ td {
 }
 
 #tableTitle:hover{
-  border-radius: 5px;
+  border-radius: 3px;
+}
+#wrapper_-2 div #tableTitle:hover{
+  background-color: transparent;
 }
 
 #main-container{

@@ -51,6 +51,11 @@ td {
   background: #a2270c;
   color: #fff;
 }
+#wrapper_-2 div #tableTitle:hover{
+  background-color: transparent;
+  color: #A2270C;
+  cursor: auto;
+}
 
 select#sortList {
   color: black;
@@ -63,7 +68,7 @@ select#sortList {
 }
 
 #leftSidebar {
-  background-color: whitemsoke;
+  background-color: whitesmoke;
 }
 
 .leftSidebarItem {
