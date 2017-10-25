@@ -41,6 +41,10 @@ class Table{
     return null;
   }
 
+  isEmpty(){
+    return this.rows.length == 0;
+  }
+
 }
 class Task {
   /*
@@ -210,6 +214,11 @@ function delayedPromise(seconds){
 
 
 function refreshGroupUI(tableObj) {
+
+  if(tableObj == null){
+    return;
+  }
+
   let tableWrapper = document.getElementById(wrapperPrefix + tableObj.id);
   let headerWrapper = $(tableWrapper).find('.wrapper-header h3');
   let tableBody = $(tableWrapper).find('tbody');
@@ -322,6 +331,10 @@ function createTablesFromGroups(groups, tasks){
     user.tables.push(table);
   }
   let unsortedTable = createUnsortedTable(tasks, groups);
+
+  if(unsortedTable.isEmpty()){
+    user.deleteTable(unsortedTable);
+  }
 }
 
 

@@ -167,10 +167,14 @@ function deleteTable(tableObj) {
   let tableWrapper = $('#' + wrapperPrefix + tableObj.id);
   let unsortedTableObj = user.getTableByID(unsortedID);
 
-  if(unsortedTableObj == null){
-    unsortedTableObj = createUnsortedTable([],[]);
-    createTable(unsortedTableObj, true);
+
+  if(! tableObj.isEmpty()){
+    if(unsortedTableObj == null){
+      unsortedTableObj = createUnsortedTable([],[]);
+      createTable(unsortedTableObj, true);
+    }
   }
+
 
 
   tableWrapper.remove();
