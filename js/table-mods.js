@@ -229,9 +229,9 @@ $("#reorder").click(function(e) {
 
     var table = document.getElementById("names");
     if(table) {
-      modal.setContent('<h3>Reorder Tables</h3>');
 
-      var table = listTables();
+      var table = listTables(0);
+      modal.setContent('<h3>Reorder Tables</h3>');
       modal.setContent(table);
       draggableRows(GROUP_SORTABLE_CLASS);
     }

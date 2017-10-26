@@ -6,7 +6,7 @@ body {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   height: 100%;
-  padding-top: 70px;
+  padding-top: 8vh;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -203,7 +203,7 @@ td {
 
 #leftSidebar h3 {
   margin-top: 0px;
-  height: 55px;
+  height: 6vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -222,7 +222,7 @@ td {
   position: fixed;
   z-index: 100;
   top: 0;
-  padding-top: 55px;
+  padding-top: 6vh;
   right: -300px;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -354,7 +354,7 @@ td {
   padding-left: 0;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
-  height: 55px;
+  height: 6vh;
 }
 
 .navbar.toggled {
@@ -392,7 +392,7 @@ td {
 }
 
 .navbar-nav li>.btn {
-  height: 54px;
+  height: 6vh;
 }
 
 
