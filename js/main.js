@@ -178,7 +178,8 @@ $(document).ready(function() {
     $('.loader').hide();
     createFilters();
     createTablesFromTableObject();
-    //return populatePage();
+    //After the API is finished loading, allow new table creation.
+    $("#addTable").click(createNewTable);
   })
 
   .catch(function(err){

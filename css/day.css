@@ -30,8 +30,8 @@ td {
   border-color: #ededed;
 }
 
-.redBackground{
-  background-color: #D42127;
+.red-background{
+  background-color: #A2270C;
 }
 
 .redColor{
@@ -51,13 +51,24 @@ td {
   background: #a2270c;
   color: #fff;
 }
+#wrapper_-2 div #tableTitle:hover{
+  background-color: transparent;
+  color: #A2270C;
+  cursor: auto;
+}
 
 select#sortList {
   color: black;
 }
 
+#close-ticket-panel-button{
+  color: #222;
+  border: none;
+  border-right: 1px #222 solid;
+}
+
 #leftSidebar {
-  background-color: whitemsoke;
+  background-color: whitesmoke;
 }
 
 .leftSidebarItem {
@@ -166,14 +177,17 @@ select#sortList {
   background-color: transparent;
 }
 
-.deleteBtn {
-  background-color: #a2270c;
-}
-
-#deleteTableBtn {
-  background-color: #A2270C;
+.deleteBtn{
   color: #FFF;
 }
+
+.deleteBtn:hover{
+  background-color: #62070C;
+}
+.deleteBtn:active{
+  background-color: black;
+}
+
 .scrollTop {
   background-color: transparent;
   color: #000;
@@ -183,12 +197,23 @@ select#sortList {
   color: #A2270C;
 }
 
-.btn-primary {
+#delTableConfirm {
   background-color: #A2270C;
 }
+#delTableConfirm:hover{
+  background-color: #82070C !important;
+}
+#delTableConfirm:active{
+  background-color: black;
+}
 
-.btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
-  background-color: #c6595c !important;
+#delTableCancel {
+  background-color: #EEE;
+}
+#delTableCancel:hover{
+  background-color: lightgrey !important;
+}
+#delTableCancel:active{
 }
 
 .table-wrapper {

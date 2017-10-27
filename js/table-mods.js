@@ -10,7 +10,7 @@ $(".main").on("click", "#tableTitle", function() {
   var numKeyPress = 0;
 
   //Only allow changing of names for tables that arent Unsorted.
-  if(this.innerHTML !== "Unsorted"){
+  if(this.id !== -2){
     $input.focus(function() { this.select(); });  // Selects all text
 
     //Update filters when table titles are changed.
@@ -52,8 +52,8 @@ $(".main").on("click", "#tableTitle", function() {
       ++numKeyPress;
 
       if (e.which === 13 || e.which === 27) {
+        console.log($(this));
         var currentName = this.value;
-
         checkUserGroupDB(user.databaseID, currentName)
         .then(function(val) {
           if (val) {
@@ -172,12 +172,12 @@ function deleteTable(tableObj) {
     createTable(unsortedTableObj, true);
   }
 
-
   tableWrapper.remove();
 
   for(let i = 0; i < tableObj.rows.length; i++){
     let row = tableObj.rows[i];
     unsortedTableObj.addRow(row);
+
   }
 
   user.deleteTable(tableObj);
@@ -186,7 +186,6 @@ function deleteTable(tableObj) {
   refreshGroupUI(unsortedTableObj);
   draggableRows(ITEM_SORTABLE_CLASS);
   updateFilters();
-
   $.notify({
     icon: "fa fa-trash",
     message: "Table deleted."
@@ -230,9 +229,9 @@ $("#reorder").click(function(e) {
 
     var table = document.getElementById("names");
     if(table) {
-      modal.setContent('<h3>Reorder Tables</h3>');
 
-      var table = listTables();
+      var table = listTables(0);
+      modal.setContent('<h3>Reorder Tables</h3>');
       modal.setContent(table);
       draggableRows(GROUP_SORTABLE_CLASS);
     }

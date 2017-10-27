@@ -1,82 +1,3 @@
-@media only screen and (max-width: 1250px) {
-  .navbar-header {
-    float: none;
-  }
-  .navbar-left, .navbar-right {
-    float: none !important;
-  }
-  .navbar-toggle {
-    display: block;
-  }
-  .navbar-collapse {
-    border-top: 1px solid transparent;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  }
-  .navbar-fixed-top {
-    top: 0;
-    border-width: 0 0 1px;
-  }
-  .navbar-collapse.collapse {
-    display: none!important;
-  }
-  .navbar-nav {
-    float: none!important;
-    margin-top: 7.5px;
-  }
-  .navbar-nav>li {
-    float: none;
-  }
-  .navbar-nav>li>a {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .collapse.in {
-    display: block !important;
-  }
-}
-
-@media only screen and (max-width: 1425px) {
-  #logo {
-    min-width: 358px;
-  }
-  .navbar-form {
-    left: 87vh;
-  }
-}
-
-@media only screen and (max-width: 950px) {
-  #table {
-    min-width: 920px;
-  }
-}
-
-@media only screen and (max-width: 1150px) {
-  #app-title{
-    visibility: hidden;
-  }
-}
-
-@media only screen and (max-width: 540px) {
-  .navbar-toggle {
-    position: absolute;
-    left: 470px;
-  }
-}
-
-@media only screen and (max-width: 306px) {
-  #sort {
-    position: relative;
-    left: 25px;
-  }
-}
-
-.red-color:hover, .red-background:hover{
-  color: #62070C
-}
-.red-color:active, .red-background:active{
-  color: black;
-}
-
 body {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
@@ -85,7 +6,7 @@ body {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   height: 100%;
-  padding-top: 70px;
+  padding-top: 8vh;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -217,20 +138,26 @@ td {
   background: #A2270C;
 }
 
-.notFirst:hover {
-}
 /* End table CSS*/
 
 #logo {
   max-height: 100%;
+}
+@media only screen and (max-width: 1425px) {
+  #logo {
+    min-width: 358px;
+  }
 }
 
 #sort {
   float: right;
   min-width: 258px;
 }
-
-select#sortList {
+@media only screen and (max-width: 306px) {
+  #sort {
+    position: relative;
+    left: 25px;
+  }
 }
 
 #filters {
@@ -270,16 +197,13 @@ select#sortList {
   text-align: left;
 }
 
-.leftSidebarItem:hover {
-}
-
 #leftSidebar::-webkit-scrollbar {
   display: none;
 }
 
 #leftSidebar h3 {
   margin-top: 0px;
-  height: 55px;
+  height: 6vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -289,27 +213,23 @@ select#sortList {
 .fadeInLeft{
   border: 1px solid black;
 }
-.fadeInLeft:hover{
-}
-
-.fadeInLeft:active{
-}
-
 
 /* Side info panel */
 
 .info-panel {
   height: 100%;
-  width: 20%;
+  width: 300px;
   position: fixed;
   z-index: 100;
   top: 0;
-  padding-top: 55px;
-  right: -20%;
+  padding-top: 6vh;
+  right: -300px;
   overflow-x: hidden;
   overflow-y: hidden;
   transition: 0.5s;
 }
+
+
 
 
 /* Side info panel toggle action*/
@@ -342,7 +262,7 @@ select#sortList {
   width: 85%;
   height: 100%;
   font-weight: bold;
-  font-size: 1vw;
+  font-size: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -357,13 +277,13 @@ select#sortList {
   width: 15%;
   margin: 0;
   padding: 0;
-  border-right: 1px #222 solid;
   top: 0;
-  color: #222;
 }
+
 #close-ticket-panel-button:hover{
   background-color: #62070C;
 }
+
 #close-ticket-panel-button:active{
   background-color: black;
 }
@@ -402,8 +322,6 @@ select#sortList {
   padding: 7px 10px;
 }
 
-.glyphicon-remove:hover {
-}
 .panel-body {
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -436,7 +354,7 @@ select#sortList {
   padding-left: 0;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
-  height: 55px;
+  height: 6vh;
 }
 
 .navbar.toggled {
@@ -457,17 +375,24 @@ select#sortList {
   float: right;
   overflow-x: hidden;
 }
+@media only screen and (max-width: 1025px) {
+  .navbar-collapse {
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .navbar-collapse.collapse {
+    display: none!important;
+  }
+}
 
 .navbar-collapse li>button {
   width: 100%;
   text-align: left;
 }
 
-#navbar-links li:not(#searchBar):hover {
-}
-
 .navbar-nav li>.btn {
-  height: 54px;
+  height: 6vh;
 }
 
 
@@ -482,6 +407,11 @@ select#sortList {
   align-items: center;
   justify-content: center;
   font-weight: bold;
+}
+@media only screen and (max-width: 1250px) {
+  #app-title{
+    visibility: hidden;
+  }
 }
 
 #app-title a, a:hover {
@@ -627,20 +557,9 @@ select#sortList {
 .deleteBtn {
   cursor: pointer;
   border: none;
-  height: 25px;
-  width: 25px;
-}
-
-#deleteTableBtn{
   border: 2px solid dimgrey;
   border-radius: 5px;
   width: 5vh;
-}
-#deleteTableBtn:hover{
-  background-color: #62070C;
-}
-#deleteTableBtn:active{
-  background-color: black;
 }
 
 .wrapper-header .deleteBtn{
@@ -653,6 +572,7 @@ select#sortList {
 .panel-heading .deleteBtn{
   display: inline;
   float: right;
+  width: 2em;
 }
 
 /* Scroll to top button */
@@ -674,6 +594,12 @@ select#sortList {
 .scrollTop.toggled {
   right: 20%;
 }
+@media only screen and (max-width: 950px) {
+  .scrollTop.toggled {
+    right: 30%;
+  }
+}
+
 
 #openPanelArrow {
   width: 4vh;
@@ -761,7 +687,10 @@ select#sortList {
 }
 
 #tableTitle:hover{
-  border-radius: 5px;
+  border-radius: 3px;
+}
+#wrapper_-2 div #tableTitle:hover{
+  background-color: transparent;
 }
 
 #main-container{
@@ -785,7 +714,63 @@ select#sortList {
   100% { transform: rotate(360deg); }
 }
 
-html {
+html{
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+@media only screen and (max-width: 1425px) {
+  .navbar-form {
+    left: 87vh;
+  }
+}
+
+@media only screen and (max-width: 1025px) {
+  .navbar-header {
+    float: none;
+  }
+
+  .navbar-left, .navbar-right {
+    float: none !important;
+  }
+
+  .navbar-toggle {
+    display: block;
+  }
+
+  .collapse.in {
+    display: block !important;
+  }
+
+  .navbar-nav {
+    float: none!important;
+    margin-top: 7.5px;
+  }
+
+  .navbar-nav>li {
+    float: none;
+  }
+
+  .navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .navbar-fixed-top {
+    top: 0;
+    border-width: 0 0 1px;
+  }
+}
+
+@media only screen and (max-width: 950px) {
+  #table {
+    min-width: 920px;
+  }
+}
+
+@media only screen and (max-width: 540px) {
+  .navbar-toggle {
+    position: absolute;
+    left: 470px;
+  }
 }
