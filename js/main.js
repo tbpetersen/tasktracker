@@ -186,7 +186,7 @@ $(document).ready(function() {
     console.log("Error during setup: ");
     console.log(err);
   })
-  egg();
+  table();
 });
 
 
@@ -522,12 +522,12 @@ function finalizeTempTable(){
 }
 
 
-function egg() {
+function table() {
   var egg = new Egg();
   egg
     .addCode("b,o,b", function() {
-      jQuery('#egggif').fadeIn(500, function() {
-        window.setTimeout(function() { jQuery('#egggif').hide(); }, 5000);
+      jQuery('#background').fadeIn(500, function() {
+        window.setTimeout(function() { jQuery('#background').hide(); }, 5000);
       });
     })
     .addHook(function(){
