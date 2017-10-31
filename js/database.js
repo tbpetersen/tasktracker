@@ -24,7 +24,7 @@ const USERS_TABLE  = "users";
 const GROUPS_TABLE = "user_groups";
 const ITEMS_TABLE  = "group_items";
 
-const unsortedID = -2;
+const UNSORTED_TABLE_ID = -2;
 
 function getDBID(table, user, group) {
   return checkUserGroupDB(user, group)
@@ -57,7 +57,8 @@ function addDataToDB(){
       var tables = user.tables;
       let groupPromises = new Array();
       for(let i in user.tables){
-        if(tables[i].id !== unsortedID)
+        /* tag-unsort
+        if(tables[i].id !== UNSORTED_TABLE_ID) */
           groupPromises.push(addUserGroupToDB(id, tables[i]));
       }
       return Promise.all(groupPromises)
@@ -134,9 +135,13 @@ function addUserGroupToDB(user, table) {
           groupID: table.id,
           position: table.position
         }, function(data){
-          if (data === -1)
+          if (data === -1){
             reject(data);
-          table.id = data;
+          }
+
+          if(table.id != -2){
+            table.id = data;
+          }
           resolve(data);
         });
       })
@@ -161,9 +166,11 @@ function checkUserGroupDB(user, group) {
 }
 
 function addGroupItemToDB(userID, item, groupID) {
-  if(groupID == unsortedID){
+  /* tag-unsort
+  if(groupID == UNSORTED_TABLE_ID){
     return Promise.resolve(1);
   }
+  */
   return checkGroupItemDB(item, userID, groupID)
   .then(function(itemObj) {
     if(itemObj == null){

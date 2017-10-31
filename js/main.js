@@ -307,7 +307,7 @@ function sortByPosition(array){
 }
 
 
-function createTablesFromDPandAPI(dbData, tasks){
+function createTablesFromDBandAPI(dbData, tasks){
   createTablesFromGroups(dbData, tasks);
   return Promise.resolve();
 }
@@ -330,11 +330,21 @@ function createTablesFromGroups(groups, tasks){
     }
     user.tables.push(table);
   }
-  let unsortedTable = createUnsortedTable(tasks, groups);
 
-  if(unsortedTable.isEmpty()){
-    user.deleteTable(unsortedTable);
+  let newUnsortedTasks = findUnsortedTasks(tasks, groups);
+
+  if(newUnsortedTasks.length > 0){
+    if(! user.hasUnsortedTable()){
+      let unsortedTable = createUnsortedTable(tasks, groups);
+    }else{
+      let unsortedTable = user.getTableByID(UNSORTED_TABLE_ID);
+      for(let i = 0; i < newUnsortedTasks.length; i++){
+        unsortedTable.rows.push(newUnsortedTasks[i]);
+        addGroupItemToDB(user.databaseID, newUnsortedTasks[i], unsortedTable.id);
+      }
+    }
   }
+
 }
 
 
@@ -411,10 +421,34 @@ function loadFromDB(){
   })
 
   .then(function(itemsFromDB){
-    return createTablesFromDPandAPI(itemsFromDB, user.tasks);
+    let createTablesPromise = createTablesFromDBandAPI(itemsFromDB, user.tasks);
+    let removeDeletedCardsPromise = removeDeletedCardsFromDB(itemsFromDB, user.tasks);
+    return Promise.all([createTablesPromise, removeDeletedCardsPromise]);
   })
 }
 
+function removeDeletedCardsFromDB(itemsFromDB, tasks){
+  let arrayOfItemsArray = itemsFromDB.map(
+  function(group){
+    return group.items
+  });
+  let allItems = oneArrayFromMany(arrayOfItemsArray);
+
+  let deletePromises = [];
+  for(let i = 0; i < allItems.length; i++){
+    let cardIsOpen = false;
+    for(let j = 0; j < tasks.length; j++){
+      if(allItems[i].itemID == tasks[j].id){
+        cardIsOpen = true;
+      }
+    }
+    if(! cardIsOpen){
+      deletePromises.push(deleteItem(user.databaseID, allItems[i].itemID));
+    }
+  }
+
+  return Promise.all(deletePromises);
+}
 
 function createGroupsForUser(tasks){
   let cat = {};
@@ -569,6 +603,7 @@ function instantiateUser() {
   user.zendesk = new Object();
   user.tables = new Array();
   user.tempTables = new Array();
+
   user.getTableByID = function(tableID){
     for(let i = 0; i < user.tables.length; i++){
       let table = user.tables[i];
@@ -588,6 +623,10 @@ function instantiateUser() {
     }
       // TODO update table positions
   };
+
+  user.hasUnsortedTable = function(){
+    return user.getTableByID(UNSORTED_TABLE_ID) != null;
+  }
 }
 
 
@@ -769,7 +808,7 @@ function getCardsAndTickets() {
 
 
 function getTrelloCardsSearch(cardIDsArray){
-  // TODO Trevor: Looking into more efficient loaing from APIs
+  // TODO Trevor: Looking into more efficient loading from APIs
   //getTrelloCardsSearch(['57f7bd3914dd9c8939c68521', '58dbf3c5f0b7e827080d81af', '5817a1edb54f1b3cd101be55']);
   return trelloGet("search","card_board=true&card_list=true&query=*&board_fields=all&idCards=" + cardIDsArray.join(','))
   .then(function(data){
