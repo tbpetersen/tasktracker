@@ -24,6 +24,7 @@ $("#changeThemeBtn").click(function() {
     $("#current-theme").attr("href", dayTheme);
     $("#logo").attr("src", "images/logo.png");
   }
+  updateTheme();
   filterAll();
   currentTheme = $('#current-theme').attr("href");
 });

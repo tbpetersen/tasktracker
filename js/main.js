@@ -181,6 +181,10 @@ $(document).ready(function() {
     //After the API is finished loading, allow new table creation.
     $("#addTable").click(createNewTable);
   })
+  .then(function(){
+    $("#addTable").attr("disabled", false);
+    $("#reorder").attr("disabled", false);
+  })
 
   .catch(function(err){
     $('.loader').hide();
@@ -188,6 +192,8 @@ $(document).ready(function() {
     console.log(err);
   })
   table();
+  $("#addTable").attr("disabled", true);
+  $("#reorder").attr("disabled", true);
 });
 
 
@@ -219,6 +225,7 @@ function refreshGroupUI(tableObj) {
   headerWrapper.text(tableObj.name);
   tableBody.empty();
   for(let i = 0; i < tableObj.rows.length; i++) {
+    console.log("Inserting", tableObj.rows[i]);
     populateTable(tableObj.rows[i], tableObj.id, i);
   }
   draggableRows(ITEM_SORTABLE_CLASS);
@@ -482,12 +489,6 @@ function populatePage() {
 
 }
 
-
-$(".navbar-toggle").on("focusout", function(){
-  //console.log("Close the links"); TODO
-});
-
-
 /* Name: isEmptyString
    Purpose: Tell whether the string is empty or not.
    Description: Runs through the string looking for anything that isn't an empty
@@ -575,7 +576,6 @@ function instantiateUser() {
         break;
       }
     }
-      // TODO update table positions
   };
 }
 

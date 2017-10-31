@@ -174,7 +174,6 @@ function makeButtons(tableName) {
   deleteTable.setAttribute("id", "deleteTableBtn");
 
   titleSort.onclick = function(titleSort){
-    console.log("here");
     tableName = this.closest("table").id;
     sortAlphabet(tableName, 0);
   }

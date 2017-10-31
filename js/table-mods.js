@@ -209,11 +209,13 @@ $("#reorder").click(function(e) {
     onOpen: function() {
       draggableRows(GROUP_SORTABLE_CLASS);
       $('#reorder').prop('disabled', true);
+      $('#addTable').prop('disabled', true);
     },
     onClose: function() {
     },
     beforeClose: function() {
       $('#reorder').prop('disabled', false);
+      $('#addTable').prop('disabled', false);
       return true; // close the modal
     }
   });
