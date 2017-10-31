@@ -231,6 +231,8 @@ function refreshGroupUI(tableObj) {
   let headerWrapper = $(tableWrapper).find('.wrapper-header h3');
   let tableBody = $(tableWrapper).find('tbody');
 
+  tableBody.removeClass("place")
+
   headerWrapper.text(tableObj.name);
   tableBody.empty();
   for(let i = 0; i < tableObj.rows.length; i++) {
