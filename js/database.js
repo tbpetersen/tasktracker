@@ -385,3 +385,7 @@ function genericDelete(databaseTableName, userID, columnValue){
     columnValue: columnValue
   });
 }
+
+function updateTheme(){
+  console.log("UPDATING THEEM")
+}

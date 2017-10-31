@@ -20,6 +20,11 @@ thead {
   background-color: #BDBDBD;
   color: #212121;
 }
+#wrapper_-2 div #tableTitle:hover{
+  background-color: transparent;
+  color: #BDBDBD;
+  cursor: auto;
+}
 
 td {
   border-color: #BDBDBD;
@@ -37,6 +42,12 @@ td {
 
 select#sortList {
   color: black;
+}
+
+#close-ticket-panel-button{
+  background-color: #B93C3C;
+  border: none;
+  border-right: 1px #222 solid;
 }
 
 #leftSidebar {

@@ -423,7 +423,7 @@ select#sortList {
   padding: 7px 10px;
 }
 
-.panel-heading .glyphicon-remove {
+.panel-heading .glyphicon-remove /*.close*/ {
   float: right;
   cursor: pointer;
   margin-left: 10px;
@@ -440,8 +440,9 @@ select#sortList {
   text-align: center;
   }
 
-.glyphicon-remove:hover {
-  background-color: black;
+.glyphicon-remove:hover {  
+/*.close
+*/  background-color: black;
 }
 .panel-body {
   overflow-wrap: break-word;
@@ -872,4 +873,9 @@ select#sortList {
 html {
   overflow-x: hidden;
   overflow-y:scroll;
+}
+
+#projectInfo {
+  padding-top: 200px;
+
 }

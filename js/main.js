@@ -182,7 +182,12 @@ $(document).ready(function() {
     $('.loader').hide();
     createFilters();
     createTablesFromTableObject();
-    //return populatePage();
+    //After the API is finished loading, allow new table creation.
+    $("#addTable").click(createNewTable);
+  })
+  .then(function(){
+    $("#addTable").attr("disabled", false);
+    $("#reorder").attr("disabled", false);
   })
 
   .catch(function(err){
@@ -190,6 +195,9 @@ $(document).ready(function() {
     console.log("Error during setup: ");
     console.log(err);
   })
+  table();
+  $("#addTable").attr("disabled", true);
+  $("#reorder").attr("disabled", true);
 });
 
 
@@ -527,12 +535,6 @@ function populatePage() {
 
 }
 
-
-$(".navbar-toggle").on("focusout", function(){
-  //console.log("Close the links"); TODO
-});
-
-
 /* Name: isEmptyString
    Purpose: Tell whether the string is empty or not.
    Description: Runs through the string looking for anything that isn't an empty
@@ -568,12 +570,12 @@ function finalizeTempTable(){
 }
 
 
-function egg() {
+function table() {
   var egg = new Egg();
   egg
     .addCode("b,o,b", function() {
-      jQuery('#egggif').fadeIn(500, function() {
-        window.setTimeout(function() { jQuery('#egggif').hide(); }, 5000);
+      jQuery('#background').fadeIn(500, function() {
+        window.setTimeout(function() { jQuery('#background').hide(); }, 5000);
       });
     })
     .addHook(function(){
@@ -621,7 +623,6 @@ function instantiateUser() {
         break;
       }
     }
-      // TODO update table positions
   };
 
   user.hasUnsortedTable = function(){

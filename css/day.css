@@ -51,6 +51,11 @@ td {
   background: #a2270c;
   color: #fff;
 }
+#wrapper_-2 div #tableTitle:hover{
+  background-color: transparent;
+  color: #A2270C;
+  cursor: auto;
+}
 
 select#sortList {
   color: black;
@@ -63,7 +68,7 @@ select#sortList {
 }
 
 #leftSidebar {
-  background-color: whitemsoke;
+  background-color: whitesmoke;
 }
 
 .leftSidebarItem {
@@ -192,12 +197,23 @@ select#sortList {
   color: #A2270C;
 }
 
-.btn-primary {
+#delTableConfirm {
   background-color: #A2270C;
 }
+#delTableConfirm:hover{
+  background-color: #82070C !important;
+}
+#delTableConfirm:active{
+  background-color: black;
+}
 
-.btn-primary:hover, .btn-primary.active, .btm-primary:active, .btn-primary:focus {
-  background-color: #c6595c !important;
+#delTableCancel {
+  background-color: #EEE;
+}
+#delTableCancel:hover{
+  background-color: lightgrey !important;
+}
+#delTableCancel:active{
 }
 
 .table-wrapper {
