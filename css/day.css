@@ -116,7 +116,7 @@ select#sortList {
 }
 
 .navbar, .nav, #openPanelArrow{
-  border-bottom: 1px solid darkgrey;
+  /*border-bottom: 1px solid darkgrey;  Looks weird on firefox. Feel free to try to fix it*/
 }
 
 .navbar > li > ul  > .dropdown-menu {
@@ -227,8 +227,7 @@ select#sortList {
 #openPanelArrow {
   background-color: #e8e8e8;
   color: #A2270C;
-  border-left-color: darkgrey;
-  border-bottom-color: darkgrey;
+  border-color: darkgrey;
 }
 #openPanelArrow:hover{
   background-color: lightgrey;
