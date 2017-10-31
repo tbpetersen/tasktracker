@@ -30,6 +30,7 @@ Return value: a JSON string of the item or null
       $row["groupID"] = $groupID;
       $row["itemType"] = $itemType;
       $row["position"] = $position;
+      header('Content-Type: application/json');
       echo(json_encode($row));
     }
 

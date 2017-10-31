@@ -28,6 +28,7 @@ Return value: a JSON string array of ids (empty if there are no items in the gro
       array_push($array, $tmp);
     }
 
+    header('Content-Type: application/json');
     echo(json_encode($array));
 
     $tasktrackerDB->close();

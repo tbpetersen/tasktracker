@@ -218,7 +218,7 @@ function getItem(userID, itemID, groupID) {
       if (data == "") {
         resolve(null);
       } else {
-        resolve(JSON.parse(data));
+        resolve(data);
       }
     });
   });
@@ -303,7 +303,7 @@ function getAllItemsInGroup(userID, groupID) {
       userID: userID,
       groupID: groupID
     }, function(data) {
-      resolve(JSON.parse(data));
+      resolve(data);
     });
   });
 }
@@ -346,7 +346,7 @@ function getAllGroups(userID) {
     $.post(PHP_GET_GROUPS_FOR_USER, {
       userID: userID,
     }, function(data) {
-      resolve(JSON.parse(data));
+      resolve(data);
     });
   });
 }
