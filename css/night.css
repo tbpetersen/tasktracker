@@ -54,6 +54,10 @@ select#sortList {
   background-color: #212121;
 }
 
+.leftSidebarItem {
+  background-color: transparent;
+}
+
 .leftSidebarItem:hover {
   background-color: #171717;
 }

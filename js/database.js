@@ -231,7 +231,6 @@ function getTheme(userID){
     $.post(PHP_GET_THEME, {
       userID: userID
     }, function(data) {
-      console.log(data);
       resolve(data == 1);
     });
   });

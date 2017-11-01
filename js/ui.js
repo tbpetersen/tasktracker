@@ -15,26 +15,31 @@ function setTheme(){
   getTheme(user.databaseID)
   .then(function(id){
     if(id)
-      $("#current-theme").attr("href", nightTheme);
+      changeToNight();
     else
-      $("#current-theme").attr("href", dayTheme);
-  })
+      changeToDay();
+    currentTheme = $('#current-theme').attr("href");
+  });
 }
 
 // Theme change
 $("#changeThemeBtn").click(function() {
   if (currentTheme === dayTheme)
-  {
-    updateTheme(user.databaseID, 1);
-    $("#current-theme").attr("href", nightTheme);
-    $("#logo").attr("src", "images/logo-invert.png");
-  }
+    changeToNight();
   else
-  {
-    updateTheme(user.databaseID, 0);
-    $("#current-theme").attr("href", dayTheme);
-    $("#logo").attr("src", "images/logo.png");
-  }
-  filterAll();
+    changeToDay();
+  filterAll(); //TODO
   currentTheme = $('#current-theme').attr("href");
 });
+
+function changeToNight(){
+  updateTheme(user.databaseID, 1);
+  $("#current-theme").attr("href", nightTheme);
+  $("#logo").attr("src", "images/logo-invert.png");
+}
+
+function changeToDay(){
+  updateTheme(user.databaseID, 0);
+  $("#current-theme").attr("href", dayTheme);
+  $("#logo").attr("src", "images/logo.png");
+}
