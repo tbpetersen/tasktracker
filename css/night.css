@@ -265,7 +265,3 @@ h3#filters {
 .table-wrapper {
   background-color: #1D1D1D;
 }
-html {
-  overflow-x: hidden;
-  overflow-y:scroll;
-}

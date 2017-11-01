@@ -16,15 +16,16 @@ $("#changeThemeBtn").click(function() {
 
   if (currentTheme === dayTheme)
   {
+    updateTheme(user.databaseID, 1);
     $("#current-theme").attr("href", nightTheme);
     $("#logo").attr("src", "images/logo-invert.png");
   }
   else
   {
+    updateTheme(user.databaseID, 0);
     $("#current-theme").attr("href", dayTheme);
     $("#logo").attr("src", "images/logo.png");
   }
-  updateTheme();
   filterAll();
   currentTheme = $('#current-theme').attr("href");
 });

@@ -10,6 +10,7 @@ const PHP_GET_GROUP_NAME = PHP_DIRECTORY_PATH + '/getGroupName.php';
 const PHP_GET_GROUPS_FOR_USER = PHP_DIRECTORY_PATH + "/getAllGroups.php";
 const PHP_UPDATE_GROUP_NAME = PHP_DIRECTORY_PATH + '/updateGroupName.php';
 const PHP_UPDATE_GROUP_POSITION = PHP_DIRECTORY_PATH + '/updateGroupPosition.php';
+const PHP_UPDATE_THEME = PHP_DIRECTORY_PATH + '/updateTheme.php';
 
 
 const PHP_ADD_ITEM = PHP_DIRECTORY_PATH + '/addItem.php';
@@ -217,6 +218,18 @@ function getItem(userID, itemID, groupID) {
   });
 }
 
+function updateTheme(userID, isNight){
+  console.log("Updating theme of: ", userID, "to", Boolean(isNight));
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_UPDATE_THEME, {
+      userID: userID,
+      theme: isNight
+    }, function(data) {
+      resolve(data == 1);
+    });
+  });
+}
+
 function updateGroupName(userID, tableObj){
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_GROUP_NAME, {
@@ -377,8 +390,4 @@ function genericDelete(databaseTableName, userID, columnValue){
     userID: userID,
     columnValue: columnValue
   });
-}
-
-function updateTheme(){
-  console.log("UPDATING THEEM")
 }
