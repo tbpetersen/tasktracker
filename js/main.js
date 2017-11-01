@@ -166,6 +166,8 @@ $(document).ready(function() {
     return setIDs()
   })
 
+  .then(setTheme)
+
   .then(function(){
     if(user.databaseID == -1){
       return loadFromAPI();

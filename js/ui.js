@@ -1,3 +1,7 @@
+var dayTheme = "css/day.css";
+var nightTheme = "css/night.css";
+var currentTheme = $('#current-theme').attr("href");
+
 // Collapsable menu for smaller screen widths
 $(document).on('click', '.navbar-collapse.in',function(e) {
     if( ($(e.target).is('button') || $(e.target).is('a'))
@@ -7,13 +11,18 @@ $(document).on('click', '.navbar-collapse.in',function(e) {
     }
 });
 
+function setTheme(){
+  getTheme(user.databaseID)
+  .then(function(id){
+    if(id)
+      $("#current-theme").attr("href", nightTheme);
+    else
+      $("#current-theme").attr("href", dayTheme);
+  })
+}
 
 // Theme change
 $("#changeThemeBtn").click(function() {
-  var dayTheme = "css/day.css";
-  var nightTheme = "css/night.css";
-  var currentTheme = $('#current-theme').attr("href");
-
   if (currentTheme === dayTheme)
   {
     updateTheme(user.databaseID, 1);

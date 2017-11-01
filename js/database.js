@@ -4,6 +4,7 @@ const PHP_ADD_USER = PHP_DIRECTORY_PATH + '/addUser.php';
 const PHP_GET_USER = PHP_DIRECTORY_PATH + '/getUser.php';
 const PHP_GET_USER_ID = PHP_DIRECTORY_PATH + '/getUserID.php';
 
+const PHP_GET_THEME = PHP_DIRECTORY_PATH + '/getTheme.php';
 const PHP_ADD_GROUP = PHP_DIRECTORY_PATH + '/addGroup.php';
 const PHP_GET_GROUP = PHP_DIRECTORY_PATH + '/getGroup.php';
 const PHP_GET_GROUP_NAME = PHP_DIRECTORY_PATH + '/getGroupName.php';
@@ -225,12 +226,22 @@ function getItem(userID, itemID, groupID) {
   });
 }
 
+function getTheme(userID){
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_GET_THEME, {
+      userID: userID
+    }, function(data) {
+      console.log(data);
+      resolve(data == 1);
+    });
+  });
+}
+
 function updateTheme(userID, isNight){
-  console.log("Updating theme of: ", userID, "to", Boolean(isNight));
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_THEME, {
       userID: userID,
-      theme: isNight
+      isNight: isNight
     }, function(data) {
       resolve(data == 1);
     });
