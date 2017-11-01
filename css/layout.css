@@ -600,22 +600,22 @@ td {
   }
 }
 
-
 #openPanelArrow {
-  width: 4vh;
-  height: 7vh;
+  width: 40px;
+  height: 75px;
+  line-height: 75px;
   font-size: 4vh;
-  line-height: 3vh;
   text-align: center;
   font-weight: bold;
   position: fixed;
-  top: 6%;
+  top: 6vh;
   right: 0%;
   transition: right 0.5s ease;
-  padding-top: 1.75vh;
   border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
   border-left:  1px solid;
   border-bottom:  1px solid;
+  border-top:  1px solid;
 }
 
 /* Delete Table Notification */

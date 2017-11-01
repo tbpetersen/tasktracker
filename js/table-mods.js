@@ -89,7 +89,7 @@ $(".main").on("click", "#deleteTableBtn", function(e)
  var $table = $(this).parent().next();
  let tableID = extractGroupID($table[0].id);
  let tableObj = user.getTableByID(tableID);
- let unsortedTableObj = user.getTableByID(unsortedID);
+ let unsortedTableObj = user.getTableByID(UNSORTED_TABLE_ID);
 
  if((unsortedTableObj != null && tableObj.id === unsortedTableObj.id) && !(isEmpty($table))) {
    deleteUnsorted();
@@ -165,11 +165,14 @@ function deleteUnsorted() {
 // Method to delete table and table wrappers as well as removing deleted group from db
 function deleteTable(tableObj) {
   let tableWrapper = $('#' + wrapperPrefix + tableObj.id);
-  let unsortedTableObj = user.getTableByID(unsortedID);
+  let unsortedTableObj = user.getTableByID(UNSORTED_TABLE_ID);
 
-  if(unsortedTableObj == null){
-    unsortedTableObj = createUnsortedTable([],[]);
-    createTable(unsortedTableObj, true);
+
+  if(! tableObj.isEmpty()){
+    if(unsortedTableObj == null){
+      unsortedTableObj = createUnsortedTable([],[]);
+      createTable(unsortedTableObj, true);
+    }
   }
 
   tableWrapper.remove();
@@ -177,11 +180,11 @@ function deleteTable(tableObj) {
   for(let i = 0; i < tableObj.rows.length; i++){
     let row = tableObj.rows[i];
     unsortedTableObj.addRow(row);
-
+    updateItemGroup(user.databaseID, row.id, unsortedTableObj.id);
   }
 
   user.deleteTable(tableObj);
-  deleteItemsFromUserGroup(user.databaseID, tableObj);
+  //deleteItemsFromUserGroup(user.databaseID, tableObj);
   deleteUserGroup(user.databaseID, tableObj);
   refreshGroupUI(unsortedTableObj);
   draggableRows(ITEM_SORTABLE_CLASS);

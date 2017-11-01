@@ -22,7 +22,6 @@ $success = $stmt->execute();
 $result = $stmt->bind_result($col1);
 $rowFetchStatus = $stmt->fetch();
 if($rowFetchStatus){
-  //TODO Modify table
   $stmt = $tasktrackerDB->prepare("UPDATE $groupsTable SET userID = (?), groupName = (?), position = (?) WHERE groupID = (?);");
   $stmt->bind_param('isii', $userID, $groupName, $position, $groupID);
   $success = $stmt->execute();
@@ -31,8 +30,15 @@ if($rowFetchStatus){
 }
 else{
   /* Add the user to the db */
-  $stmt = $tasktrackerDB->prepare("INSERT INTO $groupsTable (userID, groupName, position) VALUES (?,?,?)");
-  $stmt->bind_param('isi', $userID, $groupName, $position);
+  $stmt = "";
+  if($groupID == -2){
+    $stmt = $tasktrackerDB->prepare("INSERT INTO $groupsTable (groupID, userID, groupName, position) VALUES (?,?,?,?)");
+    $stmt->bind_param('iisi', $groupID, $userID, $groupName, $position);
+  }else{
+    $stmt = $tasktrackerDB->prepare("INSERT INTO $groupsTable (userID, groupName, position) VALUES (?,?,?)");
+    $stmt->bind_param('isi', $userID, $groupName, $position);
+  }
+
   $success = $stmt->execute();
   if($success == 1){
     echo($tasktrackerDB->insert_id);

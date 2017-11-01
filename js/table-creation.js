@@ -206,7 +206,17 @@ function makeButtons(tableName) {
 
 
 function createUnsortedTable(tasks, groups){
-  let table = new Table('Unsorted', unsortedID, user.tables.length);
+  let table = new Table('Unsorted', UNSORTED_TABLE_ID, user.tables.length);
+  let unsortedTasks = findUnsortedTasks(tasks, groups);
+  for(let i = 0; i < unsortedTasks.length; i++){
+    table.addRow(unsortedTasks[i]);
+  }
+  user.tables.push(table);
+  addUserGroupToDB(user.databaseID, table, true);
+  return table;
+}
+
+function findUnsortedTasks(tasks, groups){
   var clonedTasks = JSON.parse(JSON.stringify(tasks));
   for(let i = 0; i < groups.length; i++){
     for(let j = 0; j < groups[i].items.length; j++){
@@ -217,11 +227,7 @@ function createUnsortedTable(tasks, groups){
       }
     }
   }
-  for(let i = 0; i < clonedTasks.length; i++){
-    table.addRow(clonedTasks[i]);
-  }
-  user.tables.push(table);
-  return table;
+  return clonedTasks;
 }
 
 /* -------------------------- POPUATION OF TABLE CONTENT -------------------------- */
@@ -254,8 +260,8 @@ function addRow(task, tableName, index) {
   var group = task.group;
 
   var tableID = tablePrefix + tableName;
-  var unsortedID = tablePrefix + unsortedID;
-  if (tableID != unsortedID) {
+  var unsortedID = tablePrefix + UNSORTED_TABLE_ID;
+  if (tableID != UNSORTED_TABLE_ID) {
     var body = document.getElementById(tableID).getElementsByTagName("tbody")[0];
   }
   else{
@@ -378,7 +384,7 @@ function onTableUpdated(event, ui){
     task.position = i - 1;
     addGroupItemToDB(userID, task, table.id);
     newRows.push(task);
-    if(table.id === unsortedID){
+    if(table.id === UNSORTED_TABLE_ID){
       deleteItem(userID, task.id);
     }
   }
