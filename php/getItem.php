@@ -8,6 +8,7 @@ Return value: a JSON string of the item or null
 */
   /* Connect to the server */
   include_once("connectToDB.php");
+  include_once("checkToken.php");
 
   /* POST arguments */
   $itemID = $_POST['itemID'];

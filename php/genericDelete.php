@@ -11,6 +11,7 @@ Return value: 1 on success or -1 on failure
 
   /* Connect to the server */
   include_once("connectToDB.php");
+  include_once("checkToken.php");
 
   /* POST arguments */
   $tableName = $_POST['tableName'];

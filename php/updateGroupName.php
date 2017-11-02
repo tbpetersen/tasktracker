@@ -10,6 +10,7 @@ Return value: 1 for success of -1 for failure
 */
   /* Connect to the server */
   include_once("connectToDB.php");
+  include_once("checkToken.php");
 
   /* POST arguments */
   $userID = $_POST['userID'];

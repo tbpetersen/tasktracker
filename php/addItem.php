@@ -12,6 +12,8 @@ Return value: the item's ID in the database or -1 if fail
 */
 /* Connect to the server */
 include_once("connectToDB.php");
+include_once("checkToken.php");
+
 /* POST arguments */
 $itemID   = $_POST['itemID'];
 $userID   = $_POST['userID'];
@@ -19,11 +21,6 @@ $groupID  = $_POST['groupID'];
 $itemType = $_POST['itemType'];
 $position = $_POST['position'];
 
-include_once("checkToken.php");
-if(! $tokenIsValid){
-  echo(-1);
-  exit();
-}
 
 $stmt = $tasktrackerDB->prepare("SELECT itemID FROM $itemsTable WHERE itemID = (?) && userID = (?)");
 $stmt->bind_param('si', $itemID, $userID);

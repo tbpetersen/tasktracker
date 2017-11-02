@@ -36,10 +36,10 @@ function getDBID(table, user, group) {
 }
 
 function getUserID(user) {
+  let params = getBasePOSTParameters();
+  params.username = user;
   return new Promise(function(resolve, reject) {
-    $.post(PHP_GET_USER_ID, {
-      username: user
-    }, function(data) {
+    $.post(PHP_GET_USER_ID, params, function(data) {
       resolve(data);
     });
   })
@@ -93,15 +93,16 @@ function addDataToDB(){
 }
 
 function addUserToDB(user) {
+  let params = getBasePOSTParameters();
+  params.username = user;
+
   //IF THIS COMES OUT TO TRUE, RUN THE REST OF THE PROGRAM. IF NOT, RETURN
   return checkUserDB(user)
     .then(function(promise) {
       //If the user doesn't exist, add them
       if (!promise) {
         return new Promise(function(resolve, reject) {
-          $.post(PHP_ADD_USER, {
-            username: user
-          }, function(data) {
+          $.post(PHP_ADD_USER, params, function(data) {
             if (data === -1) {
               reject(data);
             }
@@ -119,28 +120,29 @@ function addUserToDB(user) {
 }
 
 function checkUserDB(user) {
+  let params = getBasePOSTParameters();
+  params.username = user;
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_GET_USER, {
-      username: user
-    }, function(data) {
+    $.post(PHP_GET_USER, params, function(data) {
       resolve(data);
     });
   });
 }
 
 function addUserGroupToDB(userID, trelloToken, table) {
+  let params = getBasePOSTParameters();
+  params.userID = userID;
+  params.groupName = table.name;
+  params.groupID = table.id;
+  params.position = table.position;
+
   return checkUserGroupDB(userID, table.name)
   .then(function(promise) {
     //If the group doesn't exist, add it
     if (!promise) {
       return new Promise(function(resolve, reject) {
-        $.post(PHP_ADD_GROUP, {
-          userID: userID,
-          trelloToken: trelloToken,
-          groupName: table.name,
-          groupID: table.id,
-          position: table.position
-        }, function(data){
+        $.post(PHP_ADD_GROUP, params, function(data){
           if (data == -1){
             reject(data);
           }
@@ -159,33 +161,30 @@ function addUserGroupToDB(userID, trelloToken, table) {
 }
 
 function checkUserGroupDB(user, group) {
+  let params = getBasePOSTParameters();
+  params.userID = user;
+  params.groupName = group;
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_GET_GROUP, {
-      userID: user,
-      groupName: group
-    }, function(data) {
+    $.post(PHP_GET_GROUP, params, function(data) {
       resolve(data != -1);
     });
   });
 }
 
 function addGroupItemToDB(userID, item, groupID) {
-  /* tag-unsort
-  if(groupID == UNSORTED_TABLE_ID){
-    return Promise.resolve(1);
-  }
-  */
+  let params = getBasePOSTParameters();
+  params.itemID = item.id;
+  params.userID = userID;
+  params.groupID = groupID;
+  params.itemType = item.type;
+  params.position = item.position;
+
   return checkGroupItemDB(item, userID, groupID)
   .then(function(itemObj) {
     if(itemObj == null){
       return new Promise(function(resolve, reject) {
-        $.post(PHP_ADD_ITEM, {
-          itemID: item.id,
-          userID: userID,
-          groupID: groupID,
-          itemType: item.type,
-          position: item.position
-        }, function(data) {
+        $.post(PHP_ADD_ITEM, params, function(data) {
           if (data === -1)
             reject(data);
           resolve(data);
@@ -213,12 +212,12 @@ function checkGroupItemDB(item, userID, groupID) {
 }
 
 function getItem(userID, itemID, groupID) {
+  let params = getBasePOSTParameters();
+  params.itemID = itemID;
+  params.groupID = groupID;
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_GET_ITEM, {
-      userID: userID,
-      itemID: itemID,
-      groupID: groupID
-    }, function(data) {
+    $.post(PHP_GET_ITEM, params, function(data) {
       if (data == "") {
         resolve(null);
       } else {
@@ -229,36 +228,36 @@ function getItem(userID, itemID, groupID) {
 }
 
 function updateGroupName(userID, tableObj){
+  let params = getBasePOSTParameters();
+  params.groupID = tableObj.id;
+  params.newName = tableObj.name;
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_UPDATE_GROUP_NAME, {
-      userID: userID,
-      groupID: tableObj.id,
-      newName: tableObj.name
-    }, function(data) {
+    $.post(PHP_UPDATE_GROUP_NAME, params, function(data) {
       resolve(data == 1);
     });
   });
 }
 
 function updateGroupPosition(userID, tableObj){
+  let params = getBasePOSTParameters();
+  params.groupID = tableObj.id;
+  params.newPosition = tableObj.position;
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_UPDATE_GROUP_POSITION, {
-      userID: userID,
-      groupID: tableObj.id,
-      newPosition: tableObj.position
-    }, function(data) {
+    $.post(PHP_UPDATE_GROUP_POSITION, params, function(data) {
       resolve(data == 1);
     });
   });
 }
 
 function updateItemPosition(userID, item) {
+  let params = getBasePOSTParameters();
+  params.itemID = item.id;
+  params.newPosition = item.position;
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_UPDATE_ITEM_POSITION, {
-      userID: userID,
-      itemID: item.id,
-      newPosition: item.position
-    }, function(data) {
+    $.post(PHP_UPDATE_ITEM_POSITION, params, function(data) {
       resolve(data == 1);
     });
   });
@@ -290,23 +289,23 @@ function removeDuplicates(array){
 }
 
 function updateItemGroup(userID, itemID, newGroupID) {
+  let params = getBasePOSTParameters();
+  params.itemID = itemID;
+  params.newGroupID = newGroupID;
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_UPDATE_ITEM_GROUP, {
-      userID: userID,
-      itemID: itemID,
-      newGroupID: newGroupID
-    }, function(data) {
+    $.post(PHP_UPDATE_ITEM_GROUP, params , function(data) {
       resolve(data == 1);
     });
   });
 }
 
 function getAllItemsInGroup(userID, groupID) {
+  let params = getBasePOSTParameters();
+  params.groupID = groupID;
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_GET_ITEMS_IN_GROUP, {
-      userID: userID,
-      groupID: groupID
-    }, function(data) {
+    $.post(PHP_GET_ITEMS_IN_GROUP, params, function(data) {
       resolve(data);
     });
   });
@@ -346,21 +345,21 @@ function getItemPosition(userID, item) {
 }
 
 function getAllGroups(userID) {
+  let params = getBasePOSTParameters();
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_GET_GROUPS_FOR_USER, {
-      userID: userID,
-    }, function(data) {
+    $.post(PHP_GET_GROUPS_FOR_USER, params, function(data) {
       resolve(data);
     });
   });
 }
 
 function getGroupName(user, groupID) {
+  let params = getBasePOSTParameters();
+  params.groupID = groupID;
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_GET_GROUP_NAME, {
-      userID: user,
-      groupID: groupID
-    }, function(data) {
+    $.post(PHP_GET_GROUP_NAME, params, function(data) {
       resolve(data);
     });
   });
@@ -383,11 +382,11 @@ function deleteUserGroup(userID, tableObj) {
 }
 
 function genericDelete(databaseTableName, userID, columnValue){
-  return $.post(PHP_GENERIC_DELETE, {
-    tableName: databaseTableName,
-    userID: userID,
-    columnValue: columnValue
-  });
+  let params = getBasePOSTParameters();
+  params.tableName = databaseTableName;
+  params.columnValue = columnValue;
+
+  return $.post(PHP_GENERIC_DELETE, params);
 }
 
 function updateTheme(){
@@ -395,13 +394,17 @@ function updateTheme(){
 }
 
 function checkToken(userID, trelloToken) {
+  let params = getBasePOSTParameters();
+
   return new Promise(function(resolve, reject) {
-    $.post(PHP_CHECK_TOKEN, {
-      userID: userID,
-      trelloToken: trelloToken
-    }, function(data) {
-      console.log(data);
-      resolve();
-    });
+    $.post(PHP_CHECK_TOKEN, params,
+      function(data) {
+        console.log(data);
+        resolve();
+      });
   });
+}
+
+function getBasePOSTParameters(){
+  return {userID: user.databaseID, trelloToken: user.trello.token};
 }

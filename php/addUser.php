@@ -8,15 +8,10 @@ Return value: the user's ID in the database or -1 if fail
 */
   /* Connect to the server */
   include_once("connectToDB.php");
+  include_once("checkToken.php");
 
   /* POST arguments */
   $username = $_POST['username'];
-
-  include_once("checkToken.php");
-  if(! $tokenIsValid){
-    echo(-1);
-    exit();
-  }
 
 
   /* Add the user to the db */

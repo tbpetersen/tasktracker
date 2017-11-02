@@ -4,10 +4,18 @@ File: checkToken.php
 Purpose: verify that a token is for a specified user
 Return value: No return value. Sets $tokenIsValid to true or false
 
-NOTE: userID and token are expected to be defined 
+NOTE: userID and token are expected to be defined
 */
 /* Connect to the server */
 include_once("connectToDB.php");
+
+$userID = $_POST['userID'];
+$token  = $_POST['trelloToken'];
+
+if($userID == null || $token == null){
+  header("HTTP/1.1 401 Unauthorized");
+  exit();
+}
 
 $trelloTokenEndpoint = "https://api.trello.com/1/tokens/";
 $zelloKey = "8886ef1a1bc5ad08caad020068a3f9a2";
@@ -32,11 +40,19 @@ if($tokenInfo){
     if($rowFetchStatus2){
       $usernameInDB = $col;
       $tokenIsValid = $email == $usernameInDB;
+
+      if(! $tokenIsValid){
+        header("HTTP/1.1 401 Unauthorized");
+        exit();
+      }
     }
   }
 
   $stmt2->close();
 
+}else{
+  header("HTTP/1.1 401 Unauthorized");
+  exit();
 }
 
 ?>
