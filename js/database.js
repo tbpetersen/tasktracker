@@ -1,9 +1,14 @@
 const PHP_DIRECTORY_PATH = './php';
 
+// Token operations
+const PHP_CHECK_TOKEN = PHP_DIRECTORY_PATH + '/checkToken.php';
+
+// User operations
 const PHP_ADD_USER = PHP_DIRECTORY_PATH + '/addUser.php';
 const PHP_GET_USER = PHP_DIRECTORY_PATH + '/getUser.php';
 const PHP_GET_USER_ID = PHP_DIRECTORY_PATH + '/getUserID.php';
 
+// Group operations
 const PHP_ADD_GROUP = PHP_DIRECTORY_PATH + '/addGroup.php';
 const PHP_GET_GROUP = PHP_DIRECTORY_PATH + '/getGroup.php';
 const PHP_GET_GROUP_NAME = PHP_DIRECTORY_PATH + '/getGroupName.php';
@@ -11,7 +16,7 @@ const PHP_GET_GROUPS_FOR_USER = PHP_DIRECTORY_PATH + "/getAllGroups.php";
 const PHP_UPDATE_GROUP_NAME = PHP_DIRECTORY_PATH + '/updateGroupName.php';
 const PHP_UPDATE_GROUP_POSITION = PHP_DIRECTORY_PATH + '/updateGroupPosition.php';
 
-
+// Item operations
 const PHP_ADD_ITEM = PHP_DIRECTORY_PATH + '/addItem.php';
 const PHP_GET_ITEM = PHP_DIRECTORY_PATH + '/getItem.php';
 const PHP_GET_ITEMS_IN_GROUP = PHP_DIRECTORY_PATH + '/getAllItemsInGroup.php'
@@ -59,7 +64,7 @@ function addDataToDB(){
       for(let i in user.tables){
         /* tag-unsort
         if(tables[i].id !== UNSORTED_TABLE_ID) */
-          groupPromises.push(addUserGroupToDB(id, tables[i]));
+          groupPromises.push(addUserGroupToDB(id, user.trello.token, tables[i]));
       }
       return Promise.all(groupPromises)
       .then(function(){
@@ -123,19 +128,20 @@ function checkUserDB(user) {
   });
 }
 
-function addUserGroupToDB(user, table) {
-  return checkUserGroupDB(user, table.name)
+function addUserGroupToDB(userID, trelloToken, table) {
+  return checkUserGroupDB(userID, table.name)
   .then(function(promise) {
     //If the group doesn't exist, add it
     if (!promise) {
       return new Promise(function(resolve, reject) {
         $.post(PHP_ADD_GROUP, {
-          userID: user,
+          userID: userID,
+          trelloToken: trelloToken,
           groupName: table.name,
           groupID: table.id,
           position: table.position
         }, function(data){
-          if (data === -1){
+          if (data == -1){
             reject(data);
           }
 
@@ -148,10 +154,8 @@ function addUserGroupToDB(user, table) {
     }else{
       return Promise.resolve();
     }
-  })
-  .catch(function(err) {
-    console.log("Error: " + err);
   });
+
 }
 
 function checkUserGroupDB(user, group) {
@@ -388,4 +392,16 @@ function genericDelete(databaseTableName, userID, columnValue){
 
 function updateTheme(){
   console.log("UPDATING THEEM")
+}
+
+function checkToken(userID, trelloToken) {
+  return new Promise(function(resolve, reject) {
+    $.post(PHP_CHECK_TOKEN, {
+      userID: userID,
+      trelloToken: trelloToken
+    }, function(data) {
+      console.log(data);
+      resolve();
+    });
+  });
 }

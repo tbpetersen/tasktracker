@@ -12,9 +12,16 @@ include_once("connectToDB.php");
 
 /* POST arguments */
 $userID    = $_POST['userID'];
+$token    = $_POST['trelloToken'];
 $groupName = $_POST['groupName'];
 $groupID = $_POST['groupID'];
 $position = $_POST['position'];
+
+include_once("checkToken.php");
+if(! $tokenIsValid){
+  echo(-1);
+  exit();
+}
 
 $stmt = $tasktrackerDB->prepare("SELECT groupID FROM $groupsTable WHERE groupID = (?) && userID = (?)");
 $stmt->bind_param('ss', $groupID, $userID);

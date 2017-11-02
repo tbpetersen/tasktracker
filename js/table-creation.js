@@ -25,7 +25,7 @@ function createNewTable() {
   let tableObject = new Table(tableID, -1, user.tables.length);
 
   user.tables.push(tableObject);
-  addUserGroupToDB(user.databaseID, tableObject).then(function(){
+  addUserGroupToDB(user.databaseID, user.trello.token, tableObject).then(function(){
     tableObject.name = "New Table " + tableObject.id;
     updateGroupName(user.databaseID, tableObject).then(function(){
       tableID = tablePrefix + tableObject.id;
@@ -212,7 +212,7 @@ function createUnsortedTable(tasks, groups){
     table.addRow(unsortedTasks[i]);
   }
   user.tables.push(table);
-  addUserGroupToDB(user.databaseID, table, true);
+  addUserGroupToDB(user.databaseID, user.trello.token ,table);
   return table;
 }
 

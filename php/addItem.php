@@ -19,6 +19,12 @@ $groupID  = $_POST['groupID'];
 $itemType = $_POST['itemType'];
 $position = $_POST['position'];
 
+include_once("checkToken.php");
+if(! $tokenIsValid){
+  echo(-1);
+  exit();
+}
+
 $stmt = $tasktrackerDB->prepare("SELECT itemID FROM $itemsTable WHERE itemID = (?) && userID = (?)");
 $stmt->bind_param('si', $itemID, $userID);
 $success = $stmt->execute();

@@ -12,6 +12,12 @@ Return value: the user's ID in the database or -1 if fail
   /* POST arguments */
   $username = $_POST['username'];
 
+  include_once("checkToken.php");
+  if(! $tokenIsValid){
+    echo(-1);
+    exit();
+  }
+
 
   /* Add the user to the db */
     $stmt = $tasktrackerDB->prepare("INSERT INTO $usersTable (username) VALUES (?)");
