@@ -1,6 +1,7 @@
 var cardsCreated = new Set(); // Keeps track of ticket cards created - no dupes
+const TRUNCATE_LENGTH = 250;
 
-/* Allows resizing of the ticket panel. Weird results in edge thougth
+/* Allows resizing of the ticket panel. Weird results in edge though
 $(document).ready(function(){
   console.log($('.info-panel'));
   $('.info-panel').resizable({
@@ -18,9 +19,8 @@ function createTicketCard(task)
   var newCard = document.createElement("div");
   var cardTitle = task.name;
   var cardDesc = task.desc;
-  //TODO
-  // Use the makrdown converter on descriptions
-  //let markdownHTML = CONVERTER.makeHtml(shortDesc);
+  let cardDescMarkdown = CONVERTER.makeHtml(cardDesc);
+
   var cardIndex = task.id;
   var status = task.category.charAt(0).toUpperCase() + task.category.substring(1);
   var date = formatDate(task.lastModified);
@@ -65,6 +65,7 @@ function createTicketCard(task)
   var body = document.createElement("div");
 
   body.setAttribute("class", "panel-body");
+
   body.innerHTML =  "<strong>Status: </strong> " + status + " <br>" +
     "<strong>Last Modified: </strong> " + date;
 
@@ -82,17 +83,52 @@ function createTicketCard(task)
     body.innerHTML += "<br><br>";
   }
 
-  body.innerHTML += '<strong>Description</strong> <hr><p>' + cardDesc + '</p>';
+  addLongDescription(body, cardDescMarkdown);
+
+  if(cardDesc.length > TRUNCATE_LENGTH){
+    let cardDescMarkdownShort = jQuery.truncate(cardDescMarkdown, {length: TRUNCATE_LENGTH});
+    addShortDescription(body, cardDescMarkdownShort);
+    addReadMoreLink(body);
+    $(body).find(".long-desc").hide();
+  }
 
   newCard.appendChild(panelHead);
   newCard.appendChild(body);
 
   document.getElementById("card-list").appendChild(newCard);
   $("#" + cardIndex).addClass("animated fadeInRight");
-  $(".panel-body p").readmore({
-    speed: 200,
-  });
+
+  // This is what add the "Read More" and "Read Less" to the ticket panel
+  //$(".panel-body p").readmore({
+  //  speed: 200,
+  //});
+
   newCard.scrollIntoView();
+}
+
+function addDescription(ticketPanelBody, desc){
+  let descriptionWrapper = document.createElement("div");
+  descriptionWrapper.innerHTML = '<strong>Description</strong> <hr>' + desc;
+  ticketPanelBody.appendChild(descriptionWrapper);
+  return descriptionWrapper;
+}
+
+function addLongDescription(ticketPanelBody, longDesc){
+  let longDescWrapper = addDescription(ticketPanelBody, longDesc);
+  longDescWrapper.classList.add("long-desc");
+}
+
+function addShortDescription(ticketPanelBody, shortDesc){
+  let shortDescWrapper = addDescription(ticketPanelBody, shortDesc);
+  shortDescWrapper.classList.add("short-desc");
+}
+
+function addReadMoreLink(ticketPanelBody){
+  let readMoreText = document.createElement("a");
+  readMoreText.classList.add("read-more");
+  readMoreText.innerHTML = "Read More";
+  readMoreText.onclick = onReadMoreClick;
+  ticketPanelBody.appendChild(readMoreText);
 }
 
 
@@ -178,6 +214,21 @@ $(document).click(function(e){
     closeNavBar();
   }
 });
+
+function onReadMoreClick (e){
+  let readMoreATag = e.target;
+  let ticketPanelBody = readMoreATag.parentNode;
+
+  if(readMoreATag.innerHTML == "Read More"){
+    readMoreATag.innerHTML = "Read Less";
+    $(ticketPanelBody).find(".short-desc").hide();
+    $(ticketPanelBody).find(".long-desc").show();
+  }else{
+    readMoreATag.innerHTML = "Read More";
+    $(ticketPanelBody).find(".short-desc").show();
+    $(ticketPanelBody).find(".long-desc").hide();
+  }
+}
 
 function userClickedOffTicketPanel(element){
   let openTicketPanelButton = document.getElementById("openInfo");
