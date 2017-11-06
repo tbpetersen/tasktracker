@@ -386,10 +386,10 @@ function filterBy(buttonID) {
   var category = document.getElementById(buttonID).innerHTML;
   var button = document.getElementById(buttonID);
   var include = true;
-  if (button.style.backgroundColor == "lightgrey" || button.style.backgroundColor == "rgb(23, 23, 23)")
+  if($(button).hasClass("filteredIn"))
     include= false;
   //If View All is slected, reset everything to the defualt.
-  if (category == "View All") {
+  if(category == "View All") {
     filterAll();
     return;
   }
@@ -415,7 +415,6 @@ function filter(button, buttonID, include) {
   var currTheme = $('#main_style').attr("href");
 
   tables = document.getElementsByTagName("table");
-  var buttonColor = button.style.backgroundColor;
 
   for (i = 0; i < tables.length; i++) { // Grab each table.
     currentTable = tables[i];
@@ -428,20 +427,16 @@ function filter(button, buttonID, include) {
         filterOut(tableIDReal, button)
     }
   }
-  //Change the backgorund color of the buttons when they're selected.
-  if(nightTheme === currentTheme){
-    if (button.style.backgroundColor === "rgb(23, 23, 23)")
-      // button.style.backgroundColor = nightLight;
-      button.style.backgroundColor = "";
-    else
-      button.style.backgroundColor = nightDark;
-  }
+
+  changeFilterClass(button);
+}
+
+function changeFilterClass(button){
+  if(button.className.includes("filteredIn"))
+    $(button).removeClass("filteredIn");
   else{
-    if (button.style.backgroundColor == "lightgrey")
-      // button.style.backgroundColor = whitesmoke;
-      button.style.backgroundColor = "";
-    else
-      button.style.backgroundColor = "lightgrey";
+    $("#filter View All").removeClass("filteredIn");
+    $(button).addClass("filteredIn");
   }
 }
 
@@ -450,9 +445,9 @@ function checkFilterAll() {
   var table, i, j, filterBar;
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
-  for (i = 0; i < buttons.length; i++) {
+  for (i = 1; i < buttons.length; i++) {
     //Check if any of the filter buttons are selected.
-    if (buttons[i].style.backgroundColor == "lightgrey" || buttons[i].style.backgroundColor == "rgb(23, 23, 23)")
+    if ($(buttons[i]).hasClass("filteredIn"))
       return false;
   }
   filterAll();
@@ -469,14 +464,12 @@ function filterAll() {
   var filterAllButton = document.getElementById("filter View All");
   filterBar = document.getElementById("leftSidebar");
   var buttons = filterBar.getElementsByTagName("BUTTON");
-  //If the Filter All button was pressed, change the button colors to default.
-  for (i = 0; i < buttons.length; i++){
-    if(nightTheme)
-      // buttons[i].style.backgroundColor = "#212121";
-      buttons[i].style.backgroundColor = "";
-    else
-      // buttons[i].style.backgroundColor = whitesmoke;
-      buttons[i].style.backgroundColor = "";
+
+  $(filterAllButton).addClass("filteredIn");
+
+  //If the Filter All button was pressed, remove filtered in classes.
+  for (i = 1; i < buttons.length; i++){
+    $(buttons[i]).removeClass("filteredIn")
   }
 
   tables = document.getElementsByTagName("table");
@@ -486,20 +479,14 @@ function filterAll() {
       filterInTable(tables[i].id);
     }
   }
-  if(filterAllButton){
-    if(nightTheme)
-      filterAllButton.style.backgroundColor = "rgb(23, 23, 23)";
-    else
-      filterAllButton.style.backgroundColor = "lightgrey";
-  }
 }
 
 
 function filterIn(tableIDReal, button){
-  document.getElementById("filter View All").style.backgroundColor = "";
+  $("[id='filter View All']").removeClass("filteredIn")
   //Hide unwanted tables.
-  let tableName = getTableNameFromID(tableIDReal)
-  if(!isGrey(tableIDReal) && tableName !== button.innerHTML){
+  let tableName = getTableNameFromID(tableIDReal);
+  if(!isFiltered(tableIDReal) && tableName !== button.innerHTML){
       filterOutTable(tableIDReal);
     }
   //Show wanted tables.
@@ -512,7 +499,7 @@ function filterIn(tableIDReal, button){
 function filterOut(tableIDReal, button){
   //Show wanted tables.
   let tableName = getTableNameFromID(tableIDReal)
-  if(isGrey(tableIDReal) && tableName !== button.innerHTML){
+  if(isFiltered(tableIDReal) && tableName !== button.innerHTML){
       filterInTable(tableIDReal);
     }
   //Hide uwanted tables.
@@ -542,12 +529,11 @@ function filterInTable(table){
 }
 
 
-function isGrey(tableID){
+function isFiltered(tableID){
   let table = getTableNameFromID(tableID);
-  //Get the background color of the row.
-  var buttonColor = document.getElementById("filter " + table).style.backgroundColor;
-  //Is the background ofthe button grey?
-  if(buttonColor == "lightgrey" || buttonColor == "rgb(23, 23, 23)")
+
+  let button = $("[id='filter " + table + "']");
+  if(button.hasClass("filteredIn"))
     return true;
   return false;
 }

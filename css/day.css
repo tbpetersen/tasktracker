@@ -75,6 +75,10 @@ select#sortList {
   background-color: transparent;
 }
 
+.filteredIn{
+  background-color: lightgrey;
+}
+
 .leftSidebarItem:hover {
   background-color: lightgrey;
 }

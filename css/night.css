@@ -62,6 +62,10 @@ select#sortList {
   background-color: #171717;
 }
 
+.filteredIn{
+  background-color: #171717;
+}
+
 h2#info-header {
     color: #ddd;
 }

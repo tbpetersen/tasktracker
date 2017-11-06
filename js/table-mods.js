@@ -52,7 +52,6 @@ $(".main").on("click", "#tableTitle", function() {
       ++numKeyPress;
 
       if (e.which === 13 || e.which === 27) {
-        console.log($(this));
         var currentName = this.value;
         checkUserGroupDB(user.databaseID, currentName)
         .then(function(val) {
