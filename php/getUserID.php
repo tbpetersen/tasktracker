@@ -8,6 +8,8 @@ Return value: the user's ID in the database or -1 if fail
 */
   /* Connect to the server */
   include_once("connectToDB.php");
+  //TODO Some sort of check
+  //include_once("checkToken.php");
 
   /* GET arguments */
   $username = $_POST['username'];

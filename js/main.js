@@ -593,11 +593,8 @@ function initialSetup() {
     redirectToHTTPS();
     return Promise.reject();
   }else{
+    instantiateUser();
     return setupTokens()
-    .then(function(){
-      instantiateUser();
-      return Promise.resolve();
-    })
   }
 
 }
@@ -620,6 +617,9 @@ function instantiateUser() {
     return null;
   }
   user.deleteTable = function(tableObj){
+    if(tableObj == null){
+      return;
+    }
     for(let i = 0; i < user.tables.length; i++){
       let table = user.tables[i];
       if(table.id == tableObj.id){
@@ -688,6 +688,13 @@ function setupTokens() {
   .then(function(){
     return getTrelloToken();
   })
+
+  .then(function(){
+    user.trello.token = localStorage.getItem("trelloToken");
+    user.zendesk.token = localStorage.getItem("zendeskToken");
+    return Promise.resolve();
+  })
+
 }
 
 
@@ -1058,7 +1065,6 @@ function getAllZendeskUsers(url, previousList){
     }
   });
 }
-
 
 function oneArrayFromMany(arrayOfArrays){
   let returnArray = new Array();

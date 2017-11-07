@@ -8,6 +8,7 @@ Return value: a JSON string array of ids (empty if there are no items in the gro
 */
   /* Connect to the server */
   include_once("connectToDB.php");
+  include_once("checkToken.php");
 
   /* POST arguments */
   $groupID = $_POST['groupID'];

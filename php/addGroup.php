@@ -9,12 +9,15 @@ Return value: the group's ID in the database or -1 if fail
 */
 /* Connect to the server */
 include_once("connectToDB.php");
+include_once("checkToken.php");
 
 /* POST arguments */
 $userID    = $_POST['userID'];
 $groupName = $_POST['groupName'];
 $groupID = $_POST['groupID'];
 $position = $_POST['position'];
+
+include_once("checkToken.php");
 
 $stmt = $tasktrackerDB->prepare("SELECT groupID FROM $groupsTable WHERE groupID = (?) && userID = (?)");
 $stmt->bind_param('ss', $groupID, $userID);
