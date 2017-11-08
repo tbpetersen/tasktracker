@@ -32,6 +32,12 @@ const ITEMS_TABLE  = "group_items";
 
 const UNSORTED_TABLE_ID = -2;
 
+const AUTH_ERROR = "Authorization Error";
+
+//TODO Reject when status code is 401
+//return Promise.reject(AUTH_ERROR);
+
+
 function getDBID(table, user, group) {
   return checkUserGroupDB(user, group)
 }

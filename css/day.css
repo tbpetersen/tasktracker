@@ -201,13 +201,13 @@ select#sortList {
   color: #A2270C;
 }
 
-#delTableConfirm {
+.confirmButton{
   background-color: #A2270C;
 }
-#delTableConfirm:hover{
+.confirmButton:hover{
   background-color: #82070C !important;
 }
-#delTableConfirm:active{
+.confirmButton:active{
   background-color: black;
 }
 

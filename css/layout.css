@@ -701,6 +701,15 @@ td {
   cursor: pointer;
 }
 
+.error-container{
+  text-align: center;
+  border: solid black 1px;
+}
+
+.error-container p{
+  
+}
+
 .loader {
   margin-top: 15%;
   margin-left: auto;

@@ -194,8 +194,16 @@ $(document).ready(function() {
 
   .catch(function(err){
     $('.loader').hide();
+
+    if(err == AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve();
+    }
+
     console.log("Error during setup: ");
     console.log(err);
+    let errorText = document.createElement("h1");
+    showError("Whoops, something went wrong", "Click here", null)
   })
   table();
   $("#addTable").attr("disabled", true);
@@ -409,9 +417,9 @@ function createTasks(){
 
 function loadFromAPI(){
   return Promise.resolve()
-  .then(function(){
-    return createTasks();
-  })
+  .then(
+    createTasks()
+  )
 
   .then(function(tasks){
     createGroupsForUser(tasks);
@@ -437,6 +445,38 @@ function loadFromDB(){
     let removeDeletedCardsPromise = removeDeletedCardsFromDB(itemsFromDB, user.tasks);
     return Promise.all([createTablesPromise, removeDeletedCardsPromise]);
   })
+}
+
+function showError(errorMessage, buttonText, buttonOnClick){
+  let container = document.createElement("div");
+  let errorText = document.createElement("h1");
+  let signInButton = document.createElement("button");
+
+
+  container.classList.add("error-container");
+  errorText.classList.add("redColor");
+  signInButton.classList.add("btn-primary");
+  signInButton.classList.add("btn");
+  signInButton.classList.add("confirmButton");
+
+  errorText.innerHTML = errorMessage;
+  signInButton.innerHTML = buttonText;
+
+  signInButton.onclick = buttonOnClick;
+
+  container.appendChild(errorText);
+  container.appendChild(signInButton);
+
+  document.getElementById("main").appendChild(container);
+}
+
+function handleAuthError(){
+  showError("Authorization Error. Click here to sign back in to Trello", "Sign back in to Trello",deleteTrelloTokenAndReload);
+}
+
+function deleteTrelloTokenAndReload(){
+  localStorage.removeItem("trelloToken");
+  location.reload();
 }
 
 function removeDeletedCardsFromDB(itemsFromDB, tasks){
