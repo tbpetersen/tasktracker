@@ -277,12 +277,47 @@ function updateItemPosition(userID, item) {
   let params = getBasePOSTParameters();
   params.itemID = item.id;
   params.newPosition = item.position;
-
   return new Promise(function(resolve, reject) {
     $.post(PHP_UPDATE_ITEM_POSITION, params, function(data) {
       resolve(data == 1);
     });
   });
+}
+
+function updateAllItemsInGroup(userDBID, group){
+  let groupID = group.id.slice(6);
+  let html = $("#" + group.id)[0].children[1].getElementsByTagName("tr");
+  let tableObj;
+  for(let i in user.tables){
+    if(user.tables[i].id == groupID){
+      tableObj = user.tables[i];
+      break;
+    }
+  }
+
+  for(let i in tableObj.rows){ //Reorder table object
+    if(html[i].id !== tableObj.rows[i].id){
+
+      let tempRow = tableObj.rows[i];
+
+      for(let j in tableObj.rows){ //Update the positions
+        if(tableObj.rows[j].id === html[i].id){
+          tableObj.rows[i] = tableObj.rows[j];
+          tableObj.rows[j] = tempRow;
+        }
+      }
+    }
+  }
+
+  for(let i in tableObj.rows){ //Assign new positions.
+    if(tableObj.rows[i].position !== i)
+      tableObj.rows[i].position = i;
+
+    var promiseArray = [];
+    promiseArray.push(updateItemPosition(user.databaseID, tableObj.rows[i]));
+  }
+
+  return Promise.all(promiseArray);
 }
 
 
