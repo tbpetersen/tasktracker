@@ -702,7 +702,8 @@ td {
 }
 
 .loader {
-  margin-top: 15%;
+  position: relative;
+  top: 35%;
   margin-left: auto;
   margin-right: auto;
   border: 16px solid lightgrey; /* Light grey */
@@ -713,6 +714,30 @@ td {
   animation: spin 2s linear infinite;
 }
 
+#loadingScreen{
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0%;
+  text-align: center;
+  color: white;
+  background-color: #222;
+}
+
+#loadingMessage{
+  font-family: Verdana, sans-serif;
+  position: relative;
+  top: 30%;
+}
+
+#loadingTitle{
+  font-size: 600%;
+}
+
+#welcomeMessage{
+  font-size: 200%
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -721,6 +746,10 @@ td {
 html{
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+#body{
+  display: none;
 }
 
 @media only screen and (max-width: 1425px) {
