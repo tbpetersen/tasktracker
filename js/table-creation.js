@@ -373,7 +373,6 @@ function draggableRows(className) {
 
 
 function onTableUpdated(event, ui){
-  console.log(event, ui);
   let htmlTable = event.target.parentNode;
   let tableID = extractGroupID(htmlTable.id);
   let table = user.getTableByID(tableID);

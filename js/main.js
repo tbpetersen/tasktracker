@@ -156,9 +156,10 @@ $(document).ready(function() {
   });
 
   // Allocate tables for Zendesk and Trello
-
   Promise.resolve()
   .then(function(){
+    $("#loadingMessage").hide();
+    $("#loadingMessage").fadeIn(2000);
     return initialSetup();
   })
 
@@ -181,7 +182,6 @@ $(document).ready(function() {
   })
 
   .then(function(){
-    $('.loader').hide();
     createFilters();
     createTablesFromTableObject();
     //After the API is finished loading, allow new table creation.
@@ -190,6 +190,8 @@ $(document).ready(function() {
   .then(function(){
     $("#addTable").attr("disabled", false);
     $("#reorder").attr("disabled", false);
+    $('#loadingScreen').fadeOut(1000);
+    $("#body").show();
   })
 
   .catch(function(err){
