@@ -706,12 +706,13 @@ td {
   top: 35%;
   margin-left: auto;
   margin-right: auto;
-  border: 16px solid lightgrey; /* Light grey */
-  border-top: 16px solid #a2270c; /* Red */
+  border: 10px solid lightgrey; /* Light grey */
+  border-top: 10px solid #a2270c; /* Red */
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
+  width: 6vh;
+  height: 6vh;
   animation: spin 2s linear infinite;
+  /*display: none;*/
 }
 
 #loadingScreen{
@@ -728,6 +729,7 @@ td {
   font-family: Verdana, sans-serif;
   position: relative;
   top: 30%;
+  display: none;
 }
 
 #loadingTitle{

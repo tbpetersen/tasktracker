@@ -440,7 +440,7 @@ select#sortList {
   text-align: center;
   }
 
-.glyphicon-remove:hover {  
+.glyphicon-remove:hover {
 /*.close
 */  background-color: black;
 }
@@ -859,6 +859,8 @@ select#sortList {
   margin-right: auto;
   border: 16px solid lightgrey; /* Light grey */
   border-top: 16px solid #D42127; /* Red */
+  border-bottom: 16px solid #0F0;
+  border-left: 16px solid #00F;
   border-radius: 50%;
   width: 120px;
   height: 120px;
