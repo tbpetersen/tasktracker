@@ -160,6 +160,7 @@ $(document).ready(function() {
   .then(function(){
     welcomeCycle();
     $("#loadingMessage").fadeIn(2000);
+    $('.loader').fadeIn(2000);
     return initialSetup();
   })
 
@@ -1152,7 +1153,7 @@ function trelloGet(url, getParams) {
 }
 
 function welcomeCycle(){
-  let welcomeArray = ["!"+"أهلا بك", "欢迎!", "Bienvenue!", "Herzlich willkommen!", "!"+"ברוכים הבאים", "Bine ati venit!", "Добро пожаловать!", "¡Bienvenido!"];
+  let welcomeArray = ["!"+"أهلا بك", "欢迎!", "Bienvenue!", "Herzlich willkommen!", "!"+"ברוכים הבאים", "ようこそ！", "Bine ati venit!", "Добро пожаловать!", "¡Bienvenido!"];
   // Cycle through welcome messages every 2 seconds
   let cycle = setInterval(function(){
     // Get a non-duplicate index
