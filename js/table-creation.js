@@ -25,9 +25,11 @@ function createNewTable() {
   let tableObject = new Table(tableID, -1, user.tables.length);
 
   user.tables.push(tableObject);
-  addUserGroupToDB(user.databaseID, user.trello.token, tableObject).then(function(){
+  addUserGroupToDB(user.databaseID, user.trello.token, tableObject)
+  .then(function(){
     tableObject.name = "New Table " + tableObject.id;
-    updateGroupName(user.databaseID, tableObject).then(function(){
+    updateGroupName(user.databaseID, tableObject)
+    .then(function(){
       tableID = tablePrefix + tableObject.id;
       createTable(tableObject, true); // Create a table with a random ID;
       $("#" + tableID).find("tbody").addClass("place");
@@ -35,6 +37,11 @@ function createNewTable() {
       draggableRows(ITEM_SORTABLE_CLASS);
       window.scrollTo(0, document.body.scrollHeight);
       tableNumber--;
+    })
+    .catch(function(err){
+      if(err === AUTH_ERROR)
+        return Promise.reject(AUTH_ERROR);
+      return Promise.reject(err);
     });
   });
 }
@@ -382,7 +389,13 @@ function onTableUpdated(event, ui){
   for (let i = 1; i < items.length; i++) {
     let task = getTaskByID(items[i].id);
     task.position = i - 1;
-    addGroupItemToDB(userID, task, table.id);
+    addGroupItemToDB(userID, task, table.id)
+    .catch(function(err){
+      console.log("Error: " + err);
+      if(err === AUTH_ERROR)
+        reject(AUTH_ERROR);
+      reject(err);
+    });
     newRows.push(task);
     if(table.id === UNSORTED_TABLE_ID){
       deleteItem(userID, task.id);

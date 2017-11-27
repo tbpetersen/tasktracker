@@ -360,7 +360,13 @@ function createTablesFromGroups(groups, tasks){
       let unsortedTable = user.getTableByID(UNSORTED_TABLE_ID);
       for(let i = 0; i < newUnsortedTasks.length; i++){
         unsortedTable.rows.push(newUnsortedTasks[i]);
-        addGroupItemToDB(user.databaseID, newUnsortedTasks[i], unsortedTable.id);
+        addGroupItemToDB(user.databaseID, newUnsortedTasks[i], unsortedTable.id)
+        .catch(function(err){
+          console.log("Error: " + err);
+          if(err === AUTH_ERROR)
+            reject(AUTH_ERROR);
+          reject(err);
+        });
       }
     }
   }
@@ -448,6 +454,8 @@ function loadFromDB(){
 }
 
 function showError(errorMessage, buttonText, buttonOnClick){
+  if($("#main .error-container").length > 0)
+    return;
   let container = document.createElement("div");
   let errorText = document.createElement("h1");
   let signInButton = document.createElement("button");
@@ -467,7 +475,8 @@ function showError(errorMessage, buttonText, buttonOnClick){
   container.appendChild(errorText);
   container.appendChild(signInButton);
 
-  document.getElementById("main").appendChild(container);
+  $("#main-container").hide();
+  $("#main").prepend(container);
 }
 
 function handleAuthError(){

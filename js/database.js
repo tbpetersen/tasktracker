@@ -90,6 +90,12 @@ function addDataToDB(){
       }
         Promise.all(itemPromises).then(function(){
           resolve();
+        })
+        .catch(function(err){
+          console.log("Error: " + err);
+          if(err === AUTH_ERROR)
+            reject(AUTH_ERROR);
+          reject(err);
         });
     })
     .catch(function(err) {
@@ -212,10 +218,7 @@ function checkGroupItemDB(item, userID, groupID) {
     item.group = "Ungrouped";
   var type = item.type;
   var groupTable = user.getTableByID(groupID);
-    return getItem(userID, ID, groupID)
-  .catch(function(err) {
-    console.log("Error: " + err);
-  });
+    return getItem(userID, ID, groupID);
 }
 
 function getItem(userID, itemID, groupID) {
@@ -394,7 +397,12 @@ function getGroupName(user, groupID) {
 }
 
 function deleteItem(userID, itemID) {
-  return genericDelete(ITEMS_TABLE, userID, itemID);
+  return genericDelete(ITEMS_TABLE, userID, itemID)
+  .catch(function(err){
+    console.log(err);
+    handleAuthError();
+    return Promise.resolve();
+  });
 }
 
 function deleteItemsFromUserGroup(userID, tableObj) {
@@ -406,7 +414,7 @@ function deleteItemsFromUserGroup(userID, tableObj) {
 }
 
 function deleteUserGroup(userID, tableObj) {
-  return genericDelete(GROUPS_TABLE, userID, tableObj.id)
+  return genericDelete(GROUPS_TABLE, userID, tableObj.id);
 }
 
 function genericDelete(databaseTableName, userID, columnValue){

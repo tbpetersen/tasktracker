@@ -12,13 +12,20 @@ $(document).on('click', '.navbar-collapse.in',function(e) {
 });
 
 function setTheme(){
-  getTheme(user.databaseID)
+  return getTheme(user.databaseID)
   .then(function(id){
     if(id)
-      changeToNight();
+      return changeToNight();
     else
-      changeToDay();
+      return changeToDay();
+  })
+  .then(function(){
     currentTheme = $('#current-theme').attr("href");
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR)
+      return Promise.reject(AUTH_ERROR);
+    return Promise.reject(err);
   });
 }
 
@@ -28,18 +35,31 @@ $("#changeThemeBtn").click(function() {
     changeToNight();
   else
     changeToDay();
-  filterAll(); //TODO
   currentTheme = $('#current-theme').attr("href");
 });
 
 function changeToNight(){
-  updateTheme(user.databaseID, 1);
-  $("#current-theme").attr("href", nightTheme);
-  $("#logo").attr("src", "images/logo-invert.png");
+  return updateTheme(user.databaseID, 1)
+  .then(function(){
+    $("#current-theme").attr("href", nightTheme);
+    $("#logo").attr("src", "images/logo-invert.png");
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR)
+      return Promise.reject(AUTH_ERROR);
+    return Promise.reject(err);
+  });
 }
 
 function changeToDay(){
-  updateTheme(user.databaseID, 0);
-  $("#current-theme").attr("href", dayTheme);
-  $("#logo").attr("src", "images/logo.png");
+  updateTheme(user.databaseID, 0)
+  .then(function(){
+    $("#current-theme").attr("href", dayTheme);
+    $("#logo").attr("src", "images/logo.png");
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR)
+      return Promise.reject(AUTH_ERROR);
+    return Promise.reject(err);
+  });
 }

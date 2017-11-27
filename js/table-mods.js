@@ -41,7 +41,14 @@ $(".main").on("click", "#tableTitle", function() {
       var $titleStr = $('<h3 id="tableTitle" />').text( $newName );
       var tableObj = user.getTableByID($groupID);
       tableObj.name = $newName;
-      updateGroupName(user.databaseID, tableObj);
+      updateGroupName(user.databaseID, tableObj)
+      .catch(function(err){
+        if(err == AUTH_ERROR){
+          handleAuthError();
+          return Promise.resolve();
+        }
+        return Promise.reject(err);
+      });
 
       // Update input value
       $input.replaceWith($titleStr);
@@ -183,7 +190,6 @@ function deleteTable(tableObj) {
   }
 
   user.deleteTable(tableObj);
-  //deleteItemsFromUserGroup(user.databaseID, tableObj);
   deleteUserGroup(user.databaseID, tableObj);
   refreshGroupUI(unsortedTableObj);
   draggableRows(ITEM_SORTABLE_CLASS);
@@ -257,7 +263,14 @@ $("#reorder").click(function(e) {
       let id = wrapperPrefix + (tables[i].id);
       let id2 = wrapperPrefix + (tables[i + 1].id);
       $("#" + id).after($("#" + id2));
-      updateGroupPosition(user.databaseID, tables[i]);
+      updateGroupPosition(user.databaseID, tables[i])
+      .catch(function(err){
+        if(err === AUTH_ERROR){
+          handleAuthError();
+          return Promise.resolve(AUTH_ERROR);
+        }
+        return Promise.reject(err);
+      });
     }
     draggableRows(GROUP_SORTABLE_CLASS);
     modal.close();
