@@ -93,8 +93,10 @@ function addDataToDB(){
         })
         .catch(function(err){
           console.log("Error: " + err);
-          if(err === AUTH_ERROR)
-            reject(AUTH_ERROR);
+          if(err === AUTH_ERROR){
+            handleAuthError();
+            return Promise.resolve();;
+          }
           reject(err);
         });
     })
@@ -102,6 +104,13 @@ function addDataToDB(){
       console.log("Error: " + err);
       reject(err);
     });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve;
+    }
+    reject(err);
   });
 }
 
@@ -111,25 +120,25 @@ function addUserToDB(user) {
 
   //IF THIS COMES OUT TO TRUE, RUN THE REST OF THE PROGRAM. IF NOT, RETURN
   return checkUserDB(user)
-    .then(function(promise) {
-      //If the user doesn't exist, add them
-      if (!promise) {
-        return new Promise(function(resolve, reject) {
-          $.post(PHP_ADD_USER, params, function(data) {
-            if (data === -1) {
-              reject(data);
-            }
-            resolve(data);
-          });
-        })
-      } else {
-        return Promise.resolve();
-      }
-    })
-    .catch(function(err) {
-      console.log("Error: " + err);
-      return Promise.reject();
-    });
+  .then(function(promise) {
+    //If the user doesn't exist, add them
+    if (!promise) {
+      return new Promise(function(resolve, reject) {
+        $.post(PHP_ADD_USER, params, function(data) {
+          if (data === -1) {
+            reject(data);
+          }
+          resolve(data);
+        });
+      })
+    } else {
+      return Promise.resolve();
+    }
+  })
+  .catch(function(err) {
+    console.log("Error: " + err);
+    return Promise.reject();
+  });
 }
 
 function checkUserDB(user) {
@@ -140,6 +149,13 @@ function checkUserDB(user) {
     $.post(PHP_GET_USER, params, function(data) {
       resolve(data);
     });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve;
+    }
+    reject(err);
   });
 }
 
@@ -166,6 +182,13 @@ function addUserGroupToDB(userID, trelloToken, table) {
           resolve(data);
         });
       })
+      .catch(function(err){
+        if(err === AUTH_ERROR){
+          handleAuthError();
+          return Promise.resolve;
+        }
+        reject(err);
+      });
     }else{
       return Promise.resolve();
     }
@@ -182,6 +205,13 @@ function checkUserGroupDB(user, group) {
     $.post(PHP_GET_GROUP, params, function(data) {
       resolve(data != -1);
     });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve;
+    }
+    reject(err);
   });
 }
 
@@ -206,7 +236,14 @@ function addGroupItemToDB(userID, item, groupID) {
     }else{
       return updateItemGroup(userID, item.id, groupID)
       .then(function(){
-        return updateItemPosition(userID, item);
+        return updateItemPosition(userID, item)
+      })
+      .catch(function(err){
+        if(err === AUTH_ERROR){
+          handleAuthError();
+          return Promise.resolve();
+        }
+        reject(err);
       });
     }
   });
@@ -234,6 +271,13 @@ function getItem(userID, itemID, groupID) {
         resolve(data);
       }
     });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve;
+    }
+    reject(err);
   });
 }
 
@@ -244,6 +288,13 @@ function getTheme(userID){
     }, function(data) {
       resolve(data == 1);
     });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve;
+    }
+    reject(err);
   });
 }
 
@@ -255,6 +306,13 @@ function updateTheme(userID, isNight){
     }, function(data) {
       resolve(data == 1);
     });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve;
+    }
+    reject(err);
   });
 }
 
@@ -294,7 +352,6 @@ function updateItemPosition(userID, item) {
 }
 
 function updateAllItemsInGroup(userDBID, group){
-  return Promise.reject(AUTH_ERROR);
   let groupID = group.id.slice(6);
   let html = $("#" + group.id)[0].children[1].getElementsByTagName("tr");
   let tableObj;
@@ -327,7 +384,14 @@ function updateAllItemsInGroup(userDBID, group){
     promiseArray.push(updateItemPosition(user.databaseID, tableObj.rows[i]));
   }
 
-  return Promise.all(promiseArray);
+  return Promise.all(promiseArray)
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve();
+    }
+    reject(err);
+  });
 }
 
 
@@ -364,7 +428,14 @@ function updateItemGroup(userID, itemID, newGroupID) {
     $.post(PHP_UPDATE_ITEM_GROUP, params , function(data) {
       resolve(data == 1);
     });
-  });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve();
+    }
+    reject(err);
+  });;
 }
 
 function getAllItemsInGroup(userID, groupID) {
@@ -375,7 +446,14 @@ function getAllItemsInGroup(userID, groupID) {
     $.post(PHP_GET_ITEMS_IN_GROUP, params, function(data) {
       resolve(data);
     });
-  });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve();
+    }
+    reject(err);
+  });;
 }
 
 function getTableFromID(tableID){
@@ -418,7 +496,14 @@ function getAllGroups(userID) {
     $.post(PHP_GET_GROUPS_FOR_USER, params, function(data) {
       resolve(data);
     });
-  });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve();
+    }
+    reject(err);
+  });;
 }
 
 function getGroupName(user, groupID) {
@@ -429,7 +514,14 @@ function getGroupName(user, groupID) {
     $.post(PHP_GET_GROUP_NAME, params, function(data) {
       resolve(data);
     });
-  });
+  })
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve();
+    }
+    reject(err);
+  });;
 }
 
 function deleteItem(userID, itemID) {
@@ -441,7 +533,14 @@ function deleteItemsFromUserGroup(userID, tableObj) {
   for(let i = 0; i < tableObj.rows.length; i++){
     promises.push(deleteItem(userID, tableObj.rows[i].id));
   }
-  return Promise.all(promises);
+  return Promise.all(promises)
+  .catch(function(err){
+    if(err === AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve();
+    }
+    reject(err);
+  });;
 }
 
 function deleteUserGroup(userID, tableObj) {

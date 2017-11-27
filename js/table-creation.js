@@ -392,8 +392,10 @@ function onTableUpdated(event, ui){
     addGroupItemToDB(userID, task, table.id)
     .catch(function(err){
       console.log("Error: " + err);
-      if(err === AUTH_ERROR)
-        reject(AUTH_ERROR);
+      if(err === AUTH_ERROR){
+        handleAuthError();
+        return Promise.resolve();
+      }
       reject(err);
     });
     newRows.push(task);
