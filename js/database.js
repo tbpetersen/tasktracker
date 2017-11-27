@@ -294,6 +294,7 @@ function updateItemPosition(userID, item) {
 }
 
 function updateAllItemsInGroup(userDBID, group){
+  return Promise.reject(AUTH_ERROR);
   let groupID = group.id.slice(6);
   let html = $("#" + group.id)[0].children[1].getElementsByTagName("tr");
   let tableObj;
@@ -432,12 +433,7 @@ function getGroupName(user, groupID) {
 }
 
 function deleteItem(userID, itemID) {
-  return genericDelete(ITEMS_TABLE, userID, itemID)
-  .catch(function(err){
-    console.log(err);
-    handleAuthError();
-    return Promise.resolve();
-  });
+  return genericDelete(ITEMS_TABLE, userID, itemID);
 }
 
 function deleteItemsFromUserGroup(userID, tableObj) {

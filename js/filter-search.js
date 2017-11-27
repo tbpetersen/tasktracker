@@ -42,7 +42,11 @@ function sortAlphabet(tableName, index) {
     }
   }
   alphabetForwards = true;
-  updateAllItemsInGroup(user.databaseID, table);
+  updateAllItemsInGroup(user.databaseID, table)
+  .catch(function(err){
+    if(err === AUTH_ERROR)
+      handleAuthError();
+  });
   //Update the triangle
   let cellButton = table.firstChild.firstChild.children[index].getElementsByTagName("button")[0];
   cellButton.className = "sortButton glyphicon glyphicon-triangle-top"
@@ -83,7 +87,11 @@ function sortAlphabetReverse(tableName, index) {
       switching = true;
     }
   }
-  updateAllItemsInGroup(user.databaseID, table);
+  updateAllItemsInGroup(user.databaseID, table)
+.catch(function(err){
+  if(err === AUTH_ERROR)
+    handleAuthError();
+});
   let cellButton = table.firstChild.firstChild.children[index].getElementsByTagName("button")[0];
   cellButton.className = "sortButton glyphicon glyphicon-triangle-bottom"
 }
@@ -143,7 +151,11 @@ function sortCategory(tableName) {
     }
   }
   categoryForwards = true;
-  updateAllItemsInGroup(user.databaseID, table);
+  updateAllItemsInGroup(user.databaseID, table)
+.catch(function(err){
+  if(err === AUTH_ERROR)
+    handleAuthError();
+});
   let cellButton = table.firstChild.firstChild.getElementsByTagName("button")[4];
   cellButton.className = "sortButton glyphicon glyphicon-triangle-top"
 }
@@ -182,7 +194,11 @@ function sortCategoryReverse(tableName) {
       switching = true;
     }
   }
-  updateAllItemsInGroup(user.databaseID, table);
+  updateAllItemsInGroup(user.databaseID, table)
+.catch(function(err){
+  if(err === AUTH_ERROR)
+    handleAuthError();
+});
   let cellButton = table.firstChild.firstChild.getElementsByTagName("button")[4];
   cellButton.className = "sortButton glyphicon glyphicon-triangle-bottom"
 }
@@ -243,7 +259,11 @@ function sortLastModified(tableName) {
     }
   }
   lastModifiedForwards = true;
-  updateAllItemsInGroup(user.databaseID, table);
+  updateAllItemsInGroup(user.databaseID, table)
+.catch(function(err){
+  if(err === AUTH_ERROR)
+    handleAuthError();
+});
   let cellButton = table.firstChild.firstChild.getElementsByTagName("button")[3];
   cellButton.className = "sortButton glyphicon glyphicon-triangle-top"
 }
@@ -296,7 +316,11 @@ function sortlastModifiedReversed(tableName) {
       switching = true;
     }
   }
-  updateAllItemsInGroup(user.databaseID, table);
+  updateAllItemsInGroup(user.databaseID, table)
+.catch(function(err){
+  if(err === AUTH_ERROR)
+    handleAuthError();
+});
   let cellButton = table.firstChild.firstChild.getElementsByTagName("button")[3];
   cellButton.className = "sortButton glyphicon glyphicon-triangle-bottom";
 }

@@ -446,7 +446,7 @@ function loadFromDB(){
 
   .then(function(tasks){
     user.tasks = tasks;
-    return loadUsersItemsFromDB();
+    return loadUsersItemsFromDB()
   })
 
   .then(function(itemsFromDB){
@@ -454,6 +454,12 @@ function loadFromDB(){
     let removeDeletedCardsPromise = removeDeletedCardsFromDB(itemsFromDB, user.tasks);
     return Promise.all([createTablesPromise, removeDeletedCardsPromise]);
   })
+  .catch(function(err){
+    if(err == AUTH_ERROR){
+      handleAuthError();
+      return Promise.resolve();
+    }
+  });
 }
 
 function showError(errorMessage, buttonText, buttonOnClick){
