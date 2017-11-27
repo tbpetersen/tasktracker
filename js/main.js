@@ -156,9 +156,11 @@ $(document).ready(function() {
   });
 
   // Allocate tables for Zendesk and Trello
-
   Promise.resolve()
   .then(function(){
+    welcomeCycle();
+    $("#loadingMessage").fadeIn(2000);
+    $('.loader').fadeIn(2000);
     return initialSetup();
   })
 
@@ -181,7 +183,6 @@ $(document).ready(function() {
   })
 
   .then(function(){
-    $('.loader').hide();
     createFilters();
     createTablesFromTableObject();
     //After the API is finished loading, allow new table creation.
@@ -190,6 +191,8 @@ $(document).ready(function() {
   .then(function(){
     $("#addTable").attr("disabled", false);
     $("#reorder").attr("disabled", false);
+    $('#loadingScreen').fadeOut(1000);
+    $("#body").show();
   })
 
   .catch(function(err){
@@ -1196,4 +1199,34 @@ function trelloGet(url, getParams) {
       }
     });
   });
+}
+
+function welcomeCycle(){
+  let welcomeArray = ["!"+"أهلا بك", "欢迎!", "Bienvenue!", "Herzlich willkommen!", "!"+"ברוכים הבאים", "ようこそ！", "Bine ati venit!", "Добро пожаловать!", "¡Bienvenido!"];
+  // Cycle through welcome messages every 2 seconds
+  let cycle = setInterval(function(){
+    // Get a non-duplicate index
+    while(true){
+      var randomIndex = getRandomInt(0, welcomeArray.length);
+      if(welcomeArray[randomIndex] !== $("#welcomeMessage").text())
+        break;
+    }
+
+    // Fade out and replace the text with the new language
+    $("#welcomeMessage").fadeOut(500);
+    setTimeout(function(){
+      $("#welcomeMessage").text(welcomeArray[randomIndex]);
+    }, 500);
+    $("#welcomeMessage").fadeIn(500);
+
+    // Check if the welcome screen has faded out
+    if(!$("#loadingScreen").is(":visible"))
+      clearInterval(cycle);
+  }, 2000);
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 }

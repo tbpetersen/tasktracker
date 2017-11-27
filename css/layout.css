@@ -711,15 +711,42 @@ td {
 }
 
 .loader {
-  margin-top: 15%;
+  position: relative;
+  top: 35%;
   margin-left: auto;
   margin-right: auto;
-  border: 16px solid lightgrey; /* Light grey */
-  border-top: 16px solid #a2270c; /* Red */
+  border: 7px solid lightgrey; /* Light grey */
+  border-top: 7px solid #a2270c; /* Red */
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
+  width: 6vh;
+  height: 6vh;
   animation: spin 2s linear infinite;
+  display: none;
+}
+
+#loadingScreen{
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0%;
+  text-align: center;
+  color: white;
+  background-color: #222;
+}
+
+#loadingMessage{
+  font-family: Verdana, sans-serif;
+  position: relative;
+  top: 30%;
+  display: none;
+}
+
+#loadingTitle{
+  font-size: 600%;
+}
+
+#welcomeMessage{
+  font-size: 200%
 }
 
 @keyframes spin {
@@ -730,6 +757,10 @@ td {
 html{
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+#body{
+  display: none;
 }
 
 @media only screen and (max-width: 1425px) {
